@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0c0911"><meta name="game-build" content="20261027-124413"><title>Survival Summoner: Pick Up!</title><script src="config.js"></script><script src="fb-shim.js"></script></head><body>
+<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0c0911"><meta name="game-build" content="20261027-125851"><title>Survival Summoner: Pick Up!</title><script src="config.js"></script><script src="fb-shim.js"></script></head><body>
 <title>Survival Summoner: Pick Up!</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Taviraj:wght@500;600;700&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
@@ -3061,6 +3061,118 @@ function wTier(it){const m=WMAT[it.g|0];return`<small style="color:${SGC[it.g|0]
 
 // ================= v3.8: พลังมอนสเตอร์หอคอย ×1.27 ทุก 5 ชั้น =================
 {const _e=enT;enT=function(f){f=Math.max(1,f);return _e(f)*1.27**Math.floor((f-1)/5)}}
+
+// ================= v3.9: เหตุการณ์ใหม่ 40 เหตุการณ์ (ล็อบบี้ 12 · มิติวาร์ป 10 · หอคอย 10 · บุกล็อบบี้ 8) =================
+const EPC=p=>Math.round(Math.max(.05,Math.min(.95,p))*100);
+// ---------- ล็อบบี้ 12 ----------
+EV.push(
+{k:'blackmail',w:A=>A.length>=3?(A.some(h=>['liar','thief','traitor','greed'].includes(h.tr))?.9:.35):0,f:A=>{const S2=A.filter(h=>['liar','thief','traitor','greed'].includes(h.tr)),a=rnd(S2.length?S2:A),b=rnd(A.filter(h=>h!==a));if(!b)return null;
+ return{ti:'🗝️ แบล็กเมล์',tx:`${nm(a)} รู้ความลับน่าอับอายของ ${nm(b)} และขู่ว่าจะเปิดโปงถ้าไม่ยอมแบ่งส่วนแบ่งอาหารให้ทุกวัน`,hs:[a,b],ch:[
+ ['สืบหาความจริง',()=>{L(a,-15);L(b,5);return `${a.n} ถูกจับได้คาหนังคาเขา ${b.n} โล่งใจ`},{gold:30}],
+ ['จ่ายเงินปิดปาก',()=>{L(b,6);L(a,4);return 'ความลับถูกเก็บไว้… อย่างน้อยก็ตอนนี้'},{gold:80}],
+ ['ปล่อยให้ความลับแพร่',()=>{L(b,-12);addSts(b,'depressed',1);spread(-2,b);return `${b.n} อับอายจนไม่กล้าสู้หน้าใคร`}],
+ ['สังเวยผู้แบล็กเมล์ ☠️',()=>{spread(-5);const g=gain({gems:sacG(a)});kill(a);return `${a.n} ถูกสังเวย ${g}`}]]}}},
+{k:'eclipse',w:A=>A.length>=3?.45:0,f:A=>{const V=[...A].sort(()=>Math.random()-.5).slice(0,3);
+ return{ti:'🌑 สุริยคราสสีเลือด',tx:'ท้องฟ้ามืดลงกลางวัน ดวงอาทิตย์ถูกกลืนเป็นวงแหวนสีเลือด ฮีโร่หลายคนเริ่มได้ยินเสียงเรียกจากประตูวาร์ป',hs:V.slice(0,2),vis:V,ch:[
+ ['ปิดประตูวาร์ปและจุดคบเพลิงทั่วล็อบบี้',()=>'ล็อบบี้ผ่านคราสไปได้อย่างปลอดภัย',{gold:50,ore:20}],
+ [`ทำพิธีดูดพลังคราส (~60%)`,()=>{if(Math.random()<.6){act().forEach(h=>addSts(h,'blessed',1));return 'พลังคราสไหลเข้าสู่ทุกคน ✨'}act().forEach(h=>{if(Math.random()<.5)addSts(h,'cursed',1)});return 'พิธีล้มเหลว หลายคนต้องคำสาป'},{gems:30}],
+ ['ปล่อยไว้',()=>{V.forEach(h=>addSts(h,'fear',1));return `${V.map(h=>h.n).join(', ')} หวาดผวา`}]]}}},
+{k:'well',w:A=>A.length&&S.water>30?.6:0,f:A=>{const h=rnd(A);
+ return{ti:'🪣 บ่อน้ำเน่า',tx:`${nm(h)} พบว่าน้ำในบ่อหลักเปลี่ยนเป็นสีเขียวขุ่น มีซากบางอย่างลอยอยู่ก้นบ่อ`,hs:[h],ch:[
+ ['ต้มน้ำทั้งหมดก่อนใช้',()=>'น้ำปลอดภัย แต่ใช้ฟืนไปมาก',{gold:30,mat:1}],
+ ['ให้นักบวชชำระน้ำ',()=>{const p=act().find(x=>x.sk==='healer');if(!p)return 'ไม่มีนักบวช ต้องทิ้งน้ำบางส่วน '+gain({water:-Math.round(S.water*.15)});L(p,4);return `${p.n} ชำระน้ำจนใสสะอาด`}],
+ ['ทิ้งน้ำในคลัง',()=>gain({water:-Math.round(S.water*.25)})],
+ ['ใช้ต่อไป',()=>{let n=0;act().forEach(x=>{if(Math.random()<.35){addSts(x,'sick',1);n++}});return n?`ฮีโร่ ${n} คนท้องร่วงและป่วย`:'โชคดี ไม่มีใครป่วย'}]]}}},
+{k:'tax',w:A=>A.length&&S.gold>200?.5:0,f:A=>{const h=rnd(A),t=Math.round(S.gold*.1);
+ return{ti:'👑 ทูตจักรวรรดิเก็บภาษี',tx:`ขบวนทูตในชุดเกราะทองมาถึงประตูล็อบบี้ เรียกเก็บ “ภาษีการอัญเชิญ” ${t}🪙 ${nm(h)} กำดาบแน่น`,hs:[h],ch:[
+ [`จ่ายภาษี ${t}🪙`,()=>{add('gold',-t);if(Math.random()<.35){addPot('ticket');return 'ทูตพอใจ มอบ 🎟️ ตั๋วอัญเชิญเป็นใบเสร็จ'}return 'ทูตจดบันทึกแล้วจากไป'}],
+ ['ต่อรอง (~50%)',()=>{const p=Math.random()<.5?.05:.15;const v=Math.round(S.gold*p);add('gold',-v);return p<.1?`ต่อรองสำเร็จ จ่ายแค่ ${v}🪙`:`ทูตโกรธ ปรับเพิ่มเป็น ${v}🪙`}],
+ ['ไล่ทูตไป (~60%)',()=>{if(Math.random()<.6){spread(3);L(h,6);return 'ทูตถอยไป ฮีโร่ภูมิใจในมาสเตอร์'}const v=Math.round(S.gold*.2);add('gold',-v);addSts(h,'injured',.6);return `ทหารจักรวรรดิบุกยึด ${v}🪙 ${h.n} บาดเจ็บ`}]]}}},
+{k:'deathduel',w:A=>A.length>=3&&A.some(h=>['proud','aggr','sadist','berserk','vengeful'].includes(h.tr))?.7:0,f:A=>{const a=rnd(A.filter(h=>['proud','aggr','sadist','berserk','vengeful'].includes(h.tr))),b=rnd(A.filter(h=>h!==a));if(!b)return null;
+ return{ti:'⚔️ คำท้าดวลถึงตาย',tx:`${nm(a)} ขว้างถุงมือใส่ ${nm(b)} ต่อหน้าทุกคน “ล็อบบี้นี้มีที่ให้เราแค่คนเดียว!”`,hs:[a,b],ch:[
+ ['อนุญาตให้ดวลถึงตาย ☠️',()=>{const[x,y]=win(a,b);x.m*=1.05;L(x,10);spread(-4,x);kill(y);return `${x.n} สังหาร ${y.n} พลังพื้นฐาน +5%`},null,null,'risk'],
+ ['ดวลแบบไม่ถึงตาย',()=>{const[x,y]=win(a,b);L(x,6);L(y,-8);addSts(y,'injured',.6);return `${x.n} ชนะ ${y.n} บาดเจ็บ`}],
+ ['ห้ามเด็ดขาด',()=>{L(a,-10);return `${a.n} ฮึดฮัดแต่ยอมถอย`}]]}}},
+{k:'twin',w:A=>A.length?.45:0,f:A=>{const h=rnd(A);
+ return{ti:'👥 ร่างเงาจากต่างมิติ',tx:`ร่างที่หน้าตาเหมือน ${nm(h)} ทุกกระเบียดนิ้วเดินออกมาจากประตูวาร์ป และอ้างว่าตัวเองคือตัวจริง`,hs:[h],ch:[
+ ['ให้ทั้งคู่ดวลกัน (~60%)',()=>{if(Math.random()<.6){h.m*=1.03;gainXp(h,80+S.tower*5);return `${h.n} ฆ่าร่างเงาได้ พลังพื้นฐาน +3%`}addSts(h,'injured',.7);addSts(h,'cursed',1);return `${h.n} แพ้! ร่างเงาสลายไปพร้อมคำสาป`}],
+ ['รับร่างเงาเข้าล็อบบี้',()=>{const n=mk(Math.min(h.r,3));n.n=h.n+'(เงา)';n.look=JSON.parse(JSON.stringify(h.look||genLook()));n.bx=true;n.loy=30;S.h.push(n);L(h,-8);return `${n.n} [${R[n.r]}] เข้าคลังฮีโร่ ${h.n} รู้สึกไม่สบายใจ`},null,canBox],
+ ['ขับไล่ด้วยเวทมนตร์',()=>'ร่างเงาถูกดูดกลับเข้าประตูวาร์ป',{gems:25}]]}}},
+{k:'ratswarm',w:()=>S.food>40?.7:0,f:A=>{const h=rnd(A);
+ return{ti:'🐀 ฝูงหนูบุกคลังเสบียง',tx:`ฝูงหนูตาแดงนับร้อยไหลออกมาจากท่อระบาย กำลังกัดกินเสบียงในคลัง`,hs:[h],ch:[
+ ['วางยาเบื่อ',()=>'หนูตายเกลื่อน เสบียงปลอดภัย',{gold:25}],
+ [`ส่ง ${h.n} ไปไล่`,()=>{if(Math.random()<.35){addSts(h,'sick',1);return `${h.n} ไล่หนูได้แต่ติดโรค ${gain({ess:2})}`}L(h,3);return `${h.n} กวาดล้างฝูงหนู ${gain({ess:2})}`}],
+ ['ปล่อยไว้',()=>gain({food:-Math.round(S.food*.15)})+' เสบียงถูกกินไป']]}}},
+{k:'oracle',w:A=>A.length?.5:0,f:A=>{const h=rnd(A);
+ return{ti:'🔮 หมอดูต่างมิติ',tx:`หญิงชราตาบอดเดินออกมาจากประตูวาร์ป ชี้นิ้วมาที่ ${nm(h)} “โชคชะตาของเจ้ากำลังเปลี่ยน…”`,hs:[h],ch:[
+ [`ให้ดูดวง ${h.n}`,()=>Math.random()<.6?`ดวงดี! ${h.n} ได้รับ ${addSts(h,rnd(['blessed','focused','iron']),1.5)}`:`ดวงตก… ${h.n} ${addSts(h,rnd(['cursed','fear']),1)}`,{gems:20}],
+ ['ถามชะตาของล็อบบี้',()=>{const r=Math.random();if(r<.5){act().forEach(x=>addSts(x,'inspired',.4));return 'คำพยากรณ์ดีงาม ทุกคนฮึกเหิม'}return 'นางพูดถึง “เลือดที่จะหลั่ง” แล้วหายไป…'},{gold:60}],
+ ['ไล่ไป',()=>'หมอดูหัวเราะแหบแห้งแล้วเลือนหาย']]}}},
+{k:'cursedblade',w:A=>A.length?.45:0,f:A=>{const h=rnd(A);
+ return{ti:'🗡️ ดาบที่กระซิบได้',tx:`${nm(h)} พบดาบสีดำปักอยู่หลังโรงตีเหล็ก มันกระซิบชื่อของเขาไม่หยุด`,hs:[h],ch:[
+ ['เก็บไว้ใช้งาน',()=>{const it=addItem(tItem('w',Math.max(1,S.tower),'boss'));addSts(h,'cursed',2);L(h,-5);return `ได้ ${it.n} [${SG[it.g]}] แต่ ${h.n} ต้องคำสาป`}],
+ ['ผนึกแล้วหลอมเป็นผลึก',()=>gain({crys:2+Math.floor(S.tower/60)}),{gems:15}],
+ ['ทำลายทิ้ง',()=>`ดาบแตกเป็นเสี่ยง ${gain({ess:3})}`]]}}},
+{k:'relic',w:A=>A.length?.5:0,f:A=>{const h=rnd(A);
+ return{ti:'🏺 โบราณวัตถุใต้ล็อบบี้',tx:`${nm(h)} ขุดเจอหีบหินสลักอักขระโบราณใต้พื้นโรงเก็บของ ไอเย็นแผ่ออกมาจากรอยแยก`,hs:[h],ch:[
+ [`เปิดผนึก (~60%)`,()=>{if(Math.random()<.6){const it=addItem(tItem(rnd(['w','a','c']),Math.max(1,S.tower),'mini'));return `พบ ${it.n} [${SG[it.g]}]`}addSts(h,'cursed',1.5);return `วิญญาณร้ายพุ่งออกมา ${h.n} ต้องคำสาป`}],
+ ['ถวายที่แท่นบูชา',()=>gain({gems:25+Math.floor(S.tower/5)})],
+ ['ขายให้นักสะสม',()=>gain({gold:150+S.tower*2})]]}}},
+{k:'pup',w:A=>A.length?.5:0,f:A=>{const h=rnd(A);
+ return{ti:'🐺 ลูกหมาป่าหลงทาง',tx:`ลูกหมาป่าตัวเล็กเดินตาม ${nm(h)} กลับมาถึงล็อบบี้ หางกระดิกไม่หยุด`,hs:[h],ch:[
+ ['รับเลี้ยงเป็นสัตว์ประจำล็อบบี้',()=>{act().forEach(x=>L(x,3));addSts(h,'regen',1);return 'ทุกคนหลงรักเจ้าตัวเล็ก 💚'},{food:30}],
+ ['ฝึกเป็นหมาเฝ้ายาม',()=>{act().forEach(x=>addSts(x,'iron',.5));return 'เสียงเห่ากลางดึกทำให้ทุกคนอุ่นใจ'},{food:50,ore:20}],
+ ['ไล่ไป',()=>{L(h,-4);return `${h.n} มองตามด้วยความเศร้า`}]]}}},
+{k:'bounty',w:A=>A.length>=2?.45:0,f:A=>{const h=wpick(A,x=>1+x.r),g=Math.round(40+S.tower/2+h.r*15);
+ return{ti:'📜 ประกาศค่าหัว',tx:`ใบประกาศจับจากต่างมิติถูกตอกไว้ที่ประตูล็อบบี้ ใบหน้าบนนั้นคือ ${nm(h)} ค่าหัว ${g}💎`,hs:[h],ch:[
+ ['ปกป้องฮีโร่ของเรา',()=>{L(h,15);spread(3,h);return `${h.n} ซาบซึ้งจนน้ำตาไหล ทุกคนรู้ว่ามาสเตอร์ไม่ทิ้งพวกพ้อง`}],
+ ['ปลอมตัวให้',()=>{h.look=genLook();L(h,8);return `${h.n} เปลี่ยนโฉมจนจำไม่ได้`},{gold:60}],
+ ['ส่งตัวไปรับค่าหัว ☠️',()=>{spread(-8);const r=gain({gems:g,gold:200});kill(h);return `ได้ ${r} ทุกคนหวาดกลัวมาสเตอร์`}]]}}});
+// ---------- มิติวาร์ป 10 ----------
+const wv=tm=>rnd(tm.filter(h=>S.h.includes(h)));
+WENC.push(
+{an:'chest',ti:'⚓ ซากเรือข้ามมิติ',tx:'เรือไม้ขนาดยักษ์ลอยค้างอยู่กลางความว่างเปล่า ห้องเก็บสินค้ายังปิดสนิท',ch:[['ค้นห้องเก็บสินค้า',tm=>{if(Math.random()<.7)return gain({gold:100+S.tower*3,ore:20+S.tower});const v=wv(tm);if(v)addSts(v,'injured',.5);return `ไม้ผุพังถล่มลงมา${v?` ${v.n} บาดเจ็บ`:''}`}],['ถอดเสากระโดงเป็นวัสดุ',()=>gain({mat:3+Math.floor(S.tower/40)})],['ไม่เข้าใกล้',()=>'เรือค่อย ๆ จมหายไป']]},
+{an:'spirit',ti:'🐉 ลูกมังกรหลงมิติ',tx:'ลูกมังกรตัวเล็กส่งเสียงร้อง ปีกข้างหนึ่งหัก จ้องมองทีมด้วยดวงตาสีทอง',ch:[['ป้อนอาหารและรักษาแผล (-40🍖)',tm=>{if(S.food<40)return 'อาหารไม่พอ ลูกมังกรบินหนีไป';add('food',-40);tm.forEach(h=>addSts(h,'blessed',1));return `แม่มังกรปรากฏตัวขอบคุณ มอบ ${gain({gems:30+Math.floor(S.tower/4)})} และพรแก่ทีม`}],['จับไปขาย',tm=>{if(Math.random()<.5)return gain({gold:250+S.tower*4});const v=wv(tm);if(v)addSts(v,'injured',1);return `แม่มังกรโกรธเกรี้ยว!${v?` ${v.n} ถูกไฟเผาบาดเจ็บหนัก`:''}`}],['ปล่อยไว้',()=>'ลูกมังกรร้องเรียกแม่อย่างโดดเดี่ยว']]},
+{an:'storm',ti:'⚡ พายุสายฟ้ามิติ',tx:'สายฟ้าสีม่วงฟาดลงมาไม่หยุด อากาศเต็มไปด้วยพลังงานดิบ',ch:[['ดูดซับสายฟ้าด้วยอาวุธ',tm=>{const v=wv(tm);if(Math.random()<.55){tm.forEach(h=>addSts(h,'focused',1));return `${gain({crys:2})} ทีมรู้สึกตื่นตัว`}if(v)addSts(v,'injured',.7);return `${v?v.n+' ถูกสายฟ้าฟาด':'สายฟ้าฟาดพลาด'} ${gain({crys:1})}`}],['หาที่หลบ',()=>'ทีมรอจนพายุสงบ']]},
+{an:'time',ti:'🪞 กระจกสะท้อนตัวตน',tx:'กระจกบานใหญ่ลอยอยู่กลางอากาศ เงาสะท้อนในนั้นยิ้มทั้งที่ทีมไม่ได้ยิ้ม',ch:[['ต่อสู้กับเงาสะท้อน',tm=>{const n=80+S.tower*6;tm.forEach(h=>{gainXp(h,n);if(Math.random()<.3)addSts(h,'fear',.5)});return `ทีม +${n} EXP บางคนยังหลอนเงาตัวเอง`}],['ทุบกระจก',()=>gain({crys:1,mat:2})],['เดินหนี',()=>'เงาสะท้อนโบกมือลา…']]},
+{an:'merchant',ti:'🎭 นักต้มตุ๋นข้ามมิติ',tx:'ชายสวมหน้ากากยิ้มกว้างเสนอ “เพิ่มเงินเป็นสองเท่า” แลกกับเหรียญ 200🪙',ch:[['ลงทุน 200🪙 (~40%)',()=>{if(S.gold<200)return 'เหรียญไม่พอ';add('gold',-200);return Math.random()<.4?`ได้จริง! ${gain({gold:400})}`:'ชายหน้ากากหายวับไปพร้อมเงิน'}],['จับตัวมาสอบสวน',tm=>{if(Math.random()<.5)return `ยึดทรัพย์ได้ ${gain({gold:120,gems:10})}`;const v=wv(tm);if(v)addSts(v,'poisoned',.5);return `เขาปาผงพิษแล้วหนีไป${v?` ${v.n} ติดพิษ`:''}`}],['ไม่สนใจ',()=>'เขายักไหล่แล้วจากไป']]},
+{an:'beast',ti:'🕷️ รังแมงมุมมิติ',tx:'ใยแมงมุมขนาดยักษ์ขึงเต็มทางผ่าน ไข่สีเขียวเรืองแสงนับร้อยเต้นตุบ ๆ',ch:[['เผารังทิ้ง',tm=>{if(Math.random()<.6)return `รังมอดไหม้ ${gain({ess:3+Math.floor(S.tower/50)})}`;tm.forEach(h=>{if(Math.random()<.4)addSts(h,'poisoned',.6)});return 'ไข่ระเบิดเป็นพิษ ทีมบางคนติดพิษ'}],['บุกเข้าไปสู้',tm=>{wBeast(tm);return 'แม่แมงมุมพุ่งออกมา! การต่อสู้เริ่มขึ้น'}],['อ้อมไป',()=>'ทีมใช้เวลานานกว่าจะหาทางอ้อม']]},
+{an:'spirit',ti:'🌸 สวนดอกไม้วิญญาณ',tx:'ทุ่งดอกไม้สีขาวเรืองแสงงอกขึ้นกลางความว่างเปล่า กลิ่นหอมจนน่าเวียนหัว',ch:[['เก็บดอกไม้ทำยา',tm=>{if(Math.random()<.65){const p=rnd(['cure','holy','bandage','wine']);addPot(p);return `ได้ ${POT[p][0]}${POT[p][1]}`}tm.forEach(h=>addSts(h,'poisoned',.4));return 'เกสรเป็นพิษ ทีมเวียนหัว'}],['นอนพักในทุ่ง',tm=>{tm.forEach(h=>clrSts(h,['exhausted','injured']));return 'ทีมตื่นมาสดชื่น บาดแผลหายไป'}],['รีบผ่านไป',()=>'ทีมเดินผ่านไปอย่างระวัง']]},
+{an:'chest',ti:'⛏️ สายแร่อาดามันไทต์',tx:'ผนังหินสีดำมันวาวเผยสายแร่หายาก แต่ก็ไม่มั่นคงนัก',ch:[['ขุดให้หมด',tm=>{tm.forEach(h=>addSts(h,'exhausted',.6));return `${gain({ore:80+S.tower*2,crys:1})} ทีมอ่อนล้า`}],['ขุดแค่พอดี',()=>gain({ore:40+S.tower})],['จดตำแหน่งไว้',()=>'ทีมจะกลับมาขุดอีกครั้ง… ถ้ามันยังอยู่']]},
+{an:'time',ti:'🌀 วังวนย้อนเวลา',tx:'วังวนสีฟ้าหมุนวน ใครที่ก้าวเข้าไปจะย้อนกลับไปสู่สภาพร่างกายเมื่อวาน',ch:[['ให้ทีมก้าวเข้าไป',tm=>{let n=0;tm.forEach(h=>n+=clrSts(h,'bad'));return n?`ล้างสถานะไม่ดี ${n} อาการ`:'ไม่มีอะไรเปลี่ยนแปลง'}],['ส่งของเข้าไปทวีคูณ',()=>Math.random()<.5?gain({gold:120,food:40}):'วังวนกลืนของหายไป'],['ไม่เข้าใกล้',()=>'วังวนปิดลง']]},
+{an:'beast',ti:'💀 กองทัพโครงกระดูกโบราณ',tx:'เสียงกระดูกกระทบกันดังสนั่น กองทัพที่ตายไปนับพันปีลุกขึ้นเดินสวนสนาม',ch:[['ซุ่มโจมตี',tm=>{wBeast(tm);return 'ทีมพุ่งเข้าใส่แม่ทัพโครงกระดูก!'}],['ลอบขโมยสมบัติสงคราม',tm=>{if(Math.random()<.55)return gain({gold:180+S.tower*3,mat:2});const v=wv(tm);if(v)addSts(v,'injured',.8);return `ถูกจับได้!${v?` ${v.n} บาดเจ็บขณะหนี`:''}`}],['หลบอยู่เงียบ ๆ',()=>'กองทัพเดินผ่านไปจนลับตา']]});
+// ---------- หอคอย 10 ----------
+TEV.push(
+{ti:'กระจกต้องสาป',tx:'กระจกสีดำสะท้อนภาพทีมในสภาพศพ เสียงกระซิบเชิญชวนให้ทุบมัน',sf:1,ch:[['ทุบกระจก',b=>{b.buff+=.2;const u=rnd(b.hs.filter(x=>!x.ko));if(u)addSts(u.h,'cursed',1);return `พลังมืดไหลเข้าสู่ทีม โจมตี +20%${u?` แต่ ${u.h.n} ต้องคำสาป`:''}`}],['คลุมผ้าแล้วเดินผ่าน',()=>'เสียงกระซิบเงียบลง']]},
+{ti:'ช่างตีเหล็กวิญญาณ',tx:'วิญญาณช่างตีเหล็กยังคงตีทั่งอยู่ในห้องที่ไฟดับไปนานแล้ว',sf:1,ch:[['ขอให้ตีอาวุธ (-150🪙)',b=>{if(S.gold<150)return 'เหรียญไม่พอ วิญญาณหันหลังให้';add('gold',-150);const it=addItem(tItem('w',b.f,'mini'));return `ได้ ${it.n} [${SG[it.g]}]`}],['ขอให้ซ่อมเกราะ',b=>{healTeam(b,.3);return 'ทีมฟื้นพลัง 30%'}],['ไม่รบกวน',()=>'เสียงตีทั่งดังต่อไป']]},
+{ti:'นักโทษในโซ่ตรวน',tx:'นักรบร่างกำยำถูกล่ามโซ่ไว้กับกำแพง “ปล่อยข้า แล้วข้าจะสู้เคียงข้างเจ้า”',sf:1,ch:[['ปลดโซ่ (~60%)',b=>{if(Math.random()<.6){b.buff+=.2;return 'นักรบร่วมสู้ชั่วคราว พลังโจมตี +20%'}addWave(b);dmgTeam(b,.1);return 'เขาหักหลัง! ปลุกมอนสเตอร์เพิ่มอีก 1 เวฟ'}],['เดินผ่านไป',()=>'เสียงสาปแช่งไล่หลังมา']]},
+{ti:'หมอกพิษ',tx:'หมอกสีเขียวลอยคลุ้งเต็มทางเดิน',sf:1,ch:[['กลั้นหายใจวิ่งผ่าน',b=>{dmgTeam(b,.15);return 'ทีมสำลักหมอก เสียพลังชีวิต 15%'}],['ชุบผ้าปิดจมูก (-30💧)',b=>{if(S.water<30){dmgTeam(b,.15);return 'น้ำไม่พอ ต้องฝ่าหมอกไป'}add('water',-30);return 'ทีมผ่านหมอกได้อย่างปลอดภัย'}]]},
+{ti:'หีบเหล็กเปื้อนเลือด',tx:'หีบเหล็กวางอยู่กลางห้อง รอยเลือดลากยาวมาจากใต้ฝาหีบ',sf:2,ch:[['เปิดหีบ (~50%)',b=>{if(Math.random()<.5){const it=addItem(tItem(rnd(['w','a','c']),b.f,'mini'));return `ได้ ${it.n} [${SG[it.g]}]`}addWave(b);dmgTeam(b,.15);return 'มิมิก! มันกัดทีมแล้วเรียกพวกพ้องมา'}],['แทงหีบก่อนเปิด',b=>Math.random()<.5?'หีบส่งเสียงร้องแล้วตาย '+gain({gold:60+b.f*3}):'หีบธรรมดา '+gain({gold:30+b.f})],['ไม่แตะต้อง',()=>'ทีมเดินอ้อมไป']]},
+{ti:'วงเวทเทเลพอร์ต',tx:'วงเวทสีฟ้ากะพริบอยู่บนพื้น ไม่รู้ว่าปลายทางคือที่ไหน',sf:1,ch:[['ก้าวเข้าไป (~55%)',b=>{if(Math.random()<.55)return skipWave(b)?'ทีมวาร์ปข้ามมอนสเตอร์ไป 1 เวฟ':'วาร์ปกลับมาที่เดิม';addWave(b);return 'ทีมวาร์ปไปกลางรังมอนสเตอร์!'}],['ไม่เสี่ยง',()=>'วงเวทดับลง']]},
+{ti:'สุสานผู้กล้า',tx:'หลุมศพของผู้กล้าที่เคยปีนถึงชั้นนี้ ดาบของเขายังปักอยู่บนเนินดิน',sf:1,ch:[['ขอพรจากวิญญาณ',b=>{healTeam(b,.4);b.hs.forEach(u=>{if(!u.ko)addSts(u.h,'blessed',.5)});return 'ทีมฟื้นพลัง 40% และได้รับพร'}],['ขุดเอาดาบ',b=>{const it=addItem(tItem('w',b.f,'mini'));b.hs.forEach(u=>addSts(u.h,'cursed',1));return `ได้ ${it.n} [${SG[it.g]}] แต่ทั้งทีมต้องคำสาป`}],['คารวะแล้วผ่านไป',()=>'ลมเย็นพัดผ่านอย่างอ่อนโยน']]},
+{ti:'เสียงกลองสงคราม',tx:'เสียงกลองดังมาจากชั้นบน มอนสเตอร์กำลังรวมพล',sf:1,ch:[['เร่งบุกก่อนพวกมันพร้อม',b=>{b.buff+=.2;b.loot+=.2;dmgTeam(b,.1);return 'โจมตี +20% ของรางวัล +20% แต่ทีมเหนื่อยล้า'}],['ตั้งรับและพักฟื้น',b=>{healTeam(b,.2);return 'ทีมฟื้นพลัง 20%'}]]},
+{ti:'น้ำตกโลหิต',tx:'น้ำสีแดงข้นไหลลงจากเพดาน อุ่นและมีกลิ่นคาวเลือด',sf:2,ch:[['ดื่มเพื่อฟื้นพลัง',b=>{healTeam(b,.5);const u=rnd(b.hs.filter(x=>!x.ko));if(u&&Math.random()<.5)addSts(u.h,'sick',1);return `ฟื้นพลัง 50%${u?` แต่ ${u.h.n} อาจป่วย`:''}`}],['เก็บใส่ขวด',()=>{addPot('might');return `ได้ ${POT.might[0]}${POT.might[1]}`}],['ไม่แตะต้อง',()=>'ทีมเดินผ่านไป']]},
+{ti:'บันไดลับ',tx:'ผนังหินเลื่อนเปิดเผยบันไดวนแคบ ๆ และห้องเก็บของเล็ก ๆ',sf:2,ch:[['ปีนบันไดลัด',b=>{if(skipWave(b)){if(Math.random()<.35){dmgTeam(b,.2);return 'ข้ามได้ 1 เวฟ แต่บันไดถล่มใส่ทีม'}return 'ทีมข้ามมอนสเตอร์ไป 1 เวฟ'}return 'บันไดตัน ต้องเดินกลับ'}],['ค้นห้องเก็บของ',b=>gain({gold:50+b.f*2,ore:10+b.f})],['ไม่สนใจ',()=>'ผนังเลื่อนปิดลง']]});
+// ---------- บุกล็อบบี้: ระหว่างป้องกันล็อบบี้ 5 ----------
+const hurtEn=(b,p)=>{for(let k=b.wi;k<b.waves.length;k++)for(const u of b.waves[k])if(!u.dead){u.hp*=1-p}};
+const IEV=[
+{ti:'ประตูวาร์ปสั่นคลอน',tx:'ประตูวาร์ปที่ศัตรูใช้บุกเริ่มไม่เสถียร ถ้าปิดได้ ทัพที่เหลือจะอ่อนแอลง',sf:1,ch:[['ใช้ผลึกเวทปิดประตู (-3🔷)',b=>{if(S.crys<3)return 'ผลึกเวทไม่พอ';add('crys',-3);hurtEn(b,.25);return 'ประตูบิดเบี้ยว ทัพศัตรูที่เหลือบาดเจ็บ 25%'}],['ปล่อยไว้',()=>'ทัพศัตรูยังคงไหลเข้ามา']]},
+{ti:'ชาวบ้านขอร่วมรบ',tx:'คนงานและพ่อค้าในล็อบบี้หยิบคราดและมีดทำครัวขึ้นมา “ให้พวกเราช่วยด้วย!”',sf:1,ch:[['แจกอาวุธ (-100🪙)',b=>{if(S.gold<100)return 'เหรียญไม่พอ';add('gold',-100);b.buff+=.15;return 'ชาวบ้านร่วมรบ พลังโจมตี +15%'}],['สั่งให้หลบภัย',b=>{healTeam(b,.2);return 'ชาวบ้านช่วยพยาบาลอยู่แนวหลัง ฟื้นพลัง 20%'}]]},
+{ti:'ศัตรูเสนอเจรจากลางศึก',tx:'ทูตฝ่ายบุกชูธงขาว “จ่ายมาบางส่วน แล้วทัพหนึ่งจะถอยกลับ”',sf:1,ch:[['จ่ายเพื่อให้ถอยไป 1 ทัพ',b=>{const g=Math.floor(S.gold*.12);add('gold',-g);return skipWave(b)?`จ่าย ${g}🪙 ทัพหนึ่งถอนกำลังไป`:'จ่ายแล้วแต่พวกมันไม่ถอย!'}],['ปฏิเสธและปลุกใจทหาร',b=>{b.buff+=.1;return 'ทีมฮึกเหิม พลังโจมตี +10%'}]]},
+{ti:'กับดักล็อบบี้',tx:'ช่างตีเหล็กบอกว่ามีกับดักหนามเก่าอยู่ใต้ลานล็อบบี้ ต้องใช้แร่ซ่อมก่อนใช้งาน',sf:1,ch:[['ซ่อมและเปิดกับดัก (-60⛏️)',b=>{if(S.ore<60)return 'แร่ไม่พอ';add('ore',-60);hurtEn(b,.2);return 'หนามพุ่งจากพื้น ทัพศัตรูที่เหลือบาดเจ็บ 20%'}],['ไม่ใช้',()=>'กับดักยังคงหลับใหล']]},
+{ti:'ธงล็อบบี้ถูกเผา',tx:'ศัตรูเผาธงประจำล็อบบี้ต่อหน้าทุกคน ควันดำลอยขึ้นฟ้า',sf:0,ch:[['ชูธงผืนใหม่',b=>{healTeam(b,.25);b.hs.forEach(u=>{if(!u.ko)addSts(u.h,'blessed',.5)});return 'ทีมฟื้นพลัง 25% และได้รับพร'}],['แปรความแค้นเป็นพลัง',b=>{b.buff+=.25;dmgTeam(b,.1);return 'พลังโจมตี +25% แต่ทีมบ้าคลั่งจนบาดเจ็บ'}]]}];
+{const _w=btWaveClear;btWaveClear=function(b){_w(b);if(b&&b.inv&&B===b&&!b.evDone&&b.ph==='walk'&&b.wi<b.waves.length&&Math.random()<.55){b.evDone=true;b.ev=rnd(IEV);b.evAt=performance.now();b.ph='event';btMin=false;btUI()}}}
+{const _p=btPick;btPick=function(i){const b=B;if(!b||!b.inv||b.ph!=='event'||!b.ev)return _p(i);const e=b.ev,m=e.ch[i][1](b)||'—';btLine(`✦ ${e.ti}: ${m}`);log(`🌀 ป้องกันล็อบบี้ · ${e.ti}: ${m}`);b.ev=null;b.ph='walk';b.pt=.6;btUI()}}
+setInterval(()=>{const b=B;if(b&&b.inv&&b.ph==='event'&&b.ev&&performance.now()-(b.evAt||0)>25000)btPick(b.ev.sf||0)},1000);
+// ---------- บุกล็อบบี้: หลังการบุก (ฝ่ายบุก) 3 ----------
+var AEV=null;
+const AEVS=[
+{w:'win',ti:'💰 คลังลับใต้ล็อบบี้',tx:'ระหว่างขนของกลับ ทัพของท่านพบประตูลับนำไปสู่ห้องใต้ดินของล็อบบี้ที่ถูกบุก',ch:[['บุกค้นต่อ (~55%)',A=>{if(Math.random()<.55)return gain({gems:20+Math.floor(S.tower/5),gold:200+S.tower*4});A.forEach(h=>addSts(h,'injured',.6));return 'ยามซุ่มอยู่! ทัพต้องถอยกลับพร้อมบาดแผล'}],['ถอนทัพทันที',()=>'ทัพกลับมาอย่างปลอดภัย']]},
+{w:'win',ti:'🙏 ผู้ลี้ภัยจากล็อบบี้ที่ถูกบุก',tx:'ฮีโร่ไร้สังกัดคนหนึ่งเดินตามทัพกลับมา ขอเป็นข้ารับใช้ของมาสเตอร์ผู้ชนะ',ch:[['รับไว้',()=>{if(!canBox())return 'คลังฮีโร่เต็ม ต้องปฏิเสธไป';const h=mk(wpick([1,2,3,4],i=>[40,35,18,7][i-1]));h.bx=true;h.loy=45;S.h.push(h);return `${h.n} [${R[h.r]}] เข้าร่วมล็อบบี้ (อยู่ในคลังฮีโร่)`}],['ปฏิเสธ',()=>'เขาเดินจากไปอย่างเศร้าสร้อย']]},
+{w:'lose',ti:'🩸 ผู้รอดชีวิตกลับมา',tx:'ทัพที่รอดกลับมาทางประตูวาร์ปในสภาพสะบักสะบอม หลายคนแทบยืนไม่ไหว',ch:[['รักษาเต็มที่ (-120🪙 -30🍖)',A=>{if(S.gold<120||S.food<30)return 'ทรัพยากรไม่พอ';add('gold',-120);add('food',-30);A.forEach(h=>{clrSts(h,'bad');L(h,6)});return 'ทุกคนได้รับการรักษาและซาบซึ้งในตัวมาสเตอร์'}],['ปลุกใจให้แก้แค้น',A=>{A.forEach(h=>addSts(h,'inspired',1));return 'ทัพฮึกเหิม พร้อมล้างแค้นครั้งหน้า'}],['ปล่อยให้พักเอง',A=>{A.forEach(h=>L(h,-4));return 'ทุกคนเงียบงันและผิดหวัง'}]]}];
+function aevShow(){const e=AEV;if(!e)return;openSheet(shead(e.ti)+`<p>${e.tx}</p>${e.ch.map((c,i)=>`<button class="btn ${i?'g':''}" style="width:100%;margin:4px 0;text-align:left" onclick="aevPick(${i})">${c[0]}</button>`).join('')}`)}
+function aevPick(i){const e=AEV;if(!e)return;AEV=null;const A=(e.ids||[]).map(id=>S.h.find(h=>h.id===id)).filter(Boolean);const m=e.ch[i][1](A)||'—';log(`⚔️ ${e.ti}: ${m}`);openSheet(shead(e.ti)+`<p>${m}</p><button class="btn" style="width:100%" onclick="closeSheet()">ตกลง</button>`);save();refresh()}
+{const _c=invClaim;invClaim=function(o,d){const done=o&&o.done,r=(d&&d.res)||{};const ret=_c.apply(this,arguments);if(!done&&o&&o.done&&Math.random()<.6){const L2=AEVS.filter(x=>x.w===(r.win?'lose':'win'));if(L2.length){AEV={...rnd(L2),ids:Array.isArray(o.ids)?o.ids:[]};let n=0;const t=setInterval(()=>{n++;if(!AEV){clearInterval(t);return}if(scr==='game'&&$('sheet').hidden&&!BZ()){clearInterval(t);aevShow()}else if(n>600)clearInterval(t)},1000)}}return ret}}
 
 // ================= ลูปเกม =================
 function tick(){S.time+=2;updWx();const w=W(),A=act(),u=w.use||{};
