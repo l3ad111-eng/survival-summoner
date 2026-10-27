@@ -12,4 +12,4 @@ window.FB_CFG = {
   messagingSenderId: "220805605322",
   appId: "1:220805605322:web:caf36a8463a2e5a3425133"
 };
-window.GAME_OWNER_UID = "";
+window.GAME_OWNER_UID = "Qxui1LePkQXWfsGaHMfpfVUOs8B3";
