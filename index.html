@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0c0911"><meta name="game-build" content="20261027-102624"><title>Survival Summoner: Pick Up!</title><script src="config.js"></script><script src="fb-shim.js"></script></head><body>
+<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0c0911"><meta name="game-build" content="20261027-104628"><title>Survival Summoner: Pick Up!</title><script src="config.js"></script><script src="fb-shim.js"></script></head><body>
 <title>Survival Summoner: Pick Up!</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Taviraj:wght@500;600;700&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
@@ -2421,6 +2421,79 @@ function urFront(c,x,y,s,h,t,o){const A=URA[h.r>=7?7:6],sd=(h.id||1)*29,d=o.dir|
  if(!o.kneel&&!o.lie&&!o.dead&&s>=1.4){const yy=y-17.55*s,a=.55+.25*Math.sin(t/600+sd);c.globalAlpha=a;c.shadowColor=A.eye;c.shadowBlur=2.5*s;c.fillStyle=A.eye;[.67,2.57].forEach((ex,i)=>{c.beginPath();c.arc(x+ex*s*d,yy,(i?.2:.24)*s,0,7);c.fill()});c.globalAlpha=1;c.shadowBlur=0}
  c.restore()}
 {const _ch=chibi;chibi=function(c,x,y,s,h,o={}){const ur=h&&h.r>=6&&!o.lie&&!o.dead;if(!ur)return _ch(c,x,y,s,h,o);const t=performance.now(),xx=x+(o.sh?Math.sin(t/25)*1.5:0);try{urBack(c,xx,y,s,h,t,o)}catch(e){}_ch(c,x,y,s,h,Object.assign({},o,{glow:false}));try{urFront(c,xx,y,s,h,t,o)}catch(e){}}}
+
+// ================= v3.0: บุกล็อบบี้ผู้เล่นอื่น =================
+const INV_CD=30,INV_MAX=20,INV_DL=3*60000,INV_RES=['gold','food','water','ore','mat','ess','crys'];
+const INV={inc:[],busy:0,cur:null,pub:0,last:'',subs:{},vis:null,tg:[],sel:[],arm:0};
+const invTop=()=>[...act()].sort((a,b)=>tpw(b)-tpw(a)).slice(0,INV_MAX);
+const invSnap=h=>({...snapHero(h),sk:h.sk,sg:h.sg});
+function invSan(id,d){if(!/^[\w-]{1,64}$/.test(id)||!d||typeof d!=='object')return null;const src=Array.isArray(d.team)?d.team.slice(0,INV_MAX):[],team=[];for(let i=0;i<src.length;i+=5){const tm=arSan(id,{team:src.slice(i,i+5)});if(tm)team.push(...tm.team)}
+ return{id,by:String(d.by||''),name:String(d.name||'มาสเตอร์').replace(/[<>&"'`\\]/g,'').slice(0,16)||'มาสเตอร์',team,power:cl(+d.power||0,0,1e13),at:+d.at||0,dl:+d.dl||0,st:d.st==='done'?'done':'pending',res:d.res&&typeof d.res==='object'?d.res:null,claimed:!!d.claimed,dn:String(d.dn||'').replace(/[<>&"'`\\]/g,'').slice(0,16)}}
+const invCdLeft=()=>S.invDay==null?0:Math.max(0,S.invDay+INV_CD-day());
+// ---- เผยแพร่ข้อมูลล็อบบี้ให้ผู้เล่นอื่นเห็นเป็นเป้าหมาย ----
+async function invPub(force){if(!NETFB()||!NET.db||!NET.uid||!S||scr!=='game')return;if(!force&&Date.now()-INV.pub<300000)return;const tm=invTop(),d={name:(acctName()||'มาสเตอร์').slice(0,16),power:Math.round(tPow(tm)),n:act().length,lv:S.b.lobby||0,res:Math.round(INV_RES.reduce((a,k)=>a+(+S[k]||0),0)),at:Date.now()},js=JSON.stringify({...d,at:0});if(!force&&js===INV.last)return;INV.pub=Date.now();try{await NET.db.doc('lobby/'+NET.uid).set(d);INV.last=js}catch(e){}}
+setInterval(()=>invPub(false),60000);
+// ---- ฝ่ายถูกบุก: รอฟังการบุก ----
+function invSub(db){if(!NETFB()||INV.subd)return;INV.subd=1;db.collection('inv/'+NET.uid+'/in').onSnapshot(qs=>{INV.inc=qs.docs.map(x=>invSan(x.id,x.data())).filter(x=>x&&x.st==='pending').sort((a,b)=>a.at-b.at);invCheck()},()=>{});setTimeout(()=>invPub(true),3000);setTimeout(invWatchOut,2000)}
+{const _as=arenaSub;arenaSub=function(db){_as(db);invSub(db)}}
+const BZ=()=>!!(B&&B.ph!=='end');
+function invCheck(){if(!S||scr!=='game'||INV.busy||BZ())return;const d=INV.inc.find(x=>!INV.cur||x.id!==INV.cur.id);INV.vis=INV.inc[0]?{team:INV.inc[0].team,t0:INV.vis&&INV.vis.id===INV.inc[0].id?INV.vis.t0:performance.now(),id:INV.inc[0].id}:null;if(!d)return;INV.cur=d;
+ if(Date.now()>d.dl){INV.busy=1;invResolve(d,'fight',invQuick(d),null);return}invAlert(d)}
+const invWin=d=>{const a=Math.pow(Math.max(1,tPow(invTop())),1.2),b=Math.pow(Math.max(1,d.power),1.2);return a/(a+b)};
+const invQuick=d=>Math.random()<invWin(d);
+function invAlert(d){sfx('ev');const pct=Math.round(invWin(d)*100),top=d.team.slice(0,8);
+ openSheet(`<div id="invsh" style="text-align:center"><div style="font-size:40px">⚠️</div><b style="font:800 20px var(--fh);color:#ff8a8a;display:block">ล็อบบี้ถูกบุก!</b>
+<p style="margin:8px 0">มิติพิเศษในประตูวาร์ปของล็อบบี้ถูกฉีกออก <b>มาสเตอร์ ${esc(d.name)}</b> นำกองทัพ <b>${d.team.length} ฮีโร่</b> (⚔️${fmtN(d.power)}) บุกเข้ามาเพื่อชิงทรัพยากรและจับเชลย</p>
+<div style="margin:4px 0 8px">${top.map(x=>`<span class="chip"><span class="tag" style="background:${RC[x.r]}">${R[x.r]}</span> ${esc(x.n)} Lv.${x.lv}</span>`).join('')}${d.team.length>8?`<span class="chip">+${d.team.length-8}</span>`:''}</div>
+<div class="card" style="margin:6px 0;border-color:#ff8a8a"><small class="lg">ต้องตัดสินใจภายใน</small><br><b id="invcd" style="font:800 26px var(--fd);color:#ffd27a">${mmss(d.dl-Date.now())}</b><br><small class="lg">ไม่ตัดสินใจ = ฮีโร่ในล็อบบี้สู้อัตโนมัติ</small></div>
+<div style="display:grid;gap:6px;text-align:left">
+<button class="btn" onclick="invChoose('fight')">⚔️ สู้! <small style="opacity:.85">ส่งฮีโร่ในล็อบบี้สูงสุด ${INV_MAX} ตน (⚔️${fmtN(Math.round(tPow(invTop())))} · โอกาสชนะ ~${pct}%) · แพ้ = เสียทรัพยากร 20% และอาจถูกจับเชลยสูงสุด 3 ตน</small></button>
+<button class="btn g" onclick="invChoose('give')">🏳️ ยอมจำนน <small style="opacity:.85">ไม่ต้องสู้ · เสียทรัพยากร 25% และอาจถูกจับเชลยสูงสุด 2 ตน</small></button>
+<button class="btn g" onclick="invChoose('pay')">💰 จ่ายส่วย <small style="opacity:.85">เสียทรัพยากร 15% และเพชร 10% · ไม่มีใครถูกจับ</small></button></div></div>`);INV.busy=0}
+function invChoose(m){const d=INV.cur;if(!d||INV.busy)return;INV.busy=1;closeSheet();if(m!=='fight')return invResolve(d,m,false,null);const tm=invTop();if(!tm.length)return invResolve(d,'fight',false,null);
+ if(BZ()){return invResolve(d,'fight',invQuick(d),null)}const W=[];for(let i=0;i<d.team.length;i+=5)W.push(d.team.slice(i,i+5).map((x,j)=>{const hh={id:-(i+j+1)-Math.floor(Math.random()*1e6),n:x.n,r:x.r,look:x.look,wp:x.wp,wv:x.wv,eqp:{w:null,a:null,c:null},sks:[],lv:x.lv};return{n:`${x.n} Lv.${x.lv}`,sh:'hero',hh,col:RC[x.r],kind:'n',hp:x.P*1.15,mx:x.P*1.15,atk:x.P*.29,x:430,y:200,lunge:0,hit:0,dead:0,dot:0}}));
+ tab='city';refresh();newBattle({mode:'pvp',inv:1,th:LOBBY_TH,waves:W,title:`ป้องกันล็อบบี้ · ${d.name}`,team:tm,f:Math.max(1,S.tower),onEnd:(win)=>invResolve(d,'fight',win,B)});btLine(`🌀 มิติวาร์ปถูกฉีก! มาสเตอร์ ${d.name} นำทัพ ${d.team.length} ฮีโร่บุกเข้ามา`)}
+function invResolve(d,m,win,b){let loot={},pris=[],gl='';const pct=m==='pay'?.15:m==='give'?.25:.2;
+ if(!(m==='fight'&&win)){for(const k of INV_RES){const v=Math.floor((+S[k]||0)*pct);if(v>0){loot[k]=v;S[k]=Math.max(0,S[k]-v)}}if(m==='pay'){const g=Math.floor((S.gems||0)*.1);if(g>0){loot.gems=g;S.gems-=g}}
+  if(m!=='pay'){const cap=m==='give'?2:3,C=[...act()].sort(()=>Math.random()-.5);for(const h of C){if(pris.length>=cap||S.h.length<=1)break;if(Math.random()<RATE[h.r]/100){freeGear(h);S.h=S.h.filter(x=>x!==h);delete Wk[h.id];pris.push({n:h.n,r:h.r,o:h.o,lv:h.lv||1,look:h.look,tr:h.tr,sk:h.sk,sg:h.sg,wp:h.wp,wg:h.wg,m:Math.round(h.m*1000)/1000,cs:h.cs})}}}
+  gl=Object.keys(loot).map(k=>`${fmtN(loot[k])}${RI[k]}`).join(' ')}
+ else{gl=gain({gems:30,gold:200});S.fame=(S.fame||0)+5}
+ const res={m,win:m==='fight'&&!!win,loot,pris};
+ const msg=res.win?`🛡️ ขับไล่มาสเตอร์ ${d.name} ออกจากล็อบบี้ได้! ได้รับ ${gl} · ชื่อเสียง +5`:m==='pay'?`💰 จ่ายส่วยให้มาสเตอร์ ${d.name}: ${gl}`:`${m==='give'?'🏳️ ยอมจำนนต่อ':'💀 พ่ายแพ้ต่อ'}มาสเตอร์ ${d.name} · ถูกปล้น ${gl||'—'}${pris.length?` · ถูกจับเป็นเชลย: ${pris.map(p=>`${p.n} [${R[p.r]}]`).join(', ')}`:''}`;
+ log(msg);if(b)btLine(msg);save();refresh();
+ (async()=>{try{await NET.db.doc('inv/'+NET.uid+'/in/'+d.id).update({st:'done',res,rt:Date.now(),dn:(acctName()||'มาสเตอร์').slice(0,16)})}catch(e){}INV.inc=INV.inc.filter(x=>x.id!==d.id);INV.cur=null;INV.busy=0;if(!INV.inc.length)INV.vis=null;invPub(true);
+  setTimeout(()=>{if(!BZ()&&$('sheet').hidden)openSheet(shead(res.win?'🛡️ ป้องกันล็อบบี้สำเร็จ':'⚔️ ผลการถูกบุกล็อบบี้')+`<p>${esc(msg)}</p><button class="btn" style="width:100%" onclick="closeSheet()">ตกลง</button>`);setTimeout(invCheck,800)},b?2800:300)})()}
+setInterval(()=>{const e=$('invcd');if(e&&INV.cur){const l=INV.cur.dl-Date.now();e.textContent=mmss(l);if(l<=0&&!INV.busy){INV.busy=1;closeSheet();invResolve(INV.cur,'fight',invQuick(INV.cur),null)}}else if(!INV.busy&&INV.inc.length&&$('sheet').hidden&&scr==='game'&&!BZ()&&!smOn)invCheck()},1000);
+// ---- ฝ่ายบุก ----
+function invWatchOut(){if(!NETFB()||!NET.db||!S)return;S.invOut=(S.invOut||[]).filter(o=>Date.now()-o.at<7*864e5);for(const o of S.invOut){if(INV.subs[o.def])continue;INV.subs[o.def]=NET.db.doc('inv/'+o.def+'/in/'+NET.uid).onSnapshot(sn=>{if(!sn||!sn.exists)return;const d=invSan(NET.uid,sn.data());if(d&&d.st==='done'&&!d.claimed&&d.at===o.at)invClaim(o,d)},()=>{})}}
+async function invClaim(o,d){if(o.done)return;o.done=1;const r=d.res||{},nm=d.dn||o.name;let msg;
+ if(r.win){msg=`💀 การบุกล็อบบี้ของมาสเตอร์ ${nm} ล้มเหลว! กองทัพถูกขับไล่ออกมาทางประตูวาร์ป`}
+ else{const loot={};for(const k of [...INV_RES,'gems']){const v=Math.min(1e9,Math.max(0,Math.round(+((r.loot||{})[k])||0)));if(v>0)loot[k]=v}const g=gain(loot);const got=[];
+  for(const p of (Array.isArray(r.pris)?r.pris:[]).slice(0,3)){if(!p||typeof p!=='object')continue;const ri=cl(Math.round(+p.r||0),0,7),h=mk(ri);h.n=String(p.n||h.n).replace(/[<>&"'`\\]/g,'').slice(0,16)||h.n;h.look=lookSan(p.look);h.lv=cl(Math.round(+p.lv||1),1,100);if(TR[p.tr])h.tr=p.tr;if(SN[p.sk])h.sk=p.sk;h.sg=cl(Math.round(+p.sg||0),0,6);if(WTK.includes(p.wp))h.wp=p.wp;h.wg=cl(Math.round(+p.wg||0),0,6);h.m=cl(+p.m||1,.5,5);if(CS[p.cs])h.cs=p.cs;h.bx=true;h.job=null;h.loy=20;h.cap=nm;S.h.push(h);got.push(`${h.n} [${R[h.r]}]`)}
+  msg=`⚔️ ${r.m==='pay'?`มาสเตอร์ ${nm} ยอมจ่ายส่วย`:r.m==='give'?`มาสเตอร์ ${nm} ยอมจำนน`:`บุกล็อบบี้ของมาสเตอร์ ${nm} สำเร็จ!`} ได้รับ ${g||'—'}${got.length?` · จับเชลยได้: ${got.join(', ')} (อยู่ในคลังฮีโร่ ความภักดีต่ำ)`:''}`}
+ log(msg);S.invOut=(S.invOut||[]).filter(x=>x!==o);save();refresh();try{await NET.db.doc('inv/'+o.def+'/in/'+NET.uid).update({claimed:true})}catch(e){}
+ if($('sheet').hidden&&!BZ())openSheet(shead(r.win?'💀 การบุกล้มเหลว':'🏆 ผลการบุกล็อบบี้')+`<p>${esc(msg)}</p><button class="btn" style="width:100%" onclick="closeSheet()">ตกลง</button>`);else toast(msg)}
+async function invOpen(){if(!NETFB())return toast('ระบบบุกล็อบบี้ใช้ได้ในเวอร์ชันเว็บ');if(!netFull())return toast('ต้องเข้าสู่ระบบด้วย Google (เมนู ☰) จึงจะบุกล็อบบี้ได้');const cd=invCdLeft();
+ INV.sel=invTop().map(h=>h.id);openSheet(shead('⚔️ บุกล็อบบี้ผู้เล่นอื่น')+`<div id="invo"><p class="lg">${cd?`⏳ บุกได้อีกครั้งในอีก <b>${cd} วัน</b> (ในเกม)`:'บุกได้ 1 ครั้งทุก 30 วัน (ในเกม)'} · ลงฮีโร่ได้สูงสุด ${INV_MAX} ตน · ฮีโร่ฝ่ายบุกไม่ตาย</p><p class="lg">กำลังโหลดรายชื่อล็อบบี้…</p></div>`);
+ let L=[];try{const qs=await NET.db.collection('lobby').orderBy('at','desc').limit(50).get();L=qs.docs.map(x=>({id:x.id,...(x.data()||{})})).filter(x=>x.id!==NET.uid&&/^[\w-]{1,64}$/.test(x.id)&&Date.now()-(+x.at||0)<30*864e5).map(x=>({id:x.id,name:String(x.name||'มาสเตอร์').replace(/[<>&"'`\\]/g,'').slice(0,16),power:+x.power||0,n:+x.n||0,lv:+x.lv||0,res:+x.res||0}))}catch(e){}INV.tg=L;invUI()}
+function invUI(){const el=$('invo');if(!el)return;const cd=invCdLeft(),P=Math.round(tPow(INV.sel.map(id=>S.h.find(h=>h.id===id)).filter(Boolean))),out=(S.invOut||[]).filter(o=>!o.done);
+ el.innerHTML=`<p class="lg">${cd?`⏳ บุกได้อีกครั้งในอีก <b>${cd} วัน</b> (ในเกม)`:'✅ พร้อมบุก · บุกได้ 1 ครั้งทุก 30 วัน (ในเกม)'} · ฮีโร่ฝ่ายบุกไม่ตาย · ชนะ = ชิงทรัพยากรและมีโอกาสจับเชลย (โอกาสเท่ากับอัตราอัญเชิญของระดับนั้น)</p>${out.length?`<div class="card ev">⏳ รอผล: ${out.map(o=>esc(o.name)).join(', ')} <small class="lg">(ผลจะส่งมาเมื่อฝ่ายตั้งรับตอบสนองหรือออนไลน์)</small></div>`:''}
+<div class="card"><div class="row"><b>🧙 ทัพบุก ${INV.sel.length}/${INV_MAX}</b><span>⚔️${fmtN(P)}</span></div><div style="max-height:30vh;overflow:auto;margin-top:6px">${[...S.h].sort((a,b)=>tpw(b)-tpw(a)).map(h=>{const on=INV.sel.includes(h.id);return`<label class="row" style="padding:4px 2px;border-bottom:1px solid var(--line)"><span style="flex:1;min-width:140px"><input type="checkbox" ${on?'checked':''} ${!on&&INV.sel.length>=INV_MAX?'disabled':''} onchange="invTg(${h.id})"> ${h.bx?'📦 ':''}<b>${esc(h.n)}</b> ${tagH(h)}</span><span>⚔️${fmtN(tpw(h))}</span></label>`}).join('')}</div></div>
+<div class="sec">🏰 เลือกล็อบบี้เป้าหมาย</div>${INV.tg.length?INV.tg.map(x=>`<div class="row" style="padding:7px 0;border-bottom:1px solid var(--line)"><span style="flex:1;min-width:0"><b>${esc(x.name)}</b><br><small class="lg">ล็อบบี้ Lv${x.lv} · ฮีโร่ ${x.n} ตน · ⚔️${fmtN(x.power)} · ทรัพยากรรวม ~${fmtN(x.res)}</small></span><button class="btn s" ${cd||!INV.sel.length?'disabled':''} onclick="invGo('${x.id}')">${INV.arm===x.id?'ยืนยันบุก!':'⚔️ บุก'}</button></div>`).join(''):'<p class="lg">ยังไม่พบล็อบบี้อื่น (ผู้เล่นต้องเปิดเกมเวอร์ชันนี้อย่างน้อย 1 ครั้ง)</p>'}`}
+function invTg(id){INV.sel=INV.sel.includes(id)?INV.sel.filter(x=>x!==id):INV.sel.length<INV_MAX?[...INV.sel,id]:INV.sel;invUI()}
+async function invGo(def){const x=INV.tg.find(t=>t.id===def);if(!x||invCdLeft()||!INV.sel.length)return;if(INV.arm!==def){INV.arm=def;invUI();setTimeout(()=>{if(INV.arm===def){INV.arm=0;invUI()}},5000);return}INV.arm=0;
+ const tm=INV.sel.map(id=>S.h.find(h=>h.id===id)).filter(Boolean).slice(0,INV_MAX),now=Date.now(),d={by:NET.uid,name:(acctName()||'มาสเตอร์').slice(0,16),team:tm.map(snapHero),power:Math.round(tPow(tm)),at:now,dl:now+INV_DL,st:'pending',claimed:false};
+ try{await NET.db.doc('inv/'+def+'/in/'+NET.uid).set(d)}catch(e){return toast('ส่งกองทัพไม่สำเร็จ (ตรวจสอบกฎ Firestore)')}
+ S.invDay=day();S.invOut=[...(S.invOut||[]).filter(o=>o.def!==def),{def,name:x.name,at:now}];save();sfx('lv');log(`⚔️ เปิดมิติวาร์ปบุกล็อบบี้ของมาสเตอร์ ${x.name} ด้วยทัพ ${tm.length} ฮีโร่ (⚔️${fmtN(d.power)})`);toast('⚔️ ส่งกองทัพผ่านมิติวาร์ปแล้ว! รอฝ่ายตั้งรับตอบสนอง');invWatchOut();invUI()}
+const invCard=()=>!NETFB()?'':`<div class="card"><div class="row"><b>⚔️ บุกล็อบบี้ผู้เล่นอื่น</b><span class="lg">${invCdLeft()?`อีก ${invCdLeft()} วัน`:'พร้อมบุก'}</span></div><p class="lg" style="margin:4px 0">ส่งทัพสูงสุด ${INV_MAX} ฮีโร่ผ่านมิติวาร์ปไปบุกล็อบบี้ของผู้เล่นอื่น ชิงทรัพยากรและจับเชลย · บุกได้ 1 ครั้งทุก 30 วันในเกม</p><button class="btn" style="width:100%" onclick="invOpen()">🌀 เปิดมิติวาร์ปบุกล็อบบี้</button></div>`;
+{const _va=V.arena;V.arena=function(){return _va()+invCard()}}
+// ---- ภาพ: ทัพบุกเดินออกจากประตูวาร์ปในล็อบบี้ ----
+{const _dg=drawGate;drawGate=function(t){_dg(t);const v=INV.vis;if(!v||!v.team||!v.team.length)return;const[x,y]=WG(),c=gx,p0=.5+.5*Math.sin(t/180);c.save();c.globalCompositeOperation='source-over';const g=c.createRadialGradient(x,y-13,1,x,y-13,22);g.addColorStop(0,`rgba(255,60,80,${.55+.3*p0})`);g.addColorStop(.5,'rgba(120,10,40,.35)');g.addColorStop(1,'rgba(40,0,20,0)');c.fillStyle=g;c.beginPath();c.ellipse(x,y-13,22,26,0,0,7);c.fill();c.restore();
+ const N=Math.min(20,v.team.length),el=t-v.t0;for(let i=N-1;i>=0;i--){const p=Math.min(1,Math.max(0,(el-i*450)/3800));if(p<=0)continue;const a=Math.PI*(1.12+.76*(i/Math.max(1,N-1))),tx=LC[0]+Math.cos(a)*(46+(i%3)*12),ty=LC[1]+20+Math.sin(a)*(-10)+(i%4)*5,px=x+(tx-x)*p,py=y+(ty-y)*p,mv=p<1;const tm=v.team[i];
+  chibi(gx,px,py,1,{id:-(i+1),n:tm.n,r:tm.r,look:tm.look,wp:tm.wp,wv:tm.wv,eqp:{w:null,a:null,c:null}},{wp:tm.wp,step:mv?t/80+i:null,dir:px<x?-1:1,sw:mv?0:Math.sin(t/160+i)*.6,name:i<3?tm.n:null,fs:5})}
+ lbl('⚠️ ทัพบุกจากมิติวาร์ป!',x,y-40-Math.abs(Math.sin(t/300))*3,6.5,'#ff8a8a')}}
+// ---- ภาพ: รอยแยกมิติในฉากต่อสู้ป้องกันล็อบบี้ ----
+{const _db=drawBattle;drawBattle=function(t){_db(t);const b=B;if(!b||!b.inv)return;const e=$('btc');if(!e)return;const c=e.getContext('2d');c.save();c.setTransform(2,0,0,2,0,0);const x=372,y=170,p=.5+.5*Math.sin(t/160);const g=c.createRadialGradient(x,y,2,x,y,34);g.addColorStop(0,`rgba(255,90,110,${.7+.2*p})`);g.addColorStop(.4,'rgba(120,10,50,.55)');g.addColorStop(1,'rgba(20,0,20,0)');c.fillStyle=g;c.beginPath();c.ellipse(x,y,20,38,0,0,7);c.fill();c.strokeStyle=`rgba(255,160,180,${.5+.3*p})`;c.lineWidth=1;c.beginPath();c.ellipse(x,y,9+p*2,30,0,0,7);c.stroke();c.restore()}}
 
 // ================= ลูปเกม =================
 function tick(){S.time+=2;updWx();const w=W(),A=act(),u=w.use||{};
