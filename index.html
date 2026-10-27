@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0c0911"><meta name="game-build" content="20261027-121107"><title>Survival Summoner: Pick Up!</title><script src="config.js"></script><script src="fb-shim.js"></script></head><body>
+<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0c0911"><meta name="game-build" content="20261027-121513"><title>Survival Summoner: Pick Up!</title><script src="config.js"></script><script src="fb-shim.js"></script></head><body>
 <title>Survival Summoner: Pick Up!</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Taviraj:wght@500;600;700&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
@@ -2916,6 +2916,31 @@ monDeath=function(c,u,t,dt,Sc){const L=MDUR(u),ty=MDT2(u),col=u.col,dk=shade(col
  if(u.kind==='boss'&&dt<1.4){const q=dt/1.4;c.save();c.globalAlpha=1-q;c.strokeStyle='#ffd27a';c.lineWidth=2*(1-q)+.5;c.beginPath();c.ellipse(0,-2,22*Sc*q+4,6.6*Sc*q+2,0,0,7);c.stroke();c.fillStyle=`rgba(255,220,150,${.35*(1-q)})`;c.fillRect(-5*Sc*(1-q),-44*Sc,10*Sc*(1-q),44*Sc);c.restore()}
  if(u.kind==='boss'&&dt>.3&&dt<2.2){for(let i=0;i<6;i++){const q=Math.min(1,(dt-.3-i*.08)/1.4);if(q<=0)continue;c.save();c.globalAlpha=(1-q)*.6;c.fillStyle='rgba(200,220,255,.8)';mDot(c,(rr(i,sd+11)-.5)*16*Sc*.6,-10*Sc-q*30*Sc,(1.4-q)*Sc*.6);c.restore()}}};
 {const x=TUT.find(e=>e&&typeof e[2]==='string'&&e[2].indexOf('หอคอย')===0);if(x&&x[3].indexOf('อีลิท')<0)x[3]+='<br>• ⭐ <b>อีลิทมอนสเตอร์</b> สุ่มเกิดในเวฟ ตัวใหญ่ ถึกและแรงกว่า มีสกิลหมู่ แต่ล้มแล้วได้เพชร ผลึกเวท และ EXP เพิ่ม · ยิ่งขั้นหอคอยสูง มอนสเตอร์ใหม่ยิ่งหลากหลาย'}
+
+// ================= v3.6: บูชายัญฮีโร่เพื่อหลอมเป็น EXP =================
+var fsel={t:0,f:[]},feedArm=0;
+const FXPB=r=>Math.round(300*2.3**r),FXP=h=>Math.round(FXPB(h.r)*(1+((h.lv||1)-1)/20));
+const fInTeam=h=>['tteam','dteam','ateam','wteam'].filter(k=>Array.isArray(S[k])&&S[k].includes(h.id)).map(k=>({tteam:'หอคอย',dteam:'ตั้งรับ',ateam:'อารีน่า',wteam:'วาร์ป'})[k]);
+const fBusy=h=>!!(B&&B.hs&&B.hs.some(u=>u.h===h));
+function fVal(h,t){return Math.round(FXP(h)*(t&&h.wp===t.wp?1.2:1)*(1+.05*(S.b.altar||0)))}
+function feedCalc(){const t=S.h.find(h=>h.id===fsel.t);if(!t)return null;const F=S.h.filter(h=>fsel.f.includes(h.id)&&h!==t&&!fBusy(h));const v=F.reduce((s,h)=>s+fVal(h,t),0);
+ let lv=t.lv||1,xp=(t.xp||0)+v,waste=0;while(lv<LVMAX&&xp>=xpNeed(lv,t.r)){xp-=xpNeed(lv,t.r);lv++}if(lv>=LVMAX){waste=Math.round(xp);xp=0}return{t,F,v,lv,xp,waste}}
+function ftg(id){feedArm=0;fsel.f=fsel.f.includes(id)?fsel.f.filter(x=>x!==id):[...fsel.f,id];refresh()}
+function fQuick(mx){feedArm=0;fsel.f=S.h.filter(h=>h.id!==fsel.t&&h.bx&&h.r<=mx&&!fBusy(h)).map(h=>h.id);if(!fsel.f.length)toast('ไม่มีฮีโร่ระดับนี้ในคลัง 📦');refresh()}
+function vFeed(){const c=feedCalc(),H=[...S.h].sort((a,b)=>b.r-a.r||(b.lv||1)-(a.lv||1)),bx=h=>h.bx?'📦 ':'',L2=S.h.filter(h=>h.id!==fsel.t&&!fBusy(h)).sort((a,b)=>a.r-b.r||(a.lv||1)-(b.lv||1));
+ return`<div class="card"><b>🔥 บูชายัญเป็น EXP</b><p class="lg">นำฮีโร่ที่ไม่ได้ใช้ขึ้นแท่นบูชา ดวงวิญญาณของเขาจะถูกหลอมเป็น EXP ให้ฮีโร่เป้าหมาย · <b style="color:var(--bad)">ฮีโร่ที่ถูกบูชายัญตายถาวร (ไม่เข้าสุสาน)</b> อุปกรณ์กลับเข้าคลัง · ใช้ฮีโร่ในคลัง 📦 ได้</p>
+ <div style="display:flex;flex-wrap:wrap;gap:4px;margin:6px 0">${R.map((n,i)=>`<span class="chip" style="border-color:${RC[i]}"><b style="color:${RC[i]}">${n}</b> ${fmtN(FXPB(i))}</span>`).join('')}</div>
+ <p class="lg" style="margin:0 0 8px">EXP ข้างบนคือฮีโร่ Lv.1 · ทุกเลเวลของฮีโร่ที่บูชายัญ +5% (Lv.100 ≈ ×6) · ถนัดอาวุธเดียวกับเป้าหมาย +20% · แท่นบูชา +5%/เลเวล${S.b.altar?` (ตอนนี้ +${5*S.b.altar}%)`:''}</p>
+ <select onchange="fsel.t=+this.value;fsel.f=fsel.f.filter(x=>x!==fsel.t);feedArm=0;refresh()"><option value="0">— เลือกฮีโร่ที่จะรับ EXP —</option>${H.filter(h=>(h.lv||1)<LVMAX).map(h=>`<option value="${h.id}" ${h.id===fsel.t?'selected':''}>${bx(h)}${h.n} [${R[h.r]}] Lv.${h.lv||1} · ${WT[h.wp][1]}</option>`).join('')}</select>
+ ${c?`<div style="margin:8px 0">${xpBar(c.t)}</div><p>${c.F.length?`บูชายัญ ${c.F.length} ตน → <b style="color:#9ae0ff">+${fmtN(c.v)} EXP</b><br>${c.t.n} Lv.${c.t.lv||1} → <b style="color:var(--ac2)">Lv.${c.lv}</b>${c.lv<LVMAX?` <small class="lg">(${Math.floor(c.xp)}/${xpNeed(c.lv,c.t.r)})</small>`:' ✦ MAX'}${c.waste>0?`<br><small style="color:var(--bad)">⚠️ EXP เกิน Lv.${LVMAX} จะสูญเปล่า ${fmtN(c.waste)}</small>`:''}`:'<span class="lg">เลือกฮีโร่ที่จะบูชายัญด้านล่าง</span>'}</p>
+ <div class="row" style="gap:6px;margin-bottom:6px"><button class="btn g" onclick="fQuick(1)">เลือก Common–Uncommon ในคลัง</button><button class="btn g" onclick="fQuick(2)">ถึง R</button><button class="btn g" onclick="feedArm=0;fsel.f=[];refresh()">ล้าง</button></div>
+ <div style="max-height:300px;overflow:auto">${L2.map(h=>{const tm=fInTeam(h);return`<label class="row" style="padding:4px 0"><span><input type="checkbox" ${fsel.f.includes(h.id)?'checked':''} onchange="ftg(${h.id})"> ${bx(h)}${h.n} <span style="color:${RC[h.r]}">${R[h.r]}</span> <small class="lg">Lv.${h.lv||1}</small>${tm.length?` <small style="color:#ffb35a">⚔️${tm.join('/')}</small>`:''}</span><small style="color:#9ae0ff">+${fmtN(fVal(h,c.t))}${h.wp===c.t.wp?' ✦':''}</small></label>`}).join('')||'<p class="lg">ไม่มีฮีโร่ให้บูชายัญ</p>'}</div>
+ <button class="btn r" style="width:100%;margin-top:8px" onclick="doFeed()" ${c.F.length?'':'disabled'}>${feedArm?`⚠️ ยืนยัน — ${c.F.length} ตนจะตายถาวร`:'🔥 ประกอบพิธีบูชายัญ'}</button>`:''}</div>`}
+function doFeed(){const c=feedCalc();if(!c||!c.F.length)return;if(!feedArm){feedArm=1;refresh();return}feedArm=0;const t=c.t,lv0=t.lv||1,n=c.F.length,best=c.F.reduce((a,b)=>b.r>a.r?b:a);
+ c.F.forEach(h=>{freeGear(h);for(const k of['tteam','dteam','ateam','wteam'])if(Array.isArray(S[k]))S[k]=S[k].filter(x=>x!==h.id);delete Wk[h.id]});S.h=S.h.filter(h=>!c.F.includes(h));S.gs.sac+=n;S.gs.feed=(S.gs.feed||0)+n;fsel.f=[];
+ gainXp(t,c.v);L(t,3);spread(-.3*n,t);const m=`🔥 บูชายัญ ${n} ตน${n>1?` (สูงสุด ${best.n} [${R[best.r]}])`:` (${best.n} [${R[best.r]}])`} → ${t.n} ได้ +${fmtN(c.v)} EXP · Lv.${lv0} → Lv.${t.lv}`;log(m);toast(m);try{sfx('ev')}catch(e){}chkTitles();save();refresh()}
+vSac=function(){return`<div class="seg"><button class="btn ${ssub==='sac'?'':'g'}" onclick="ssub='sac';refresh()">🩸 พิธีเกิดใหม่</button><button class="btn ${ssub==='feed'?'':'g'}" onclick="ssub='feed';feedArm=0;refresh()">🔥 บูชายัญเป็น EXP</button><button class="btn ${ssub==='grave'?'':'g'}" onclick="ssub='grave';refresh()">⚰️ สุสาน (${S.grave.length})</button></div>`+(ssub==='grave'?vGrave():ssub==='feed'?vFeed():vSacR())};V.sac=vSac;
+{const x=TUT.find(e=>e&&typeof e[2]==='string'&&e[2].indexOf('เกิดใหม่')===0);if(x&&x[3].indexOf('บูชายัญ')<0)x[3]+='<br>• 🔥 <b>บูชายัญเป็น EXP</b>: นำฮีโร่ที่ไม่ใช้มาบูชายัญ หลอมเป็น EXP ให้ฮีโร่อื่น ระดับและเลเวลยิ่งสูงยิ่งได้มาก (ตายถาวร)'}
 
 // ================= ลูปเกม =================
 function tick(){S.time+=2;updWx();const w=W(),A=act(),u=w.use||{};
