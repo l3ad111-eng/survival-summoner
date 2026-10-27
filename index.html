@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0c0911"><meta name="game-build" content="20261027-123119"><title>Survival Summoner: Pick Up!</title><script src="config.js"></script><script src="fb-shim.js"></script></head><body>
+<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0c0911"><meta name="game-build" content="20261027-124413"><title>Survival Summoner: Pick Up!</title><script src="config.js"></script><script src="fb-shim.js"></script></head><body>
 <title>Survival Summoner: Pick Up!</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Taviraj:wght@500;600;700&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
@@ -1024,7 +1024,7 @@ const TOWERS=[
 ['ห้วงมิติว่างเปล่า','void',['#04020a','#1c1034'],'#160f26',[['ดวงตาลอยได้','eye','#b07aff'],['หนวดอเวจี','tentacle','#6a3a9a'],['เงาไร้ร่าง','wraith','#3a3050']],['ผู้เฝ้าประตูมิติ','eye','#d04aff'],['ผู้เฝ้ามองจากความว่าง','eye','#efe0ff'],['ที่นี่ไม่มีพื้น ไม่มีฟ้า มีเพียงสายตาที่จ้องมอง','“ข้าเห็นทุกการอัญเชิญของเจ้า มาสเตอร์”','ความว่างเปล่าปิดตาลง หอคอยวนกลับสู่จุดเริ่มต้นที่แข็งแกร่งกว่าเดิม']]];
 const LOBBY_TH=['ล็อบบี้','lobby',['#120c22','#3a2a58'],'#2a2433',[],null,null,['','','']];
 const twIdx=f=>Math.floor((Math.max(1,f)-1)/25)%TOWERS.length,twTier=f=>Math.floor((Math.max(1,f)-1)/(25*TOWERS.length)),twName=f=>thFor(f)[0]+(twTier(f)?' ขั้น '+['','II','III','IV','V','VI'][Math.min(5,twTier(f))]:'');
-const fmtN=v=>v>=1e9?(v/1e9).toFixed(1)+'B':v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e4?(v/1e3).toFixed(1)+'k':Math.round(v)+'';
+const fmtN=v=>v>=1e21?v.toExponential(2).replace('e+','e'):v>=1e18?(v/1e18).toFixed(1)+'Qi':v>=1e15?(v/1e15).toFixed(1)+'Qa':v>=1e12?(v/1e12).toFixed(1)+'T':v>=1e9?(v/1e9).toFixed(1)+'B':v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e4?(v/1e3).toFixed(1)+'k':Math.round(v)+'';
 const Ln=(c,a,b,x,y)=>{c.beginPath();c.moveTo(a,b);c.lineTo(x,y);c.stroke()};
 // ภาพมอนสเตอร์ (หันซ้าย เท้าอยู่ที่ 0)
 const MD={
@@ -3058,6 +3058,9 @@ var WIC={},WISC={dagger:6.2,fist:7.4,bow:4,staff:3.6,spear:3.3,sword:3.7,axe:4,h
 function wIcon(it){const g=it.g|0,key=it.wt+'|'+(it.wv||0)+'|'+g;if(!WIC[key]){try{const cv=document.createElement('canvas');cv.width=cv.height=96;const c=cv.getContext('2d'),gd=c.createRadialGradient(48,48,4,48,48,52);gd.addColorStop(0,SGC[g]+'66');gd.addColorStop(1,'rgba(0,0,0,0)');c.fillStyle=gd;c.fillRect(0,0,96,96);const s=WISC[it.wt]||2.6,fi=it.wt==='fist';c.translate(fi?48-4.4*s:22-4.4*s,fi?60+6.6*s:80+6.6*s);c.scale(s,s);wpn(c,it.wt,fi?-.35:.45,it.wv||0,g);WIC[key]=cv.toDataURL()}catch(e){return iIcon(it)}}
  return`<img src="${WIC[key]}" alt="" style="width:40px;height:40px;vertical-align:middle;border-radius:8px;background:#0007;border:1.5px solid ${SGC[g]};box-shadow:0 0 ${g>=4?6+g:0}px ${SGC[g]}88;margin-right:4px">`}
 function wTier(it){const m=WMAT[it.g|0];return`<small style="color:${SGC[it.g|0]}">วัสดุ: ${m.n}</small>`}
+
+// ================= v3.8: พลังมอนสเตอร์หอคอย ×1.27 ทุก 5 ชั้น =================
+{const _e=enT;enT=function(f){f=Math.max(1,f);return _e(f)*1.27**Math.floor((f-1)/5)}}
 
 // ================= ลูปเกม =================
 function tick(){S.time+=2;updWx();const w=W(),A=act(),u=w.use||{};
