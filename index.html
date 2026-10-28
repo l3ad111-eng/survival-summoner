@@ -1223,8 +1223,8 @@ if(el>1.6){c.fillStyle=`rgba(255,255,255,${cl(1-(el-1.6)/.4,0,1)})`;c.fillRect(0
 else{const g=c.createRadialGradient(X,H*.45,10,X,H*.45,Math.max(W,H)*.6);g.addColorStop(0,col+'33');g.addColorStop(1,'#06040b00');c.fillStyle=g;c.fillRect(0,0,W,H)}}
 
 // ================= เวอร์ชัน & บันทึกการอัปเดต =================
-const GAME_VER='1.5.0';
-const CHANGES={'1.0.0':['เปิดให้เล่นครั้งแรก: Survival Summoner: Pick Up!'],'1.1.0':['ตัวละครพิกเซลชุดใหม่ทั้งหมด ชุด ผม ตา หมวก อย่างละ 20 แบบ ทั้งมุมหน้าและมุมข้าง พร้อมท่าเดิน โจมตี บาดเจ็บ และท่าตายแบบโหด','มอนสเตอร์โฉมใหม่ 34 สายพันธุ์ ท่าตายสมจริง: หัวขาด ขาดครึ่ง ระเบิดเป็นชิ้น พังทลาย ละลาย สลายเป็นละออง','ปุ่ม 🎬 เต็มตัว: ดูการต่อสู้แบบตัวละครเต็มตัวในหอคอย อารีน่า บุกล็อบบี้ และ Raid','วาดฉากใหม่: หอคอยทุกชั้น อารีน่า ล็อบบี้ 2D อาคารทุกหลัง และราชันก็อบลินตัวใหม่','สภาพอากาศสมจริง 16 แบบ · ฉากพ่อค้าเร่และตลาดมืดใหม่','◉ กล้องวงจรปิด ดูฮีโร่ 4 จอ จับภาพเหตุการณ์อัตโนมัติ','กล่องเหตุการณ์โฉมใหม่ พร้อมสรุปผลละเอียด และแก้บัคกดตอบเหตุการณ์ไม่ได้','หน้าตาเกมธีมใหม่ ไอคอนพิกเซลของเกมเอง · เพิ่มเกมไปหน้าจอโฮมได้ · บทสอนเล่นฉบับอัปเดต'],'1.2.0':['แถบทรัพยากรเหลือ ทอง เพชร อาหาร น้ำ + ปุ่ม “ใจฮีโร่” ฟังคำบ่น คำชม และคำแนะนำจากฮีโร่แต่ละคน','🎒 กระเป๋าวัสดุ: แร่ วัสดุช่าง ชิ้นส่วนมอนสเตอร์ สมุนไพร วัตถุดิบ กว่า 60 ชนิด มีภาพเฉพาะ แตะดูคำอธิบายและวิธีได้รับ','⚒️ ตีอาวุธตามระดับ F–SSS แต่ละระดับใช้วัสดุต่างกัน ระดับสูงต้องล่าชิ้นส่วนหายากและเสี่ยงหลอมพัง','⚗️ ปรุงยาจากสมุนไพรที่ห้องพยาบาล · 🍖 ทำอาหาร 9 เมนู ระดับผิดพลาดจนถึงตำนาน ให้บัฟชั่วคราว','🌀 แผนที่มิติวาร์ป 14 จุดฟาร์ม ความยากและความเสี่ยงต่างกัน ให้วัสดุต่างกัน','🥋 โรงฝึก: ใช้เวลาฝึกนานขึ้น แต่ได้ผลมากขึ้นต่อรอบ','🧪 ยาเสริมพลัง (+6% ถาวร) ได้จาก Raid Boss เท่านั้น โอกาส 0.0025%'],'1.2.1':['แก้เลขเวอร์ชันหน้าแรกให้ตรงกับเวอร์ชันเกม','บทสอนเล่นฉบับใหม่ ครบทุกระบบ: ใจฮีโร่ กระเป๋าวัสดุ ตีอาวุธ F–SSS ปรุงยา อาหาร โรงฝึก แผนที่วาร์ป และ Raid','แก้บัคการต่อสู้ค้างเมื่อศัตรูตายหมดพร้อมกันกับที่ฮีโร่กำลังใช้สกิล'],'1.2.2':['เหตุการณ์ทุกเรื่องให้รางวัลเป็นวัสดุชนิดใหม่ (แร่ ไม้ หนัง ผ้า ชิ้นส่วนมอนสเตอร์ ตามชั้นหอคอย) แทนแร่และวัสดุแบบเก่า พร้อมภาพวัสดุในสรุปผล','แสงไฟอาคารยามค่ำคืนนุ่มขึ้น ไม่เป็นจุดเลอะ'],'1.2.3':['ยกเลิกทรัพยากรแบบเก่า (แร่ ⛏️ วัสดุ 🧱 กระดูก 🦴 ผลึก 🔷) ทั้งเกม ทุกเหตุการณ์ รางวัล ราคา และการผลิต ใช้วัสดุจริงในกระเป๋าแทน','ยอดคงเหลือแบบเก่าในเซฟถูกแปลงเป็นวัสดุใหม่ให้อัตโนมัติ','ค่าอัปเกรดอาคารใช้ทอง + แร่ + ไม้ ตามระดับอาคาร · Lv11+ ใช้ผลึกเวท (วัสดุใหม่)','ตีบวกอุปกรณ์ใช้ผลึกเวทจากกระเป๋า · รางวัลล็อกอินวันที่ 5 ได้ผลึกเวท'],'1.2.4':['🏗️ มอนสเตอร์ในหอคอยมีโอกาสดรอปวัสดุก่อสร้าง ไม่ต้องรอปลดล็อกมิติวาร์ป (ต่อเวฟ: ปกติ 12% · มินิบอส 50% · บอส 80% · กวาดชั้น 30%): เศษเหล็กสนิม/ไม้ผุ ชั้น 1+ · แร่เหล็ก/ไม้โอ๊ค ชั้น 10+ · เหล็กกล้า/ไม้ดำ ชั้น 30+ · เงิน ชั้น 60+','ผลึกเวทมีโอกาสดรอปจากหอคอยชั้น 20+ (ปกติ 3% · มินิบอส 35% · บอส 60%)','ปรับระดับวัสดุอาคารให้หาได้จากหอคอยทั้งหมด · คนงานคลังเสบียงเก็บไม้ตามเลเวลคลัง'],'1.2.5':['👑 มินิบอสและบอสโฉมใหม่: เส้นขอบเรืองแสง เส้นเลือดพลัง ออร่าใต้เท้า · มินิบอสมีตรากะโหลกแดง · บอสสวมมงกุฎทองเรืองแสง','💀 ท่าตายมินิบอสและบอสแบบใหม่: ท้องแตกเครื่องในไหลกองพื้น หรือบวมพองแล้วระเบิดตัวแตกกระจุยพร้อมฝนเลือด'],'1.2.6':['🎲 อัตราดรอปอุปกรณ์และคัมภีร์สกิลแบบเดียวกับการอัญเชิญฮีโร่: F 33.4% · E 26% · D 20% · C 12% · B 5.5% · A 2.5% · S 0.5% · SS 0.05% · SSS 0.005%','ชั้นสูงขึ้นทุก 100 ชั้น มินิบอส บอส และ Raid เพิ่มโอกาสได้ระดับดีขึ้นเล็กน้อย'],'1.3.0':['🛸 ลอบบี้รวม! ผ่านหอคอยชั้น 50 แล้วแตะคริสตัลกลางล็อบบี้ คริสตัลจะแปลงร่างเป็นยานรบพาฮีโร่ไปเมืองลอยฟ้าที่ผู้เล่นทุกคนอยู่ร่วมกัน','🏙️ เมืองใหญ่หลายย่าน: ลานน้ำพุ ย่านตลาด ลานประลอง ท่าเรือเหาะ โรงเตี๊ยม วิหาร หอนาฬิกา บ้านเรือน สวน · แตะเพื่อเดิน ซูม เต็มจอ แผนที่ย่อ แชทในห้อง และสภาพอากาศของเมือง','🏪 ตั้งแผงร้านค้าในย่านตลาด ขายอุปกรณ์ วัสดุ ยา อาหาร ด้วยทองหรือเพชร ร้านเปิดต่อแม้ออฟไลน์','🤺 ท้าดวล และ ☠️ ดวลแบบตายกันไปข้าง (แพ้ตายถาวร ผู้ชนะยึดอุปกรณ์ 1 ชิ้น) · ต้องกดยอมรับก่อนทุกครั้ง','🎭 เหตุการณ์เฉพาะลอบบี้รวม เช่น โจรฉกเงิน หกล้ม วงพนัน นักเลงหาเรื่อง (ไม่ถึงตาย) · ระหว่างเปิดร้านไม่มีอะไรมาแทรก'],'1.3.1':['🕯️ ปรับราคาตลาดมืดตามระดับของ: F ~30💎 · E ~70 · D ~160 · C ~400 · B ~1,200 · A ~4,000 · S ~15,000 · SS ~50,000 · SSS ~150,000 (คัมภีร์แพงกว่า 20%)'],'1.3.2':['หน้าแรกใหม่: ผูกบัญชี Google ได้ตั้งแต่หน้าแรกก่อนเข้าเกม · จัดเมนูให้กระชับ ไม่ต้องเลื่อนจอ'],'1.3.3':['เมนู ☰ ในเกมโฉมใหม่: ปุ่มไอคอนตาราง กระชับในจอเดียว · ช่องบันทึกย้ายไปหน้าย่อย 💾 บันทึก'],'1.3.4':['หน้าฮีโร่และหน้าอัพเกรดอาคารกระชับขึ้น เห็นได้มากขึ้นในหนึ่งจอ','ชื่อในแชทโลกและแชทลอบบี้รวมมีสีประจำตัว ไม่ซ้ำกัน'],'1.3.5':['ปุ่มเมนูเกมเปลี่ยนเป็นรูปฟันเฟือง ⚙'],'1.3.6':['บอร์ดอันดับอารีน่าแสดงเฉพาะผู้เล่นจริง (บอทยังมีให้ท้าประลองเหมือนเดิม)'],'1.4.0':['🏆 บอร์ดอันดับหอคอย! จัดอันดับจากชั้นสูงสุดของผู้เล่นทุกคน ดูได้ที่หน้า 🗼 หอคอย','🎁 รางวัลทุกสัปดาห์ (ตัดรอบวันจันทร์ 07:00 น.): #1 การ์ด SSR+ ×5 · #2 การ์ด SSR+ ×3 · #3 การ์ด SSR+ ×1 · #4–10 💎800 · #11–25 💎500 · #26–50 💎300 · #51+ 💎150 รับอัตโนมัติเมื่อเข้าเกม (ต้องผูก Google)','💬 ปุ่มแชทแยกออกมาข้างกล่องจดหมาย เห็นชัด มีตัวเลขบอกข้อความใหม่'],'1.4.1':['⚡ ข้อมูลผู้เล่นคนอื่นอัปเดตเร็วขึ้นมาก: บอร์ดอารีน่าเปลี่ยนเป็นแบบสด (เดิมดีเลย์สูงสุด 20 นาที) · อันดับหอคอยส่งขึ้นบอร์ดภายในไม่กี่วินาทีหลังผ่านชั้น'],'1.4.2':['🛸 ลอบบี้รวม: แก้บัคบางครั้งมองไม่เห็นผู้เล่นคนอื่น ต้องออกแล้วเข้าใหม่ · เชื่อมต่อใหม่อัตโนมัติเมื่อเน็ตหลุดหรือสลับแอป · ทุกคนเข้าห้องเดียวกันอัตโนมัติ (ยกเว้นฮีโร่เฝ้าร้าน)','🏪 ขายของได้แล้วแจ้งเตือนและเงินเข้าทันที ของหายจากร้านทันที (เดิมช้า 1–3 นาที)'],'1.4.3':['จอมือถือแคบ: ปุ่ม 💬 แชทแสดงเป็นไอคอนอย่างเดียว แถบด้านบนไม่ล้นลงบรรทัดใหม่'],'1.4.4':['🛸 ลอบบี้รวม: แก้บัคมองไม่เห็นฮีโร่ของผู้เล่นอื่น (นับจำนวนคนได้แต่ตัวไม่ขึ้น) เมื่อนาฬิกาในเครื่องสองเครื่องไม่ตรงกัน','🏪 แก้บัคตั้งแผงร้านไม่ได้: ปุ่ม “เดินไปย่านตลาด” พาไปผิดที่ ตอนนี้เดินเข้าย่านตลาดจริงแล้วตั้งแผงให้อัตโนมัติ · ฮีโร่ยืนข้างแผง มองเห็นชัด'],'1.5.0':['🏷️ เปลี่ยนชื่อไอดีได้แล้ว! เมนู ⚙ → เปลี่ยนชื่อ · 3 ครั้งแรกฟรี จากนั้น 💎50 → 100 → 200 … เพิ่มเท่าตัวทุกครั้ง · ชื่อห้ามซ้ำกับผู้เล่นอื่น','เข้าเกมจากเครื่องใหม่หรือโหลดเซฟจากคลาวด์ ชื่อไอดีเดิมกลับมาอัตโนมัติ (ไม่เป็น “มาสเตอร์ไร้นาม” อีก)']};
+const GAME_VER='1.6.0';
+const CHANGES={'1.0.0':['เปิดให้เล่นครั้งแรก: Survival Summoner: Pick Up!'],'1.1.0':['ตัวละครพิกเซลชุดใหม่ทั้งหมด ชุด ผม ตา หมวก อย่างละ 20 แบบ ทั้งมุมหน้าและมุมข้าง พร้อมท่าเดิน โจมตี บาดเจ็บ และท่าตายแบบโหด','มอนสเตอร์โฉมใหม่ 34 สายพันธุ์ ท่าตายสมจริง: หัวขาด ขาดครึ่ง ระเบิดเป็นชิ้น พังทลาย ละลาย สลายเป็นละออง','ปุ่ม 🎬 เต็มตัว: ดูการต่อสู้แบบตัวละครเต็มตัวในหอคอย อารีน่า บุกล็อบบี้ และ Raid','วาดฉากใหม่: หอคอยทุกชั้น อารีน่า ล็อบบี้ 2D อาคารทุกหลัง และราชันก็อบลินตัวใหม่','สภาพอากาศสมจริง 16 แบบ · ฉากพ่อค้าเร่และตลาดมืดใหม่','◉ กล้องวงจรปิด ดูฮีโร่ 4 จอ จับภาพเหตุการณ์อัตโนมัติ','กล่องเหตุการณ์โฉมใหม่ พร้อมสรุปผลละเอียด และแก้บัคกดตอบเหตุการณ์ไม่ได้','หน้าตาเกมธีมใหม่ ไอคอนพิกเซลของเกมเอง · เพิ่มเกมไปหน้าจอโฮมได้ · บทสอนเล่นฉบับอัปเดต'],'1.2.0':['แถบทรัพยากรเหลือ ทอง เพชร อาหาร น้ำ + ปุ่ม “ใจฮีโร่” ฟังคำบ่น คำชม และคำแนะนำจากฮีโร่แต่ละคน','🎒 กระเป๋าวัสดุ: แร่ วัสดุช่าง ชิ้นส่วนมอนสเตอร์ สมุนไพร วัตถุดิบ กว่า 60 ชนิด มีภาพเฉพาะ แตะดูคำอธิบายและวิธีได้รับ','⚒️ ตีอาวุธตามระดับ F–SSS แต่ละระดับใช้วัสดุต่างกัน ระดับสูงต้องล่าชิ้นส่วนหายากและเสี่ยงหลอมพัง','⚗️ ปรุงยาจากสมุนไพรที่ห้องพยาบาล · 🍖 ทำอาหาร 9 เมนู ระดับผิดพลาดจนถึงตำนาน ให้บัฟชั่วคราว','🌀 แผนที่มิติวาร์ป 14 จุดฟาร์ม ความยากและความเสี่ยงต่างกัน ให้วัสดุต่างกัน','🥋 โรงฝึก: ใช้เวลาฝึกนานขึ้น แต่ได้ผลมากขึ้นต่อรอบ','🧪 ยาเสริมพลัง (+6% ถาวร) ได้จาก Raid Boss เท่านั้น โอกาส 0.0025%'],'1.2.1':['แก้เลขเวอร์ชันหน้าแรกให้ตรงกับเวอร์ชันเกม','บทสอนเล่นฉบับใหม่ ครบทุกระบบ: ใจฮีโร่ กระเป๋าวัสดุ ตีอาวุธ F–SSS ปรุงยา อาหาร โรงฝึก แผนที่วาร์ป และ Raid','แก้บัคการต่อสู้ค้างเมื่อศัตรูตายหมดพร้อมกันกับที่ฮีโร่กำลังใช้สกิล'],'1.2.2':['เหตุการณ์ทุกเรื่องให้รางวัลเป็นวัสดุชนิดใหม่ (แร่ ไม้ หนัง ผ้า ชิ้นส่วนมอนสเตอร์ ตามชั้นหอคอย) แทนแร่และวัสดุแบบเก่า พร้อมภาพวัสดุในสรุปผล','แสงไฟอาคารยามค่ำคืนนุ่มขึ้น ไม่เป็นจุดเลอะ'],'1.2.3':['ยกเลิกทรัพยากรแบบเก่า (แร่ ⛏️ วัสดุ 🧱 กระดูก 🦴 ผลึก 🔷) ทั้งเกม ทุกเหตุการณ์ รางวัล ราคา และการผลิต ใช้วัสดุจริงในกระเป๋าแทน','ยอดคงเหลือแบบเก่าในเซฟถูกแปลงเป็นวัสดุใหม่ให้อัตโนมัติ','ค่าอัปเกรดอาคารใช้ทอง + แร่ + ไม้ ตามระดับอาคาร · Lv11+ ใช้ผลึกเวท (วัสดุใหม่)','ตีบวกอุปกรณ์ใช้ผลึกเวทจากกระเป๋า · รางวัลล็อกอินวันที่ 5 ได้ผลึกเวท'],'1.2.4':['🏗️ มอนสเตอร์ในหอคอยมีโอกาสดรอปวัสดุก่อสร้าง ไม่ต้องรอปลดล็อกมิติวาร์ป (ต่อเวฟ: ปกติ 12% · มินิบอส 50% · บอส 80% · กวาดชั้น 30%): เศษเหล็กสนิม/ไม้ผุ ชั้น 1+ · แร่เหล็ก/ไม้โอ๊ค ชั้น 10+ · เหล็กกล้า/ไม้ดำ ชั้น 30+ · เงิน ชั้น 60+','ผลึกเวทมีโอกาสดรอปจากหอคอยชั้น 20+ (ปกติ 3% · มินิบอส 35% · บอส 60%)','ปรับระดับวัสดุอาคารให้หาได้จากหอคอยทั้งหมด · คนงานคลังเสบียงเก็บไม้ตามเลเวลคลัง'],'1.2.5':['👑 มินิบอสและบอสโฉมใหม่: เส้นขอบเรืองแสง เส้นเลือดพลัง ออร่าใต้เท้า · มินิบอสมีตรากะโหลกแดง · บอสสวมมงกุฎทองเรืองแสง','💀 ท่าตายมินิบอสและบอสแบบใหม่: ท้องแตกเครื่องในไหลกองพื้น หรือบวมพองแล้วระเบิดตัวแตกกระจุยพร้อมฝนเลือด'],'1.2.6':['🎲 อัตราดรอปอุปกรณ์และคัมภีร์สกิลแบบเดียวกับการอัญเชิญฮีโร่: F 33.4% · E 26% · D 20% · C 12% · B 5.5% · A 2.5% · S 0.5% · SS 0.05% · SSS 0.005%','ชั้นสูงขึ้นทุก 100 ชั้น มินิบอส บอส และ Raid เพิ่มโอกาสได้ระดับดีขึ้นเล็กน้อย'],'1.3.0':['🛸 ลอบบี้รวม! ผ่านหอคอยชั้น 50 แล้วแตะคริสตัลกลางล็อบบี้ คริสตัลจะแปลงร่างเป็นยานรบพาฮีโร่ไปเมืองลอยฟ้าที่ผู้เล่นทุกคนอยู่ร่วมกัน','🏙️ เมืองใหญ่หลายย่าน: ลานน้ำพุ ย่านตลาด ลานประลอง ท่าเรือเหาะ โรงเตี๊ยม วิหาร หอนาฬิกา บ้านเรือน สวน · แตะเพื่อเดิน ซูม เต็มจอ แผนที่ย่อ แชทในห้อง และสภาพอากาศของเมือง','🏪 ตั้งแผงร้านค้าในย่านตลาด ขายอุปกรณ์ วัสดุ ยา อาหาร ด้วยทองหรือเพชร ร้านเปิดต่อแม้ออฟไลน์','🤺 ท้าดวล และ ☠️ ดวลแบบตายกันไปข้าง (แพ้ตายถาวร ผู้ชนะยึดอุปกรณ์ 1 ชิ้น) · ต้องกดยอมรับก่อนทุกครั้ง','🎭 เหตุการณ์เฉพาะลอบบี้รวม เช่น โจรฉกเงิน หกล้ม วงพนัน นักเลงหาเรื่อง (ไม่ถึงตาย) · ระหว่างเปิดร้านไม่มีอะไรมาแทรก'],'1.3.1':['🕯️ ปรับราคาตลาดมืดตามระดับของ: F ~30💎 · E ~70 · D ~160 · C ~400 · B ~1,200 · A ~4,000 · S ~15,000 · SS ~50,000 · SSS ~150,000 (คัมภีร์แพงกว่า 20%)'],'1.3.2':['หน้าแรกใหม่: ผูกบัญชี Google ได้ตั้งแต่หน้าแรกก่อนเข้าเกม · จัดเมนูให้กระชับ ไม่ต้องเลื่อนจอ'],'1.3.3':['เมนู ☰ ในเกมโฉมใหม่: ปุ่มไอคอนตาราง กระชับในจอเดียว · ช่องบันทึกย้ายไปหน้าย่อย 💾 บันทึก'],'1.3.4':['หน้าฮีโร่และหน้าอัพเกรดอาคารกระชับขึ้น เห็นได้มากขึ้นในหนึ่งจอ','ชื่อในแชทโลกและแชทลอบบี้รวมมีสีประจำตัว ไม่ซ้ำกัน'],'1.3.5':['ปุ่มเมนูเกมเปลี่ยนเป็นรูปฟันเฟือง ⚙'],'1.3.6':['บอร์ดอันดับอารีน่าแสดงเฉพาะผู้เล่นจริง (บอทยังมีให้ท้าประลองเหมือนเดิม)'],'1.4.0':['🏆 บอร์ดอันดับหอคอย! จัดอันดับจากชั้นสูงสุดของผู้เล่นทุกคน ดูได้ที่หน้า 🗼 หอคอย','🎁 รางวัลทุกสัปดาห์ (ตัดรอบวันจันทร์ 07:00 น.): #1 การ์ด SSR+ ×5 · #2 การ์ด SSR+ ×3 · #3 การ์ด SSR+ ×1 · #4–10 💎800 · #11–25 💎500 · #26–50 💎300 · #51+ 💎150 รับอัตโนมัติเมื่อเข้าเกม (ต้องผูก Google)','💬 ปุ่มแชทแยกออกมาข้างกล่องจดหมาย เห็นชัด มีตัวเลขบอกข้อความใหม่'],'1.4.1':['⚡ ข้อมูลผู้เล่นคนอื่นอัปเดตเร็วขึ้นมาก: บอร์ดอารีน่าเปลี่ยนเป็นแบบสด (เดิมดีเลย์สูงสุด 20 นาที) · อันดับหอคอยส่งขึ้นบอร์ดภายในไม่กี่วินาทีหลังผ่านชั้น'],'1.4.2':['🛸 ลอบบี้รวม: แก้บัคบางครั้งมองไม่เห็นผู้เล่นคนอื่น ต้องออกแล้วเข้าใหม่ · เชื่อมต่อใหม่อัตโนมัติเมื่อเน็ตหลุดหรือสลับแอป · ทุกคนเข้าห้องเดียวกันอัตโนมัติ (ยกเว้นฮีโร่เฝ้าร้าน)','🏪 ขายของได้แล้วแจ้งเตือนและเงินเข้าทันที ของหายจากร้านทันที (เดิมช้า 1–3 นาที)'],'1.4.3':['จอมือถือแคบ: ปุ่ม 💬 แชทแสดงเป็นไอคอนอย่างเดียว แถบด้านบนไม่ล้นลงบรรทัดใหม่'],'1.4.4':['🛸 ลอบบี้รวม: แก้บัคมองไม่เห็นฮีโร่ของผู้เล่นอื่น (นับจำนวนคนได้แต่ตัวไม่ขึ้น) เมื่อนาฬิกาในเครื่องสองเครื่องไม่ตรงกัน','🏪 แก้บัคตั้งแผงร้านไม่ได้: ปุ่ม “เดินไปย่านตลาด” พาไปผิดที่ ตอนนี้เดินเข้าย่านตลาดจริงแล้วตั้งแผงให้อัตโนมัติ · ฮีโร่ยืนข้างแผง มองเห็นชัด'],'1.5.0':['🏷️ เปลี่ยนชื่อไอดีได้แล้ว! เมนู ⚙ → เปลี่ยนชื่อ · 3 ครั้งแรกฟรี จากนั้น 💎50 → 100 → 200 … เพิ่มเท่าตัวทุกครั้ง · ชื่อห้ามซ้ำกับผู้เล่นอื่น','เข้าเกมจากเครื่องใหม่หรือโหลดเซฟจากคลาวด์ ชื่อไอดีเดิมกลับมาอัตโนมัติ (ไม่เป็น “มาสเตอร์ไร้นาม” อีก)'],'1.6.0':['👁️ Raid Boss ตัวใหม่! ไซคลอปส์กระหายเลือด Lv.85 · HP 167,000 · พลัง 190,000 ถือขวานสองหน้า จามขวานผ่าฮีโร่ และกวาดขวานรอบตัว · ไอเทมบอสใหม่ 3 ชิ้น รางวัลมากกว่าราชันก็อบลิน 2.5 เท่า','👺 คิงกริมล็อกโฉมใหม่ น่าเกรงขามกว่าเดิม ท่าทางลื่นไหลขึ้นมาก','💀 ท่าตายบอส Raid แบบโหด: ไซคลอปส์หัวขาดกระเด็น คอพ่นเลือดเป็นน้ำพุ ร่างไร้หัวทรุดแล้วล้มหงาย · คิงกริมล็อกท้องแตก ไส้ไหลกองพื้น เลือดพุ่งกระฉูด แล้วล้มคว่ำ','⭐ บอสอีลิท: ทุกครั้งที่เปิด Raid มีโอกาส 10% เลือดและพลังโจมตี ×2 · เงินรางวัล ×2 · โอกาสได้ไอเทมบอส ×2 และระดับไอเทมดีขึ้น','⏳ หน้าจอ Raid: นับถอยหลังรับสมัครตัวใหญ่กลางจอ']};
 const cmpVer=(a,b)=>{const x=String(a).split('.').map(n=>+n||0),y=String(b).split('.').map(n=>+n||0);for(let i=0;i<3;i++){if((x[i]||0)!==(y[i]||0))return(x[i]||0)>(y[i]||0)?1:-1}return 0};
 const esc=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
 // ================= เครือข่าย: เซิร์ฟเวอร์ ผู้เล่น แชท =================
@@ -1978,7 +1978,7 @@ const RBA={bg:'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAoHBwgHBg
 const RBOSS={goblin:{n:'คิงกริมล็อก',t:'ราชันก็อบลิน',ic:'👺',lv:45,hp:38000,atk:180,area:'ดันเจี้ยนกลาง · ท้องพระโรงขุมทรัพย์',
  sk:[['🔨 ทุบกระบองหนาม','ฟาดฮีโร่ 1 ตน'],['🟣 เวทมืดราชันย์','โจมตีหมู่ ฮีโร่ทุกตนในสนาม ทุก 12 วินาที'],['😡 คลั่ง','เมื่อเลือดต่ำกว่า 30% โจมตีถี่และแรงขึ้น']],
  items:[{k:'w',wt:'hammer',n:'กระบองหนามกริมล็อก'},{k:'a',n:'เกราะหนังราชันก็อบลิน'},{k:'c',n:'มงกุฎราชาก็อบลิน'}]}};
-const RD_T=180,RD={cur:null,parts:[],sim:null,load:0,open:0,alerted:'',unsubP:null,raf:0,fx:[],lastT:-1,jk:'',got:'',sil:null,view:(()=>{try{return localStorage.getItem('pmu_rdv')||'iso'}catch(e){return'iso'}})()},RB_IMG={};
+const RBK=()=>{const b=RBOSS[RD.cur&&RD.cur.boss]||RBOSS.goblin;return RD.cur&&RD.cur.elite?(b._el||(b._el=Object.assign({},b,{hp:b.hp*2,atk:b.atk*2,elite:1}))):b},RD_T=180,RD={cur:null,parts:[],sim:null,load:0,open:0,alerted:'',unsubP:null,raf:0,fx:[],lastT:-1,jk:'',got:'',sil:null,view:(()=>{try{return localStorage.getItem('pmu_rdv')||'iso'}catch(e){return'iso'}})()},RB_IMG={};
 let RBGM=null,rdArm=0;
 const rbImg=k=>{if(!RB_IMG[k]){const i=new Image();i.src=RBA[k];RB_IMG[k]=i}return RB_IMG[k]};
 const hstr=x=>{let h=2166136261;for(let i=0;i<x.length;i++)h=Math.imul(h^x.charCodeAt(i),16777619);return h>>>0};
@@ -1989,7 +1989,7 @@ const rdClean=v=>String(v||'').replace(/[<>&"'`\\]/g,'');
 function rdPSan(id,d){if(!/^[\w-]{1,64}$/.test(id)||!d||typeof d!=='object')return null;const h=d.h&&typeof d.h==='object'?d.h:{};
  return{id,name:rdClean(d.name).slice(0,16)||'มาสเตอร์',hid:+d.hid||0,h:{n:rdClean(h.n).slice(0,16)||'ฮีโร่',r:cl(+h.r|0,0,7),lv:cl(+h.lv|0,1,100),wp:WTK.includes(h.wp)?h.wp:'sword',wv:cl(+h.wv|0,0,6),look:lookSan(h.look),P:cl(Math.round(+h.P||1),1,1e9)}}}
 // ---------- จำลองการต่อสู้ (ผลเหมือนกันทุกเครื่อง) ----------
-function rdSim(rid,parts){const B=RBOSS.goblin,rr=abRng(hstr(rid)),n=parts.length,H=parts.map(p=>{const mx=Math.round(600+p.h.P*.6);return{P:p.h.P,mx,hp:mx,dn:0,d:0,tk:0,ko:0}}),ticks=[],cd=H.map(()=>[]),ct=H.map(()=>[]);let bh=B.hp,win=false;
+function rdSim(rid,parts){const B=RBK(),rr=abRng(hstr(rid)),n=parts.length,H=parts.map(p=>{const mx=Math.round(600+p.h.P*.6);return{P:p.h.P,mx,hp:mx,dn:0,d:0,tk:0,ko:0}}),ticks=[],cd=H.map(()=>[]),ct=H.map(()=>[]);let bh=B.hp,win=false;
  if(!n)return{T:0,win,n,H,ticks,cd,ct,bmx:B.hp};
  const hit=(i,d,tg)=>{const h=H[i];h.hp-=d;h.tk+=d;let ko=0;if(h.hp<=0){h.hp=0;h.dn=6;h.ko++;ko=1}tg.push([i,d,ko])};
  for(let t=0;t<RD_T;t++){const ev={a:[],b:null,rv:[]};
@@ -2003,11 +2003,11 @@ function rdSim(rid,parts){const B=RBOSS.goblin,rr=abRng(hstr(rid)),n=parts.lengt
  return{T:ticks.length,win,n,H,ticks,cd,ct,bmx:B.hp}}
 const rdOrder=tt=>{const s=RD.sim;return s.H.map((h,i)=>i).sort((a,b)=>s.cd[b][tt]-s.cd[a][tt]||a-b)};
 const rdRank=i=>{const s=RD.sim;return s&&s.T?rdOrder(s.T-1).indexOf(i)+1:0};
-function rdReward(rid,uid,rk,n,win){const rr=abRng(hstr(rid+'|'+uid)),top=rk===1?2:rk<=3?1:0,ch=Math.min(.9,(win?.45:.15)+[0,.15,.3][top]),g={gold:(win?600:250)+Math.max(0,n-rk)*10,gems:(win?60:20)+[0,40,100][top]};let it=null;
- if(rr()<ch){const x=RBOSS.goblin.items[Math.floor(rr()*3)];it={...x,g:itemRollR(rr,(win?2:1)+top)}}return{g,it,ch,xp:win?400:150}}
-function rdItem(x){const it=genItem(x.k,0,x.wt,x.g);it.n=x.n;it.bs='goblin';if(it.k==='c'){it.fx='atk';it.v=AFX.atk[1][it.g]}return addItem(it)}
+function rdReward(rid,uid,rk,n,win){const B=RBK(),el=B.elite?2:1,m=(B.rw||1)*el,gb=(B.gb||0)+(B.elite?2:0),rr=abRng(hstr(rid+'|'+uid)),top=rk===1?2:rk<=3?1:0,ch=Math.min(B.elite?.98:.9,((win?.45:.15)+[0,.15,.3][top])*el),g={gold:Math.round(((win?600:250)+Math.max(0,n-rk)*10)*m),gems:Math.round(((win?60:20)+[0,40,100][top])*m)};let it=null;
+ if(rr()<ch){const x=B.items[Math.floor(rr()*B.items.length)];it={...x,g:itemRollR(rr,(win?2:1)+top+gb)}}return{g,it,ch,xp:Math.round((win?400:150)*(B.rw||1)*el)}}
+function rdItem(x){const it=genItem(x.k,0,x.wt,x.g);it.n=x.n;it.bs=(RD.cur&&RD.cur.boss)||'goblin';if(it.k==='c'){it.fx='atk';it.v=AFX.atk[1][it.g]}return addItem(it)}
 // ---------- เครือข่าย ----------
-function rdSet(d){const c=d&&typeof d==='object'&&/^[\w-]{1,40}$/.test(d.rid||'')&&RBOSS[d.boss]&&!d.x?{rid:d.rid,boss:d.boss,at:+d.at||0,joinUntil:+d.joinUntil||0}:null,old=RD.cur&&RD.cur.rid;RD.cur=c;
+function rdSet(d){const c=d&&typeof d==='object'&&/^[\w-]{1,40}$/.test(d.rid||'')&&RBOSS[d.boss]&&!d.x?{rid:d.rid,boss:d.boss,elite:d.elite?1:0,at:+d.at||0,joinUntil:+d.joinUntil||0}:null,old=RD.cur&&RD.cur.rid;RD.cur=c;
  if(!c||c.rid!==old){RD.parts=[];RD.sim=null;RD.load=0;RD.fx=[];RD.lastT=-1;RD.jk='';RD.got='';if(RD.unsubP){try{RD.unsubP()}catch(e){}RD.unsubP=null}}
  if(c&&rdPhase()==='join'&&!RD.unsubP&&NET.db){const rid=c.rid;RD.unsubP=NET.db.collection('raid_p/'+rid+'/p').onSnapshot(qs=>{if(!RD.cur||RD.cur.rid!==rid||RD.load)return;RD.parts=qs.docs.map(x=>rdPSan(x.id,x.data())).filter(Boolean).sort((a,b)=>a.id<b.id?-1:1);if(RD.open)rdUI()},()=>{})}
  rdTick()}
@@ -2021,13 +2021,13 @@ async function rdClaim(){const c=RD.cur,s=RD.sim;if(!c||!s||rdPhase()!=='done')r
  try{const ref=NET.db.doc('raid_p/'+c.rid+'/got/'+NET.uid),sn=await ref.get();if(sn.exists){S.rdGot.push(c.rid);save();RD.jk='';rdUI();return toast('ไอดีนี้รับรางวัล Raid นี้ไปแล้ว')}await ref.set({t:Date.now()})}catch(e){RD.jk='';rdUI();return toast('รับรางวัลไม่สำเร็จ ลองใหม่อีกครั้ง')}
  const rk=rdRank(i),rw=rdReward(c.rid,NET.uid,rk,s.n,s.win);S.rdGot=[...S.rdGot,c.rid].slice(-30);let g=gain(rw.g);
  if(rw.it){const it=rdItem(rw.it);g+=` · ${iIcon(it)} ${it.n} [${SG[it.g]}]`;setTimeout(()=>toast(`🎁 ได้รับไอเทมบอส: ${it.n} [${SG[it.g]}]!`),400)}
- {const em=window.m51_raidMats?m51_raidMats(rk,s.win):'';if(em)g+=' · 🎒 '+em;if(Math.random()<0.000025){addPot('elixir');g+=' · 🧪 ยาเสริมพลัง!!';setTimeout(()=>toast('🧪 โชคมหาศาล! ได้ยาเสริมพลังจาก Raid Boss'),900)}}const h=S.h.find(x=>x.id===RD.parts[i].hid);if(h)gainXp(h,rw.xp);RD.got=`${g}${h?` · ${esc(h.n)} +${rw.xp} EXP`:''}`;log(`👑 รางวัล Raid ${RBOSS.goblin.n} (อันดับ ${rk}): ${g}`);sfx('coin');save();refresh();RD.jk='';rdUI()}
+ {const em=window.m51_raidMats?m51_raidMats(rk,s.win):'';if(em)g+=' · 🎒 '+em;if(Math.random()<0.000025){addPot('elixir');g+=' · 🧪 ยาเสริมพลัง!!';setTimeout(()=>toast('🧪 โชคมหาศาล! ได้ยาเสริมพลังจาก Raid Boss'),900)}}const h=S.h.find(x=>x.id===RD.parts[i].hid);if(h)gainXp(h,rw.xp);RD.got=`${g}${h?` · ${esc(h.n)} +${rw.xp} EXP`:''}`;log(`👑 รางวัล Raid ${RBK().elite?'อีลิท ':''}${RBK().n} (อันดับ ${rk}): ${g}`);sfx('coin');save();refresh();RD.jk='';rdUI()}
 // ---------- ผู้พัฒนา ----------
 const RDPH={none:'ไม่มีอีเว้นท์',join:'กำลังรับสมัคร',prep:'กำลังเริ่ม',fight:'กำลังต่อสู้',done:'จบแล้ว (ดูผลได้ 24 ชม.)'};
-function rdDevHtml(){return`<div class="sec">👑 Raid Boss</div><p class="lg">สถานะ: ${RDPH[rdPhase()]}${RD.cur?` · ผู้เข้าร่วม ${RD.parts.length} คน`:''}</p><div style="display:grid;gap:6px;margin-bottom:10px"><select id="rdB"><option value="goblin">👺 คิงกริมล็อก · ราชันก็อบลิน (HP 38,000)</option></select><label class="lg">เวลารับสมัคร (นาที)<input type="number" id="rdMin" min="1" max="30" value="5"></label><button class="btn" onclick="rdStart()">👑 เปิดอีเว้นท์ Raid Boss</button>${RD.cur?'<button class="btn g" onclick="rdCancel()">ยกเลิกอีเว้นท์ปัจจุบัน</button>':''}<p class="lg" id="rdDM"></p></div>`}
+function rdDevHtml(){return`<div class="sec">👑 Raid Boss</div><p class="lg">สถานะ: ${RDPH[rdPhase()]}${RD.cur?` · ผู้เข้าร่วม ${RD.parts.length} คน`:''}</p><div style="display:grid;gap:6px;margin-bottom:10px"><select id="rdB"><option value="goblin">👺 คิงกริมล็อก · ราชันก็อบลิน (Lv.45 · HP 38,000)</option><option value="cyclops">👁️ ไซคลอปส์กระหายเลือด (Lv.85 · HP 167,000 · พลัง 190,000)</option></select><small class="lg">⭐ ทุกครั้งที่เปิดมีโอกาส 10% เป็นบอสอีลิท: เลือด/พลังโจมตี ×2 · รางวัลและไอเทมดีขึ้น 2 เท่า</small><label class="lg">เวลารับสมัคร (นาที)<input type="number" id="rdMin" min="1" max="30" value="5"></label><button class="btn" onclick="rdStart()">👑 เปิดอีเว้นท์ Raid Boss</button>${RD.cur?'<button class="btn g" onclick="rdCancel()">ยกเลิกอีเว้นท์ปัจจุบัน</button>':''}<p class="lg" id="rdDM"></p></div>`}
 async function rdStart(){if(!NET.owner||!NET.db)return;const M=$('rdDM'),ph=rdPhase();if(ph==='join'||ph==='prep'||ph==='fight')return M.textContent='มีอีเว้นท์กำลังดำเนินอยู่ ยกเลิกก่อนจึงเปิดใหม่ได้';
  if(!rdArm){rdArm=1;M.textContent='แตะอีกครั้งเพื่อยืนยัน · ผู้เล่นทุกคนที่ออนไลน์จะได้รับแจ้งเตือนทันที';setTimeout(()=>{rdArm=0},5000);return}rdArm=0;
- const m=cl(Math.round(+$('rdMin').value||5),1,30),now=Date.now();try{await NET.db.doc('raid/cur').set({rid:'r'+now.toString(36),boss:$('rdB').value,at:now,joinUntil:now+m*6e4,by:NET.uid});M.textContent='เปิดอีเว้นท์แล้ว ✓';toast('👑 เปิดอีเว้นท์ Raid Boss แล้ว')}catch(e){M.textContent='เปิดไม่สำเร็จ ตรวจสอบกฎ Firestore'}}
+ const m=cl(Math.round(+$('rdMin').value||5),1,30),now=Date.now();try{await NET.db.doc('raid/cur').set({rid:'r'+now.toString(36),boss:$('rdB').value,elite:Math.random()<.1?1:0,at:now,joinUntil:now+m*6e4,by:NET.uid});M.textContent='เปิดอีเว้นท์แล้ว ✓';toast('👑 เปิดอีเว้นท์ Raid Boss แล้ว')}catch(e){M.textContent='เปิดไม่สำเร็จ ตรวจสอบกฎ Firestore'}}
 async function rdCancel(){if(!NET.owner||!RD.cur)return;try{await NET.db.doc('raid/cur').set({...RD.cur,x:true});toast('ยกเลิก Raid แล้ว')}catch(e){toast('ยกเลิกไม่สำเร็จ')}}
 // ---------- หน้าต่างแจ้งเตือน ----------
 function rdAlert(){const c=RD.cur;if(!c)return;sfx('ev');openSheet(`<div style="text-align:center"><div style="font-size:44px;line-height:1.1">⚠️</div><b style="font:800 20px var(--fh);color:#ff8a8a;display:block;margin-top:4px">คำเตือน! ตรวจพบบอสมอนสเตอร์ไม่ทราบชนิด</b>
@@ -2041,14 +2041,14 @@ function rdOpen(){if(!RD.cur)return toast('ตอนนี้ไม่มีอ�
 function rdClose(){RD.open=0;const o=$('rd');if(o)o.hidden=true;rdTick()}
 function rdView(v){RD.view=v;try{localStorage.setItem('pmu_rdv',v)}catch(e){}rdUI()}
 function rdHeroOpts(){return[...S.h].sort((a,b)=>cpw(b)-cpw(a)).map(h=>`<option value="${h.id}">${h.bx?'📦 ':''}${esc(h.n)} [${R[h.r]}] Lv.${h.lv||1} · ⚔️${fmtN(cpw(h))}</option>`).join('')}
-function rdUI(){const o=$('rd');if(!o||!RD.open)return;const c=RD.cur,ph=rdPhase(),s=RD.sim,B=RBOSS.goblin,me=RD.parts.find(p=>p.id===NET.uid),done=ph==='done',got=c&&S&&(S.rdGot||[]).includes(c.rid);
+function rdUI(){const o=$('rd');if(!o||!RD.open)return;const c=RD.cur,ph=rdPhase(),s=RD.sim,B=RBK(),me=RD.parts.find(p=>p.id===NET.uid),done=ph==='done',got=c&&S&&(S.rdGot||[]).includes(c.rid);
  $('rdv0').className=RD.view==='2d'?'on':'';$('rdv1').className=RD.view!=='2d'?'on':'';
  $('rdph').textContent=!c?'ไม่มีอีเว้นท์':ph==='join'?`รับสมัคร ${mmss(c.joinUntil-Date.now())} · ${RD.parts.length} คน`:ph==='prep'?'ปิดรับสมัคร · บอสกำลังปรากฏตัว!':ph==='fight'?`กำลังต่อสู้ · ${RD.parts.length} คน`:done?(s&&s.win?'🏆 ปราบบอสสำเร็จ':'⌛ จบการต่อสู้'):'';
  const jk=[c&&c.rid,ph,me?me.hid:0,!!s,got,RD.got].join('|');
  if(jk!==RD.jk){RD.jk=jk;let h='';
   if(ph==='join'){h=`<div class="card"><b>⚔️ ส่งฮีโร่เข้าร่วม</b><p class="lg" style="margin:4px 0">บอส: <b>??? ไม่ทราบชนิด</b> · ${esc(B.area)} · ส่งได้คนละ 1 ตน เปลี่ยนตัวได้จนกว่าจะปิดรับสมัคร · ฮีโร่จะไม่เสียชีวิต</p>${S&&scr==='game'?`<div style="display:flex;gap:6px;flex-wrap:wrap"><select id="rdh" style="flex:1;min-width:180px">${rdHeroOpts()}</select><button class="btn" id="rdjb" onclick="rdJoin()">${me?'เปลี่ยนตัว':'ส่งเข้าร่วม'}</button></div>${me?`<p style="margin:6px 0 0;color:var(--ok)">✓ ส่ง <b>${esc(me.h.n)}</b> [${R[me.h.r]}] เข้าร่วมแล้ว</p>`:''}`:'<p class="lg">เข้าเกมก่อนจึงส่งฮีโร่ได้</p>'}</div>`}
-  else{h=`<div class="card"><b>${B.ic} ${B.n} · ${B.t}</b> <small class="lg">Lv.${B.lv} · HP ${fmtN(B.hp)} · ATK ${B.atk}</small><div style="display:grid;gap:3px;margin-top:6px">${B.sk.map(x=>`<small><b>${x[0]}</b> <span class="lg">${x[1]}</span></small>`).join('')}</div></div>`;
-   if(done&&s){const i=RD.parts.findIndex(p=>p.id===NET.uid);h+=`<div class="card ev"><b style="font:800 18px var(--fh)">${s.win?'🏆 ชัยชนะ! ปราบคิงกริมล็อกสำเร็จ':'⌛ หมดเวลา · คิงกริมล็อกยังไม่ล้ม'}</b><p class="lg" style="margin:4px 0">${s.n?`ผู้เข้าร่วม ${s.n} คน · ใช้เวลา ${s.T} วินาที`:'ไม่มีผู้เข้าร่วม บอสจากไปแล้ว'}</p>`;
+  else{h=`<div class="card"><b>${B.elite?'<span style="color:#ffd27a">⭐ อีลิท</span> · ':''}${B.ic} ${B.n} · ${B.t}</b> <small class="lg">Lv.${B.lv} · HP ${fmtN(B.hp)}${B.pw?` · พลัง ${fmtN(B.pw*(B.elite?2:1))}`:` · ATK ${B.atk}`}${B.elite?' · รางวัล ×2':''}</small><div style="display:grid;gap:3px;margin-top:6px">${B.sk.map(x=>`<small><b>${x[0]}</b> <span class="lg">${x[1]}</span></small>`).join('')}</div></div>`;
+   if(done&&s){const i=RD.parts.findIndex(p=>p.id===NET.uid);h+=`<div class="card ev"><b style="font:800 18px var(--fh)">${s.win?`🏆 ชัยชนะ! ปราบ${B.elite?'อีลิท ':''}${B.n}สำเร็จ`:`⌛ หมดเวลา · ${B.n}ยังไม่ล้ม`}</b><p class="lg" style="margin:4px 0">${s.n?`ผู้เข้าร่วม ${s.n} คน · ใช้เวลา ${s.T} วินาที`:'ไม่มีผู้เข้าร่วม บอสจากไปแล้ว'}</p>`;
     if(i>=0){const rk=rdRank(i),rw=rdReward(c.rid,NET.uid,rk,s.n,s.win);h+=got?`<p style="color:var(--ok);margin:4px 0">✓ รับรางวัลแล้ว${RD.got?` · ${RD.got}`:''}</p>`:`<p style="margin:4px 0">อันดับของคุณ <b>#${rk}</b> · รางวัล ${rewTx(rw.g)} · โอกาสได้ไอเทมบอส ${Math.round(rw.ch*100)}%</p><button class="btn" id="rdcb" style="width:100%" onclick="rdClaim()">🎁 รับรางวัล</button>`}
     else h+='<p class="lg">ไอดีนี้ไม่ได้เข้าร่วม Raid ครั้งนี้</p>';h+='</div>'}}
   $('rdjoin').innerHTML=h}
@@ -2068,7 +2068,7 @@ function rdSpawn(ev,pos,bx,by,bH,n){const pt=performance.now(),me=RD.parts.findI
  if(ev.b)ev.b.tg.filter(x=>x[0]<n).slice(0,10).forEach(x=>{const p=pos[x[0]];RD.fx.push({x:p[0],y:p[1]-48,s:x[2]?'KO':'-'+fmtN(x[1]),col:ev.b.k==='cast'?'#d49bff':'#ff6a6a',t0:pt+(ev.b.k==='cast'?250:120),big:x[2]})});
  if(RD.fx.length>60)RD.fx.splice(0,RD.fx.length-60);if(ev.b)sfx(ev.b.k==='cast'?'ev':'hit')}
 function rdBossImg(c,img,x,y,h,o={}){if(!img||!(img.width||img.naturalWidth))return;const iw=img.naturalWidth||img.width,ih=img.naturalHeight||img.height,w=iw*h/ih;c.save();c.globalAlpha=o.a==null?1:o.a;c.translate(x,y);if(o.rot)c.rotate(o.rot);if(o.flip)c.scale(-1,1);if(o.glow){c.shadowColor=o.glow;c.shadowBlur=28}c.drawImage(img,-w/2+(o.dx||0),-h,w,h);c.restore()}
-function rdDraw(){const cv=$('rdc');if(!cv)return;const c=cv.getContext('2d'),W=720,H=520,iso=RD.view!=='2d',now=Date.now(),cur=RD.cur,ph=rdPhase(),s=RD.sim,pt=performance.now(),B=RBOSS.goblin;
+function rdDraw(){const cv=$('rdc');if(!cv)return;const c=cv.getContext('2d'),W=720,H=520,iso=RD.view!=='2d',now=Date.now(),cur=RD.cur,ph=rdPhase(),s=RD.sim,pt=performance.now(),B=RBK();
  c.setTransform(1,0,0,1,0,0);c.fillStyle='#07050b';c.fillRect(0,0,W,H);if(window.rdBgPX&&!window.PX_OFF)rdBgPX(c,W,H,iso,pt);else{const bg=rbImg('bg');
  if(bg.complete&&bg.naturalWidth){const bw0=bg.naturalWidth,bh0=bg.naturalHeight;if(iso)c.drawImage(bg,bw0*.14,0,bw0*.72,bh0,0,0,W,H);else{c.drawImage(bg,bw0*.06,bh0*.2,bw0*.88,bh0*.5,0,0,W,H*.8);const g=c.createLinearGradient(0,H*.7,0,H);g.addColorStop(0,'rgba(24,16,10,0)');g.addColorStop(.3,'#2b2017');g.addColorStop(1,'#110b07');c.fillStyle=g;c.fillRect(0,H*.7,W,H*.3)}}}
  c.fillStyle=ph==='join'?'rgba(10,0,18,.45)':'rgba(6,3,10,.22)';c.fillRect(0,0,W,H);if(!cur){c.fillStyle='#ccc';c.font='700 24px Taviraj,serif';c.textAlign='center';c.fillText('ไม่มีอีเว้นท์ Raid',W/2,H/2);return}
@@ -2076,13 +2076,13 @@ function rdDraw(){const cv=$('rdc');if(!cv)return;const c=cv.getContext('2d'),W=
  const bx=iso?408:525,by=iso?362:462,bH=iso?245:310,list=RD.parts,n=Math.min(list.length,iso?18:16),pos=[];for(let i=0;i<n;i++)pos.push(rdPos(i,n,iso));
  if(ev&&ti!==RD.lastT&&ph==='fight'&&fr<.9){RD.lastT=ti;rdSpawn(ev,pos,bx,by,bH,n)}
  const cast=ev&&ev.b&&ev.b.k==='cast'&&fr<.85,smash=ev&&ev.b&&ev.b.k==='smash'&&fr<.6;
- if(cast){const r=60+fr*420;c.save();c.strokeStyle=`rgba(190,110,255,${.85*(1-fr)})`;c.lineWidth=8*(1-fr)+2;c.beginPath();c.ellipse(bx,by,r,r*(iso?.4:.16),0,0,7);c.stroke();c.fillStyle=`rgba(120,40,200,${.18*(1-fr)})`;c.fillRect(0,0,W,H);c.restore()}
+ if(cast&&!(window.RBX_CAST&&RBX_CAST(c,{bx,by,bH,fr,iso,W,H,B,pt}))){const r=60+fr*420;c.save();c.strokeStyle=`rgba(190,110,255,${.85*(1-fr)})`;c.lineWidth=8*(1-fr)+2;c.beginPath();c.ellipse(bx,by,r,r*(iso?.4:.16),0,0,7);c.stroke();c.fillStyle=`rgba(120,40,200,${.18*(1-fr)})`;c.fillRect(0,0,W,H);c.restore()}
  const me=list.findIndex(p=>p.id===NET.uid),it=[];
  for(let i=0;i<n;i++){const p=pos[i],hp=ev&&ev.hp?ev.hp[i]:1,mx=s&&s.H[i]?s.H[i].mx:1,down=ev?hp===0:false,atk=ev&&fr<.35&&ev.a.some(a=>a[0]===i&&a[1]>0),hit=ev&&ev.b&&fr<.45&&ev.b.tg.some(t=>t[0]===i),dx=atk?(bx>p[0]?1:-1)*12*Math.sin(fr/.35*Math.PI):0;
   it.push({y:p[1],f:()=>{if(i===me){c.save();c.strokeStyle='#ffd27a';c.lineWidth=2;c.beginPath();c.ellipse(p[0],p[1],15,5,0,0,7);c.stroke();c.restore()}
    chibi(c,p[0]+dx,p[1],p[3],list[i].h,NP(list[i].h,{dir:p[2],lie:down,sh:hit,sw:atk?Math.sin(fr*9):0,step:ph==='join'||ph==='prep'?pt/90+i:null,name:i===me?'★ '+list[i].h.n:list[i].h.n}));
    if(ev&&!down){const w=26;c.fillStyle='#0009';c.fillRect(p[0]-w/2,p[1]+5,w,4);c.fillStyle=hp/mx>.4?'#5ccf98':'#e8a04a';c.fillRect(p[0]-w/2,p[1]+5,w*cl(hp/mx,0,1),4)}}})}
- it.push({y:by,f:()=>{const bob=Math.sin(pt/420)*3;c.save();c.fillStyle='rgba(0,0,0,.45)';c.beginPath();c.ellipse(bx,by,bH*.32,bH*(iso?.07:.05),0,0,7);c.fill();c.restore();
+ it.push({y:by,f:()=>{if(window.RBX_DRAW&&RBX_DRAW(c,{bx,by,bH,ph,ev,fr,cast,smash,s,iso,pt,now,cur,B,ti,T}))return;const bob=Math.sin(pt/420)*3;c.save();c.fillStyle='rgba(0,0,0,.45)';c.beginPath();c.ellipse(bx,by,bH*.32,bH*(iso?.07:.05),0,0,7);c.fill();c.restore();
   if(ph==='join'||ph==='prep'){const sil=rdSil(),rv=ph==='prep'?cl((now-cur.joinUntil)/5000,0,1):0;if(rv>0)rdBossImg(c,rbImg('idle'),bx,by,bH,{a:rv});if(sil)rdBossImg(c,sil,bx,by+bob,bH,{a:1-rv*.9});
    if(rv<.6){c.save();c.fillStyle='rgba(255,40,40,.9)';c.shadowColor='#f00';c.shadowBlur=12;c.beginPath();c.arc(bx-bH*.186,by-bH*.6+bob,2.6,0,7);c.arc(bx-bH*.097,by-bH*.606+bob,2.6,0,7);c.fill();c.restore();c.fillStyle='#ffd27a';c.font='800 44px Cinzel,serif';c.textAlign='center';c.globalAlpha=.6+.4*Math.sin(pt/300);c.fillText('???',bx,by-bH-14);c.globalAlpha=1}return}
   if(ph==='done'&&s&&s.win){rdBossImg(c,rbImg('dead'),bx,by+4,bH,{a:.95});return}
@@ -2092,7 +2092,7 @@ function rdDraw(){const cv=$('rdc');if(!cv)return;const c=cv.getContext('2d'),W=
  c.textAlign='center';RD.fx=RD.fx.filter(f=>pt-f.t0<1000);for(const f of RD.fx){const k=(pt-f.t0)/1000;if(k<0)continue;c.globalAlpha=1-k;c.font=`800 ${f.big?24:17}px Cinzel,Sarabun,sans-serif`;c.lineWidth=4;c.strokeStyle='#000';c.strokeText(f.s,f.x,f.y-k*34);c.fillStyle=f.col;c.fillText(f.s,f.x,f.y-k*34)}c.globalAlpha=1;
  // แถบเลือดบอส
  const bw=520,bxx=(W-bw)/2,bt=26;c.fillStyle='rgba(8,4,12,.78)';c.fillRect(bxx-12,8,bw+24,58);c.strokeStyle='#6b4a2a';c.lineWidth=1.5;c.strokeRect(bxx-12,8,bw+24,58);
- c.font='800 17px Taviraj,serif';c.textAlign='left';c.fillStyle='#ffd27a';const known=ph!=='join'&&!(ph==='prep'&&now-cur.joinUntil<2500);c.fillText(known?`${B.ic} ${B.n} · ${B.t}  Lv.${B.lv}`:'❓ บอสไม่ทราบชนิด',bxx,bt);
+ c.font='800 17px Taviraj,serif';c.textAlign='left';c.fillStyle='#ffd27a';const known=ph!=='join'&&!(ph==='prep'&&now-cur.joinUntil<2500);c.fillText(known?`${B.elite?'⭐ อีลิท · ':''}${B.ic} ${B.n} · ${B.t}  Lv.${B.lv}`:'❓ บอสไม่ทราบชนิด',bxx,bt);
  c.textAlign='right';c.fillStyle='#e8dcff';c.font='600 13px Sarabun,sans-serif';
  if(ph==='join')c.fillText(`ปิดรับสมัครใน ${mmss(cur.joinUntil-now)} · ${list.length} คน`,bxx+bw,bt);else if(s&&T){const tf=cl((now-rdFS(cur))/1000,0,T);c.fillText(`⏱ ${mmss(tf*1000)} / ${mmss(RD_T*1000)}`,bxx+bw,bt)}else if(ph==='prep')c.fillText(`เริ่มใน ${mmss(rdFS(cur)-now)}`,bxx+bw,bt);
  let hpv=B.hp;if(ev){const pv=ti>0?s.ticks[ti-1].bh:B.hp;hpv=pv+(ev.bh-pv)*Math.min(1,fr/.3)}if(ph==='done'&&s)hpv=T?s.ticks[T-1].bh:B.hp;const r=cl(hpv/B.hp,0,1);
@@ -2100,8 +2100,8 @@ function rdDraw(){const cv=$('rdc');if(!cv)return;const c=cv.getContext('2d'),W=
  c.fillStyle='#fff';c.font='700 13px Sarabun,sans-serif';c.textAlign='center';c.fillText(known?`HP ${fmtN(Math.round(hpv))} / ${fmtN(B.hp)}`:'HP ???',W/2,bt+25);
  // ป้ายสถานะ
  const ban=(t,col,sub)=>{c.save();c.fillStyle='rgba(0,0,0,.55)';c.fillRect(0,H/2-46,W,sub?92:70);c.font='800 40px Cinzel,Taviraj,serif';c.textAlign='center';c.fillStyle=col;c.shadowColor=col;c.shadowBlur=18;c.fillText(t,W/2,H/2+4);if(sub){c.shadowBlur=0;c.font='600 17px Sarabun,sans-serif';c.fillStyle='#eee';c.fillText(sub,W/2,H/2+34)}c.restore()};
- if(ph==='join'&&!list.length)ban('⚠️ RAID ALERT','#ff7a7a','บอสไม่ทราบชนิดปรากฏตัว · ส่งฮีโร่เข้าร่วมด้านล่าง');
- else if(ph==='prep')ban('BOSS APPEARS','#ffd27a',`${B.n} · ${B.t}`);
+ if(ph==='join'){if(window.RBX_CD)RBX_CD(c,W,H,cur.joinUntil-now,list.length);else if(!list.length)ban('⚠️ RAID ALERT','#ff7a7a','บอสไม่ทราบชนิดปรากฏตัว · ส่งฮีโร่เข้าร่วมด้านล่าง')}
+ else if(ph==='prep')ban(B.elite?'ELITE BOSS':'BOSS APPEARS',B.elite?'#ff5a3a':'#ffd27a',`${B.elite?'⭐ อีลิท · ':''}${B.n} · ${B.t}`);
  else if(ph==='fight'&&ti>=0&&ti<2&&fr<1&&ti===0)ban('FIGHT!','#ffd27a');
  else if(ph==='done'&&s)ban(s.win?'VICTORY':s.n?'TIME OVER':'NO CHALLENGER',s.win?'#ffd27a':'#ff7a7a',s.win?`ปราบ${B.n}ใน ${s.T} วินาที`:s.n?'บอสยังไม่ล้ม แต่ผู้เข้าร่วมยังได้รับรางวัล':'ไม่มีผู้เข้าร่วม');
  else if(ph==='fight'&&s&&!T)ban('NO CHALLENGER','#ff7a7a','ไม่มีผู้เข้าร่วม');
@@ -6344,7 +6344,7 @@ setTimeout(()=>{try{if(sa()||localStorage.getItem('pmu_pwa_tip'))return;if(typeo
 ['city','#cvw','🛸 ลอบบี้รวม (หอคอยชั้น 50+)','• แตะ<b>คริสตัลม่วงกลางล็อบบี้</b> คริสตัลจะแปลงเป็นยานรบ เลือกฮีโร่ 1 ตนขึ้นยานไปเมืองลอยฟ้าที่ผู้เล่นทุกคนอยู่ร่วมกัน (ต้องเข้าสู่ระบบ Google)<br>• แตะพื้นเพื่อเดิน · ลากเลื่อนจอ · ถ่างนิ้วซูม · ⛶ เต็มจอ · พิมพ์คุยในห้อง · มีสภาพอากาศของเมืองเอง และเหตุการณ์เฉพาะลอบบี้รวม (ไม่ถึงตาย)<br>• แตะฮีโร่คนอื่น: เข้าร้าน · 🤺 ท้าดวล · ☠️ <b>ดวลแบบตายกันไปข้าง</b> (แพ้ = ตายถาวร ผู้ชนะยึดอุปกรณ์ 1 ชิ้น)<br>• 🏪 ไปที่<b>ย่านตลาด</b> (ฝั่งตะวันออก) กด “ตั้งแผงร้านค้า” แผงจะขึ้นตรงที่ยืน ขายด้วยทองหรือเพชร ร้านเปิดต่อแม้ออฟไลน์ (หักค่าธรรมเนียม 5%)','fb'],
 ['sac','#pn','สังเวย เกิดใหม่ และสุสาน','• Lv100 สังเวยคนอื่นเพื่อ<b>เลื่อนระดับ</b> (กลับ Lv1 แต่แกร่งกว่า) ล้มเหลว = คลั่งและตาย<br>• 🌟 ถึง SSR · UR · UR+ จะ<b>ตื่นรู้</b> ได้สกิลเฉพาะตัว พลัง +8%<br>• 🔥 หลอมฮีโร่ที่ไม่ใช้เป็น EXP · ชุบชีวิตคนในสุสานด้วยเครื่องสังเวยหรือ ⚱️ คัมภีร์คืนชีพ'],
 ['arena','#pn','🏟️ อารีน่า และ ⚔️ บุกล็อบบี้','• อารีน่า: ทีม 5 คน สู้ผู้เล่น/บอท ได้ชื่อเสียง เพชร EXP · ซีซันละ 7 วัน · <b>ไม่มีใครตาย</b><br>• บุกล็อบบี้: ส่งได้ 20 ตน <b>1 ครั้งทุก 30 วันในเกม</b> ชนะ = ชิงทรัพยากร + จับเชลย · <b>ตายถาวรทั้งสองฝ่าย</b><br>• ถูกบุก: เลือกใน 3 นาที ⚔️สู้ · 🏳️ยอม (เสีย 25%) · 💰จ่ายส่วย (15% + เพชร 10%) · ไม่เลือก = สู้อัตโนมัติ · แพ้แล้วล้างแค้นได้ 1 ครั้ง','fb'],
-['city','#netb','👑 Raid Boss','• เปิดอีเว้นท์เมื่อไรจะมี RAID ALERT และปุ่ม 👑 กระพริบ<br>• ส่งฮีโร่<b>คนละ 1 ตน</b> สู้พร้อมผู้เล่นทุกคน <b>ฮีโร่ไม่ตาย</b> · ดูอันดับดาเมจสด<br>• รางวัล: ไอเทมบอส + <b>วัสดุระดับสูงสุด</b> (ดาวตก มงกุฎ น้ำตาเทพ) · ลุ้น 🧪 <b>ยาเสริมพลัง +6% ถาวร</b> ที่ได้จาก Raid เท่านั้น (0.0025%)','fb'],
+['city','#netb','👑 Raid Boss','• เปิดอีเว้นท์เมื่อไรจะมี RAID ALERT และปุ่ม 👑 กระพริบ<br>• ส่งฮีโร่<b>คนละ 1 ตน</b> สู้พร้อมผู้เล่นทุกคน <b>ฮีโร่ไม่ตาย</b> · ดูอันดับดาเมจสด<br>• รางวัล: ไอเทมบอส + <b>วัสดุระดับสูงสุด</b> (ดาวตก มงกุฎ น้ำตาเทพ) · ลุ้น 🧪 <b>ยาเสริมพลัง +6% ถาวร</b> ที่ได้จาก Raid เท่านั้น (0.0025%)<br>• บอส: 👺 คิงกริมล็อก Lv.45 · 👁️ ไซคลอปส์กระหายเลือด Lv.85 · ⭐ มีโอกาส 10% เป็น<b>อีลิท</b> เลือด/พลัง ×2 รางวัล ×2','fb'],
 ['city','#cvw','ปิดเกมแล้วล็อบบี้ยังเดินต่อ','• เวลา อากาศ งาน และการฝึกยังเดินจริงตอนท่านไม่อยู่<br>• ผลิตเต็ม 8 ชม.แรก ครึ่งหนึ่งจนครบ 24 ชม. · นับต่อได้สูงสุด 30 วันในเกม<br>• <b>ตุนอาหารและน้ำให้พอก่อนออกเสมอ</b>'],
 ['city','#mnb','เมนูเกม ⚙ 📬 💬 และออนไลน์','• 📬 รับของจากผู้พัฒนา · ☰ เสียง บันทึก เซฟคลาวด์ กรอกโค้ด ส่งข้อเสนอแนะ ดูการสอนนี้อีกครั้ง · <b>เปลี่ยนชื่อไอดี</b> (3 ครั้งแรกฟรี)<br>• <b>เข้าสู่ระบบ Google</b> เพื่อแชทโลก รับจดหมาย บุก/Raid และเซฟข้ามเครื่อง · ปุ่ม <b>💬 แชท</b> ข้าง 📬 มีตัวเลขบอกข้อความใหม่<br>• เพิ่มเกมไปที่หน้าจอโฮมเพื่อเล่นเต็มจอ · มีอัปเดตจะขึ้น 🔔<br>ขอให้ฮีโร่ของท่านรอดชีวิต มาสเตอร์ ⚔️']];
  const L3=T3.filter(x=>x[4]!=='fb'||NETFB()).map(x=>x.slice(0,4));TUT.length=0;TUT.push(...L3)}
@@ -7469,6 +7469,375 @@ window.doRename=async function(){if(RN.busy)return;const i=$('rnI'),E=$('rnE'),B
 setInterval(async()=>{if(acctName())return;if(S&&S.acct&&clean(S.acct).length>=2){setAcct(clean(S.acct).slice(0,16));try{regAcct()}catch(e){}return}
  if(RN.tried||!NET.db||!NET.uid)return;RN.tried=1;const d=await loadCloud();if(d&&d.name&&!acctName()){setAcct(clean(d.name).slice(0,16));if(S)S.acct=acctName();try{if(typeof setPres==='function')setPres()}catch(e){}}},2000);
 setTimeout(()=>{if(NET.db&&NET.uid)loadCloud()},4000);
+}
+
+// =====================================================================
+//  PXRB — บอส Raid รุ่นใหม่ (พิกเซล แรเงาตามปริมาตร หันซ้าย)
+//  · คีย์เฟรม + ไล่ค่าระหว่างท่า (สมูท) + แคชเฟรม · ขาใช้ IK เท้าติดพื้น
+//  · คิงกริมล็อก (ราชันก็อบลิน) โฉมใหม่ · ไซคลอปส์กระหายเลือด (ขวานสองหน้า)
+//  · ชิ้นส่วนท่าตาย: ร่างคุกเข่าท้องแตก / ร่างไร้หัว / หัวขาด / อาวุธหล่น
+// =====================================================================
+(function(G){
+const Q=G.PXR;
+const BLOOD=['#140003','#3e0008','#6e0610','#a00e1a','#cc2228','#f05a50'];
+const BASEPAL={
+ iron:['#050508','#121218','#24242c','#3a3a46','#5e5e6c','#9c9cac'],steel:['#06080c','#161c24','#303a46','#525e6c','#8692a0','#d2dae2'],
+ gold:['#241004','#5a2e08','#8e5614','#c0862a','#e4b448','#fff0a0'],bone:['#161208','#463e30','#766c58','#a69a82','#d0c6ac','#f6f0e0'],
+ wood:['#120804','#2c1a0c','#462e16','#604020','#7e5830','#a07a4a'],leather:['#0c0503','#24110a','#3c1e10','#56301a','#724426','#94603a'],
+ fur:['#0a0705','#1e1610','#32261a','#4a3a28','#64503a','#867050'],blood:BLOOD,
+ flesh:['#160204','#3a060c','#621016','#8c1c22','#b23036','#da6064'],gut:['#2a0810','#601a26','#8e2e3a','#bc4a56','#e07e88','#ffbcc4'],
+ mag:['#12002a','#3a0a6a','#6a2aa8','#a05ae0','#d0a0ff','#f8e8ff'],rust:['#080403','#1a0d08','#2e170c','#442212','#5e321a','#7e4626'],
+ chain:['#060608','#16161c','#2a2a32','#42424e','#666674','#a2a2b0'],dark:['#040306','#0c0910','#16111c','#221a2a','#30263a','#463a52']};
+function kit(C,ox,oy){let M=[1,0,0,1,ox||0,oy||0];const S=[];
+ const mul=(A,B)=>[A[0]*B[0]+A[2]*B[1],A[1]*B[0]+A[3]*B[1],A[0]*B[2]+A[2]*B[3],A[1]*B[2]+A[3]*B[3],A[0]*B[4]+A[2]*B[5]+A[4],A[1]*B[4]+A[3]*B[5]+A[5]];
+ const T=p=>[M[0]*p[0]+M[2]*p[1]+M[4],M[1]*p[0]+M[3]*p[1]+M[5]],ang=()=>Math.atan2(M[1],M[0]);
+ const push=(deg,piv,t=[0,0])=>{S.push(M);const a=(deg||0)*Math.PI/180,c=Math.cos(a),s=Math.sin(a);M=mul(M,[c,s,-s,c,piv[0]-c*piv[0]+s*piv[1]+t[0],piv[1]-s*piv[0]-c*piv[1]+t[1]])},pop=()=>{M=S.pop()};
+ const o2=(o={})=>Object.assign({seam:'all'},o);
+ return{T,push,pop,ang,
+  cap:(m,a,b,r1,r2,o)=>Q.cap(C,m,T(a),T(b),r1,r2,o2(o)),ell:(m,c,rx,ry,o={})=>Q.ell(C,m,T(c),rx,ry,o2(Object.assign({},o,{rot:(o.rot||0)+ang()}))),
+  poly:(m,P,o)=>Q.poly(C,m,P.map(T),o2(o)),tube:(m,P,rs,o)=>Q.tube(C,m,P.map(T),rs,o2(o)),line:(m,a,b,lv)=>Q.line(C,m,T(a),T(b),lv),
+  px:(m,x,y,lv)=>{const[p,q]=T([x,y]);Q.px(C,m,Math.round(p),Math.round(q),lv)}}}
+function ik(H,F,L1,L2,dir){const dx=F[0]-H[0],dy=F[1]-H[1];let d=Math.hypot(dx,dy);d=Math.min(d,L1+L2-.01);d=Math.max(d,Math.abs(L1-L2)+.01);
+ const a=(L1*L1-L2*L2+d*d)/(2*d),h=Math.sqrt(Math.max(0,L1*L1-a*a)),ux=dx/d,uy=dy/d,px=H[0]+a*ux,py=H[1]+a*uy;let kx=px-uy*h,ky=py+ux*h;if((kx-H[0])*dir<0){kx=px+uy*h;ky=py-ux*h}return[kx,ky]}
+const EZ={l:t=>t,io:t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2,i:t=>t*t*t,i2:t=>t*t,o:t=>1-Math.pow(1-t,3),o2:t=>1-(1-t)*(1-t),s:t=>t*t*(3-2*t)};
+function sample(keys,ph){ph=Math.max(0,Math.min(1,ph));let i=0;while(i<keys.length-2&&ph>=keys[i+1][0])i++;const[t0,a,e]=keys[i],[t1,b]=keys[i+1];
+ const u=t1>t0?Math.max(0,Math.min(1,(ph-t0)/(t1-t0))):1,k=(EZ[e]||EZ.io)(u),o={};for(const key in a)o[key]=0;for(const key in b)o[key]=0;
+ for(const key in o){const va=a[key]||0,vb=b[key]||0;o[key]=va+(vb-va)*k}return o}
+// เส้นโค้งกล้ามเนื้อ/รอยพับ (เส้นมืดบาง ๆ)
+const crease=(K,m,P,lv=1)=>{for(let i=0;i<P.length-1;i++)K.line(m,P[i],P[i+1],lv)};
+function mkBoss(def){const cache={},parts={};
+ const render=P=>{const C=Q.canvas(def.FW,def.FH);C.meta={};def.draw(kit(C,def.OX,def.OY),P||{},C);
+  // ครอปเหลือเฉพาะส่วนที่มีภาพ (ประหยัดหน่วยความจำ) · ox/oy = ตำแหน่งในเฟรมเต็ม
+  let x0=C.w,y0=C.h,x1=-1,y1=-1;for(let y=0;y<C.h;y++)for(let x=0;x<C.w;x++)if(C.m[y*C.w+x]>=0){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y}
+  const full=Q.render(C,def.PAL,1);if(x1<0){full.ox=0;full.oy=0;full.meta=C.meta;return full}x0=Math.max(0,x0-1);y0=Math.max(0,y0-1);x1=Math.min(C.w-1,x1+1);y1=Math.min(C.h-1,y1+1);
+  const cv=document.createElement('canvas');cv.width=x1-x0+1;cv.height=y1-y0+1;cv.getContext('2d').drawImage(full,-x0,-y0);cv.ox=x0;cv.oy=y0;cv.meta=C.meta;full.width=full.height=0;return cv};
+ function frame(anim,ph){const A=def.A[anim]||def.A.idle,n=A.n;const i=A.loop?Math.floor((((ph%1)+1)%1)*n)%n:Math.min(n-1,Math.max(0,Math.floor(ph*n))),k=anim+i;
+  if(!cache[k])cache[k]=render(sample(A.keys,A.loop?i/n:(i+.5)/n));return cache[k]}
+ function pose(name){if(!parts[name])parts[name]=render(def.P[name]);return parts[name]}
+ return Object.assign({},def,{frame,pose,render,GYc:def.GY+def.OY})}
+const dust=(K,d,x0,gy)=>{for(let i=0;i<11;i++){const x=x0+i*10-d*6,r=4+(i%3)*2+d*3;K.ell('fur',[x,gy-r*.5-(i%2)*3],r,r*.7,{lv:i%2?3:2})}for(let i=0;i<8;i++)K.line('dark',[x0-2+i*11,gy+1],[x0+4+i*11,gy-5-(i%2)*4],0)};
+const skull=(K,x,y,s=1,m='bone')=>{K.ell(m,[x,y],5*s,4.6*s,{});K.ell(m,[x,y+3*s],3.4*s,2.2*s,{dark:1});for(const d of[-2,-1,1,2])K.px(m,x+d*s,y,0);K.line(m,[x-2*s,y+4*s],[x+2*s,y+4*s],1)};
+
+// =====================================================================
+//  คิงกริมล็อก · ราชันก็อบลิน (โฉมใหม่) — พิกัดรูปร่าง: พื้น y=226
+// =====================================================================
+const GK_PAL=Object.assign({},BASEPAL,{skin:['#030503','#0c1408','#18260e','#273a16','#3c5424','#5a7438'],
+ cloak:['#070103','#1a0308','#30050e','#4a0a16','#661222','#862634'],
+ eye:['#2a0000','#700000','#c00a0a','#ff2a1a','#ff8a5a','#fff0c0'],paint:['#140103','#3e0408','#680a0e','#921216','#bc2420','#e45a44'],
+ gem:['#200008','#600018','#a01030','#e02848','#ff6a80','#ffd0d8'],tooth:['#221c10','#544a36','#847a60','#b2a684','#dad0b0','#fbf6e6']});
+function gkClub(K){// ด้ามจากกำปั้น (92,168) ลงซ้าย หัวกระบองแตะพื้น
+ K.cap('wood',[100,156],[50,210],5,7,{tex:{t:'strand',a:.9,sp:2}});K.cap('leather',[96,160],[86,172],6.4,6.8,{});
+ const H0=[66,194],H1=[30,214];K.cap('wood',H0,H1,13,17,{tex:{t:'strand',a:.9,sp:2}});
+ for(const t of[.06,.9]){const x=H0[0]+(H1[0]-H0[0])*t,y=H0[1]+(H1[1]-H0[1])*t;K.cap('iron',[x+1.5,y-1.5],[x-1.5,y+1.5],13.6+4*t,13.6+4*t,{kind:'s'})}
+ for(let i=0;i<16;i++){const t=.04+i*.062,x=H0[0]+(H1[0]-H0[0])*t,y=H0[1]+(H1[1]-H0[1])*t,a=(i%2?1:-1)*(1.15+((i*7)%5)*.13)+(i%3-1)*.25,L=21+((i*5)%4)*3,dx=Math.cos(a+.55)*L,dy=Math.sin(a+.55)*L;
+  K.poly('iron',[[x-2.5,y-2.5],[x+2.5,y+2.5],[x+dx,y+dy]],{lv:i%3?4:3});if(i%3===1)K.line('blood',[x+dx*.55,y+dy*.55],[x+dx,y+dy],3)}
+ K.ell('blood',[38,208],7,4,{lv:2});K.ell('blood',[54,198],4,3,{lv:3});K.line('blood',[46,214],[44,222],2)}
+function gkDraw(K,P,C){const bob=P.bob||0,HIP=[146,150],lean=(P.lean||0)-8,br=P.br||0,wd=P.wound||0;
+ const B=()=>K.push(lean,HIP,[0,bob]);
+ // ผ้าคลุมหลังขาดวิ่น
+ B();{const s=(P.cl||0);K.poly('cloak',[[116,78],[182,72],[204,122],[210+s*1.5,176],[216+s*2,216],[204+s,208],[196+s,222],[184+s,210],[172,224],[160,208],[146,220],[134,206],[122,216],[110,198],[102,150]],{folds:7,curve:.5});
+  for(let i=0;i<5;i++)K.line('cloak',[128+i*16,120],[132+i*16+s,204],1)}K.pop();
+ // แขนไกล (เวทมืด)
+ B();K.push(P.fS||0,[174,92]);K.cap('skin',[174,92],[188,124],15,12,{dark:1});K.ell('skin',[182,106],10,13,{dark:1});
+  K.push(P.fE||0,[188,124]);K.cap('skin',[188,124],[184,152],12,10,{dark:1});K.cap('iron',[187,136],[185,148],12.5,11.5,{kind:'s',dark:1});K.ell('skin',[183,160],11,10,{dark:1});
+  for(let i=0;i<4;i++)K.poly('bone',[[176+i*5,166],[179+i*5,166],[175+i*5,175]],{lv:3});
+  if(P.orb>0){const r=5+P.orb*8,ox=184,oy=180;K.ell('mag',[ox,oy],r+4,r+4,{kind:'g',lv:1});K.ell('mag',[ox,oy],r,r,{kind:'g'});K.ell('mag',[ox,oy],r*.45,r*.45,{lv:5,seam:false});
+   for(let k=0;k<8;k++){const a=k/8*Math.PI*2+(P.spin||0)*6.283,rr=r+8;K.ell('mag',[ox+Math.cos(a)*rr,oy+Math.sin(a)*rr*.8],1.6,1.6,{lv:4,seam:false})}}
+ K.pop();K.ell('iron',[176,86],15,11,{kind:'s',dark:1});for(const[x,y]of[[168,76],[182,74]])K.poly('iron',[[x-4,y+6],[x+4,y+6],[x+1,y-11]],{lv:3});K.pop();K.pop();
+ // ขาไกล
+ const HF=[162,156+bob],AF=[172,212],KF=ik(HF,AF,34,34,-1);K.cap('skin',HF,KF,15,12,{dark:1});K.cap('skin',KF,AF,12,9,{dark:1});K.cap('iron',[KF[0]+(AF[0]-KF[0])*.3,KF[1]+(AF[1]-KF[1])*.3],[KF[0]+(AF[0]-KF[0])*.8,KF[1]+(AF[1]-KF[1])*.8],11,9.5,{kind:'s',dark:1});
+ K.ell('skin',[AF[0]-6,219],16,6,{dark:1});for(let i=0;i<3;i++)K.poly('bone',[[AF[0]-22+i*6,219],[AF[0]-19+i*6,219],[AF[0]-24+i*6,225]],{lv:3});
+ // ลำตัว
+ B();
+ K.ell('skin',[158,84],32,18,{dark:1});for(let i=0;i<4;i++)K.poly('bone',[[150+i*9,70-i],[156+i*9,70-i],[154+i*9,56-i]],{lv:3});// โหนกหลังมีหนาม
+ K.ell('skin',[148,140],30,22,{});
+ K.ell('skin',[142,108+br],40,30+br*.6,{});
+ crease(K,'skin',[[122,108],[138,120],[156,112]]);for(let i=0;i<3;i++){K.line('skin',[134,130+i*7],[142,130+i*7],1);K.line('skin',[148,130+i*7],[156,130+i*7],1)}K.line('skin',[145,126],[145,152],1);
+ K.line('skin',[122,98],[136,122],5);K.line('skin',[123,100],[137,124],3);K.line('skin',[156,132],[168,146],4);
+ for(let i=0;i<3;i++)K.line('paint',[150+i*6,96],[146+i*6,114],3);// รอยสีศึกแบบรอยกรงเล็บ
+ if(wd>0){K.ell('flesh',[140,138],19,13,{lv:1});K.ell('flesh',[140,139],15,9,{lv:0});C.meta.wound=K.T([138,142]);
+  for(let i=0;i<6;i++)K.ell('gut',[128+i*5,137+(i%2)*4],5,4,{kind:'g'});K.line('flesh',[124,130],[156,128],2);K.line('flesh',[124,149],[154,151],2)}
+ {const cv=[];for(let i=0;i<=8;i++){const t=i/8;cv.push([118+t*52,98+Math.sin(t*Math.PI)*20])}K.tube('leather',cv,cv.map(()=>1.3),{lv:1});for(const t of[.25,.5,.75])skull(K,118+t*52,98+Math.sin(t*Math.PI)*20+4,.9)}
+ K.poly('leather',[[110,150],[184,146],[186,158],[110,162]],{curve:.9});for(const x of[118,134,166,178])K.ell('iron',[x,155],1.8,1.8,{lv:4});
+ K.ell('gold',[146,155],10,9,{kind:'g'});skull(K,146,153,1.1,'gold');
+ K.poly('fur',[[114,160],[182,158],[178,186],[170,180],[164,194],[156,182],[148,196],[140,182],[132,192],[124,180],[116,186]],{folds:6,tex:{t:'strand',a:1.5,sp:1.4}});
+ K.poly('cloak',[[138,162],[156,162],[160,204],[152,198],[147,210],[142,198],[134,204]],{folds:2});
+ K.pop();
+ // ขาใกล้
+ const HN=[130,158+bob],AN=[116,214],KN=ik(HN,AN,34,34,-1);K.cap('skin',HN,KN,16,13,{});K.cap('skin',KN,AN,13,10,{});
+ K.cap('iron',[KN[0]+(AN[0]-KN[0])*.3,KN[1]+(AN[1]-KN[1])*.3],[KN[0]+(AN[0]-KN[0])*.85,KN[1]+(AN[1]-KN[1])*.85],12,10.5,{kind:'s'});K.ell('iron',KN,9,8,{kind:'s'});K.poly('iron',[[KN[0]-3,KN[1]-6],[KN[0]+3,KN[1]-6],[KN[0]-10,KN[1]-16]],{lv:3});
+ K.ell('skin',[AN[0]-8,221],18,6,{});for(let i=0;i<4;i++)K.poly('bone',[[AN[0]-28+i*6,221],[AN[0]-25+i*6,221],[AN[0]-31+i*6,227]],{lv:4});
+ // แขนใกล้ + กระบอง + สนับไหล่
+ B();K.push(P.nS||0,[120,100]);
+ K.cap('skin',[120,100],[104,132],17,14,{});K.ell('skin',[110,114],12,14,{});crease(K,'skin',[[104,108],[100,124]],1);
+ K.push(P.nE||0,[104,132]);K.cap('skin',[104,132],[94,160],15,12,{});K.cap('iron',[99,144],[95,156],15,13.5,{kind:'s'});for(let i=0;i<3;i++)K.poly('iron',[[90,142+i*5],[90,146+i*5],[80,143+i*5]],{lv:4});
+ if(!P.noclub){K.push(P.club||0,[92,168]);gkClub(K);K.pop()}
+ K.ell('skin',[92,168],12,11,{});for(let i=0;i<3;i++)K.line('skin',[86+i*4,162],[85+i*4,174],1);
+ K.pop();
+ K.ell('iron',[124,94],19,14,{kind:'s'});K.line('iron',[108,96],[140,92],1);for(const[x,y]of[[112,84],[124,78],[136,82]])K.poly('iron',[[x-5,y+7],[x+5,y+7],[x+1,y-15]],{kind:'s'});
+ K.pop();K.pop();
+ // หัว (ยื่นต่ำ ไปข้างหน้า)
+ B();K.push(P.hd||0,[116,92]);
+ K.poly('skin',[[106,66],[160,34],[150,50],[114,82]],{curve:.4,dark:1});K.line('skin',[112,68],[152,42],1);// หูยาวลู่หลัง
+ K.ell('skin',[92,78],27,22,{});
+ K.push((P.jaw||0)*12,[110,96]);K.ell('skin',[82,102],26,13,{});
+  for(let i=0;i<7;i++)K.poly('tooth',[[62+i*6,96],[66+i*6,96],[64+i*6,91]],{lv:4});
+  K.poly('tooth',[[64,100],[72,100],[60,70]],{});K.poly('tooth',[[94,100],[101,100],[98,74]],{});K.line('tooth',[61,74],[64,90],5);
+  K.line('blood',[74,106],[74,114],3);K.pop();
+ K.poly('skin',[[58,90],[110,90],[108,96],[60,96]],{lv:0});for(let i=0;i<8;i++)K.poly('tooth',[[60+i*6,90],[64+i*6,90],[62+i*6,95]],{lv:3});
+ K.poly('skin',[[74,64],[60,80],[52,94],[64,90],[72,78]],{curve:.5});K.ell('skin',[56,92],5,4,{dark:1});// จมูกงุ้มยาว
+ K.poly('skin',[[60,66],[110,56],[114,66],[64,74]],{lv:1});K.line('skin',[60,66],[110,56],0);K.line('skin',[62,67],[110,57],2);// คิ้วหนาขมวด
+ K.ell('skin',[74,72],7,4,{lv:0});K.ell('skin',[94,69],6.4,3.8,{lv:0});
+ const eg=P.cast?'mag':'eye',eb=Math.min(5,3+Math.round((P.eye||0)*2));K.ell(eg,[74,72],4.6,2,{kind:'g',lv:eb});K.ell(eg,[94,69],4.2,1.9,{kind:'g',lv:eb});K.px(eg,73,72,5);K.px(eg,93,69,5);C.meta.eyes=[K.T([74,72]),K.T([94,69])];
+ for(let i=0;i<3;i++)K.line('paint',[70+i*4,78],[66+i*4,90],2);for(let i=0;i<2;i++)K.line('paint',[92+i*4,75],[90+i*4,86],2);
+ K.line('skin',[84,50],[100,80],5);K.line('skin',[85,50],[101,80],3);
+ for(const[x,y]of[[110,76],[102,86],[84,52]])K.ell('skin',[x,y],1.6,1.6,{lv:4});
+ K.poly('skin',[[94,62],[128,26],[122,40],[100,72]],{curve:.4});K.line('skin',[98,62],[124,32],4);// หูใกล้
+ K.poly('iron',[[66,56],[112,48],[114,60],[68,66]],{curve:.6,tilt:-.2,kind:'s'});K.line('gold',[66,56],[112,48],4);K.line('gold',[68,66],[114,60],3);
+ [[68,54,13],[79,52,19],[90,50,27],[101,48,19],[112,47,13]].forEach(([x,y,h])=>{K.poly('iron',[[x-4,y+3],[x+4,y+2],[x+1,y-h]],{kind:'s'});K.line('gold',[x+1,y-h+2],[x+1,y-h+5],5)});
+ K.ell('gem',[90,57],3.4,3.4,{kind:'g'});K.px('gem',89,56,5);
+ K.pop();K.pop();
+ if((P.dust||0)>.2)dust(K,P.dust,2,226);
+}
+const GK=mkBoss({id:'goblin',FW:330,FH:300,OX:56,OY:66,GY:226,PAL:GK_PAL,draw:gkDraw,
+ A:{idle:{loop:1,n:20,keys:[[0,{},'s'],[.5,{bob:2,br:2,cl:3,hd:2,nS:-2,fS:3,eye:1,jaw:.15},'s'],[1,{},'s']]},
+  smash:{n:14,keys:[[0,{nS:-4,lean:-2},'o2'],[.32,{nS:150,nE:-34,lean:12,hd:-12,bob:-3,jaw:.6,cl:-4,eye:1},'i'],[.46,{nS:-24,nE:22,lean:-18,hd:12,bob:12,jaw:1,cl:6,eye:1},'l'],[.6,{nS:-22,nE:20,lean:-16,hd:10,bob:11,jaw:.8,dust:1,cl:5,eye:1},'o2'],[1,{nS:-6,lean:-4,bob:2,dust:.3,cl:1},'s']]},
+  cast:{n:14,keys:[[0,{cast:1,fS:-20},'o2'],[.35,{cast:1,fS:-118,fE:-30,lean:8,hd:-16,jaw:1,orb:.6,eye:1,spin:.2},'s'],[.75,{cast:1,fS:-128,fE:-22,lean:10,hd:-18,jaw:1,orb:1,eye:1,spin:.6},'s'],[1,{cast:1,fS:-118,fE:-26,lean:8,hd:-12,jaw:.6,orb:.8,eye:1,spin:.8},'s']]}},
+ P:{hurt:{lean:-14,hd:-16,nS:24,fS:20,bob:3,jaw:1},kneel:{bob:40,lean:-24,hd:26,nS:46,nE:-10,fS:30,fE:10,jaw:.7,wound:1,noclub:1,cl:6},
+  kneel2:{bob:44,lean:-34,hd:36,nS:70,nE:-20,fS:40,fE:20,jaw:1,wound:1,noclub:1,cl:8}},
+ eyes:[[74,72],[94,69]],figH:196});
+GK.clubImg=function(){if(GK._club)return GK._club;const C=Q.canvas(110,90);gkClub(kit(C,-10,-140));const r=Q.render(C,GK_PAL,1);r.ox=r.oy=0;return GK._club=r};
+
+// =====================================================================
+//  ไซคลอปส์กระหายเลือด — พิกัดรูปร่าง: พื้น y=292
+// =====================================================================
+const CY_PAL=Object.assign({},BASEPAL,{skin:['#060509','#1a1620','#2e2834','#463e4e','#665c6e','#948a9a'],
+ eye:['#2a0000','#760000','#c40c0c','#ff2a1a','#ff906a','#fff6dc'],sclera:['#24140f','#5e3e34','#946a5a','#c2a28e','#e2d2c0','#fff8ee'],
+ tooth:['#201a10','#4e4432','#7e745a','#aea282','#d8ceae','#fbf6e6'],hide:['#0a0704','#20170e','#382818','#523c24','#6e5434','#90724c']});
+// ขวานสองหน้า: กำที่ (0,0) ด้ามชี้ไปทิศ -y (ขึ้น) หัวขวานที่ y=-112
+function cyAxe(K){const top=-118,bot=26;K.cap('wood',[0,bot],[0,top],5,5.4,{tex:{t:'strand',a:1.5,sp:2}});
+ for(const y of[-14,-60,-96])K.cap('iron',[0,y-3],[0,y+3],6.6,6.6,{kind:'s'});K.cap('leather',[0,-10],[0,12],6.4,6.4,{});K.poly('steel',[[-4,bot],[4,bot],[0,bot+14]],{kind:'s'});
+ const hy=-108;
+ for(const s of[-1,1]){const P=[];// ใบขวานรูปจันทร์เสี้ยว
+  for(let i=0;i<=10;i++){const a=-1.05+i*.21;P.push([s*(16+30*Math.cos(a)),hy+34*Math.sin(a)])}
+  for(let i=8;i>=2;i--){const a=-1.05+i*.21;P.push([s*(5+16*Math.cos(a)),hy+14*Math.sin(a)])}
+  K.poly('steel',P,{kind:'s',curve:.3});
+  const E=[];for(let i=0;i<=10;i++){const a=-1.05+i*.21;E.push([s*(16+30*Math.cos(a)),hy+34*Math.sin(a)])}for(let i=0;i<E.length-1;i++)K.line('steel',E[i],E[i+1],5);
+  for(let i=1;i<E.length-2;i++)K.line('steel',[E[i][0]-s*2,E[i][1]],[E[i+1][0]-s*2,E[i+1][1]],4);
+  K.poly('blood',[[s*44,hy-6],[s*46,hy+8],[s*38,hy+16],[s*36,hy+2]],{lv:3});K.line('blood',[s*40,hy+12],[s*36,hy+24],2);K.ell('iron',[s*18,hy],2,2,{lv:4})}
+ K.cap('iron',[0,hy-14],[0,hy+14],8,8,{kind:'s'});K.poly('steel',[[-5,hy-14],[5,hy-14],[0,hy-34]],{kind:'s'})}
+function cyHead(K,P,C,only){
+ K.ell('skin',[100,94],34,30,{});K.ell('skin',[118,80],20,16,{dark:1});
+ for(let i=0;i<5;i++)K.poly('bone',[[118+i*6,70+i*5],[124+i*6,72+i*5],[128+i*6,58+i*5]],{lv:3});
+ K.poly('skin',[[130,92],[148,76],[140,102]],{dark:1});K.line('skin',[136,92],[146,80],1);
+ K.tube('bone',[[104,66],[100,50],[106,34],[118,24],[130,22]],[7,6.4,5.4,4.2,3],{});for(let i=0;i<4;i++)K.line('bone',[97+i,58-i*8],[107+i*2,56-i*8],1);
+ // ขากรรไกรล่าง (อ้าได้)
+ K.push((P.jaw||0)*16,[126,112]);K.ell('skin',[96,124],30,12,{});K.poly('skin',[[68,116],[126,118],[124,124],[72,124]],{lv:0});
+  for(let i=0;i<9;i++)K.poly('tooth',[[70+i*6,120],[75+i*6,120],[72+i*6,113-(i%3)*2]],{lv:i%2?4:3});
+  K.line('blood',[80,126],[80,138],3);K.line('blood',[90,128],[90,140],2);K.line('blood',[104,127],[104,134],3);K.pop();
+ K.poly('skin',[[64,108],[128,110],[126,116],[68,116]],{lv:0});for(let i=0;i<10;i++)K.poly('tooth',[[66+i*6,109],[71+i*6,109],[68+i*6,117+(i%2)*3]],{lv:i%2?4:3});
+ K.line('blood',[72,116],[71,124],3);
+ K.ell('skin',[84,102],3,2,{lv:0});K.ell('skin',[92,103],3,2,{lv:0});
+ const ex=92,ey=84,er=15;K.ell('skin',[ex,ey],er+3,er,{lv:0});K.ell('sclera',[ex,ey],er,er-3,{});
+ for(const[a,b]of[[[ex-14,ey-1],[ex-7,ey+1]],[[ex+13,ey-3],[ex+6,ey]],[[ex-11,ey+7],[ex-5,ey+3]],[[ex+10,ey+7],[ex+5,ey+3]],[[ex-3,ey+10],[ex-2,ey+5]]])K.line('blood',a,b,3);
+ const lk=P.look||0,ic=[ex-5+lk,ey+2];K.ell('eye',ic,7.4,7.4,{kind:'g',lv:Math.min(5,3+Math.round(P.eye||0))});K.ell('eye',ic,4,4,{lv:5,seam:false});K.ell('dark',ic,1.3,4.6,{lv:0,seam:false});if(!only)C.meta.eyes=[K.T(ic)];K.px('sclera',ic[0]-3,ic[1]-3,5);
+ K.poly('skin',[[ex-19,ey-16],[ex+17,ey-20],[ex+18,ey-6],[ex-16,ey-3]],{lv:2});K.line('skin',[ex-17,ey-4],[ex+17,ey-7],0);// หนังตาบนบีบ
+ K.poly('skin',[[ex-21,ey-15],[ex+16,ey-22],[ex+19,ey-14],[ex-18,ey-9]],{dark:1});K.line('skin',[ex-21,ey-15],[ex+16,ey-22],3);
+ K.line('dark',[114,74],[128,98],0);for(let i=0;i<5;i++)K.line('dark',[115+i*3,77+i*5],[120+i*3,75+i*5],0);
+ K.line('skin',[70,84],[78,100],5);K.ell('blood',[124,104],3,2,{lv:3});
+ if(only){K.ell('flesh',[112,124],15,7,{lv:2});K.ell('flesh',[112,124],10,4,{lv:1});K.ell('bone',[112,124],4,3,{lv:4});C.meta.headC=K.T([100,94])}}
+function cyDraw(K,P,C){const bob=P.bob||0,HIP=[170,196],lean=(P.lean||0)-8,br=P.br||0;
+ const B=()=>K.push(lean,HIP,[0,bob]);
+ if(P.headOnly){cyHead(K,P,C,1);return}
+ B();for(let i=0;i<7;i++)K.ell('chain',[214+i*2,150+i*9],3,4.5,{kind:'s',dark:1});K.pop();
+ // แขนไกล
+ B();K.push(P.fS||0,[200,118]);K.cap('skin',[200,118],[216,162],21,17,{dark:1});K.ell('skin',[208,138],14,17,{dark:1});
+  K.push(P.fE||0,[216,162]);K.cap('skin',[216,162],[210,202],17,14,{dark:1});K.cap('iron',[213,180],[211,196],18,16,{kind:'s',dark:1});
+  K.ell('skin',[208,212],15,13,{dark:1});for(let i=0;i<4;i++)K.poly('bone',[[198+i*6,220],[202+i*6,220],[197+i*6,231]],{lv:3});
+  for(let i=0;i<5;i++)K.ell('chain',[206-i*3,226+i*8],3,4.4,{kind:'s',dark:1});
+ K.pop();K.pop();K.pop();
+ // ขาไกล
+ const HF=[188,202+bob],AF=[208,280],KF=ik(HF,AF,44,44,-1);K.cap('skin',HF,KF,20,15,{dark:1});K.cap('skin',KF,AF,15,11,{dark:1});K.ell('iron',KF,9,8,{kind:'s',dark:1});
+ K.cap('leather',[AF[0]-1,AF[1]-12],[AF[0]+1,AF[1]-7],11.5,11.5,{dark:1});K.ell('skin',[AF[0]-8,288],20,7,{dark:1});for(let i=0;i<3;i++)K.poly('bone',[[AF[0]-26+i*7,288],[AF[0]-22+i*7,288],[AF[0]-29+i*7,295]],{lv:3});
+ // ลำตัว
+ B();
+ K.ell('skin',[190,106],40,28,{dark:1});for(let i=0;i<5;i++)K.poly('bone',[[176+i*10,84-i*2],[183+i*10,84-i*2],[181+i*10,66-i*2]],{lv:3});
+ K.ell('skin',[170,182],38,24,{});
+ K.ell('skin',[154,140+br],54,42+br*.6,{});
+ crease(K,'skin',[[126,142],[152,156],[180,144]]);for(let i=0;i<3;i++){K.line('skin',[152,166+i*8],[162,166+i*8],1);K.line('skin',[168,166+i*8],[178,166+i*8],1)}K.line('skin',[165,160],[165,194],1);
+ K.line('dark',[140,118],[178,176],0);for(let i=0;i<9;i++){const t=i/8,x=140+38*t,y=118+58*t;K.line('dark',[x-4,y+3],[x+4,y-3],0)}
+ K.poly('blood',[[130,128],[140,124],[138,152],[134,142]],{lv:2});K.poly('blood',[[182,152],[190,154],[184,178]],{lv:3});
+ K.tube('leather',[[124,114],[154,152],[192,188]],[5,5,5],{});K.tube('leather',[[200,114],[174,142],[150,172]],[4,4,4],{dark:1});
+ K.ell('iron',[164,152],7,7,{kind:'s'});K.ell('iron',[164,152],3.4,3.4,{lv:0});skull(K,146,134,1.4);
+ K.cap('rust',[132,102],[196,98],9,9,{kind:'s'});for(const x of[142,158,174,188])K.ell('iron',[x,99],2,2,{lv:4});
+ for(let i=0;i<4;i++)K.ell('chain',[150-i*1,110+i*8],3,4.2,{kind:'s'});
+ K.poly('leather',[[128,198],[212,194],[214,208],[128,212]],{curve:.9});for(let i=0;i<7;i++)K.ell('bone',[134+i*12,204],4.4,5,{lv:i%2?4:3});
+ K.poly('hide',[[132,210],[210,206],[204,240],[194,232],[188,252],[176,236],[168,254],[158,236],[150,250],[142,232],[134,242]],{folds:6,tex:{t:'strand',a:1.5,sp:1.6}});
+ skull(K,170,222,1.3);
+ K.pop();
+ // ขาใกล้
+ const HN=[152,206+bob],AN=[130,282],KN=ik(HN,AN,44,44,-1);K.cap('skin',HN,KN,21,17,{});K.cap('skin',KN,AN,17,12,{});K.ell('iron',KN,10,9,{kind:'s'});K.poly('iron',[[KN[0]-4,KN[1]-8],[KN[0]+4,KN[1]-8],[KN[0]-11,KN[1]-21]],{lv:3});
+ K.cap('leather',[AN[0]-2,AN[1]-13],[AN[0]+1,AN[1]-7],12.5,12.5,{});K.ell('skin',[AN[0]-10,289],22,7,{});for(let i=0;i<4;i++)K.poly('bone',[[AN[0]-32+i*7,289],[AN[0]-28+i*7,289],[AN[0]-36+i*7,296]],{lv:4});
+ // แขนใกล้ + ขวานสองหน้า (ท่าพักพาดไหล่)
+ B();K.push(P.nS||0,[140,124]);
+ K.cap('skin',[140,124],[126,168],22,18,{});K.ell('skin',[130,142],15,18,{});crease(K,'skin',[[124,132],[120,156]],1);
+ K.push(P.nE||0,[126,168]);K.cap('skin',[126,168],[110,140],18,15,{});
+ if(!P.noaxe){K.push(34+(P.ax||0),[0,0],[108,134]);cyAxe(K);K.pop()}
+ K.cap('iron',[120,158],[114,146],19,17,{kind:'s'});for(let i=0;i<3;i++)K.poly('iron',[[110+i*4,160],[114+i*4,160],[104+i*4,170]],{lv:4});
+ K.ell('skin',[108,134],15,14,{});for(let i=0;i<3;i++)K.line('skin',[102+i*5,126],[101+i*5,142],1);
+ K.pop();
+ K.ell('iron',[142,114],21,14,{kind:'s'});K.line('iron',[124,116],[160,110],1);for(const[x,y,h]of[[128,104,12],[140,100,16],[152,102,12]])K.poly('bone',[[x-4,y+6],[x+4,y+6],[x+1,y-h]],{lv:3});
+ K.pop();K.pop();
+ // หัว
+ if(!P.nohead){B();K.push(P.hd||0,[128,108]);cyHead(K,P,C,0);K.pop();K.pop()}
+ else{B();K.cap('skin',[128,112],[124,102],14,13,{});K.ell('flesh',[122,100],15,8,{lv:2});K.ell('flesh',[122,99],11,5,{lv:1});K.ell('bone',[122,99],4,3,{lv:4});C.meta.neck=K.T([122,98]);K.pop()}
+ if((P.dust||0)>.2)dust(K,P.dust,-10,292);
+}
+const CY=mkBoss({id:'cyclops',FW:460,FH:380,OX:110,OY:62,GY:292,PAL:CY_PAL,draw:cyDraw,
+ A:{idle:{loop:1,n:20,keys:[[0,{},'s'],[.5,{bob:3,br:3,hd:3,nS:-2,fS:4,eye:1,look:-1,jaw:.3},'s'],[1,{},'s']]},
+  smash:{n:14,keys:[[0,{},'o2'],[.3,{nS:160,nE:0,ax:-164,lean:12,hd:-12,bob:-4,jaw:.6,eye:1},'i'],[.46,{nS:40,nE:-120,ax:-59,lean:-22,hd:14,bob:16,jaw:1,eye:2},'l'],[.6,{nS:38,nE:-118,ax:-59,lean:-20,hd:12,bob:15,jaw:.9,dust:1,eye:2},'o2'],[1,{nS:10,nE:-30,ax:-18,lean:-4,bob:3,dust:.3,eye:1},'s']]},
+  cast:{n:14,keys:[[0,{eye:1},'o2'],[.3,{nS:-78,nE:-143,ax:-84,lean:14,hd:-10,bob:4,jaw:.8,eye:2},'i'],[.55,{nS:52,nE:-122,ax:-54,lean:-22,hd:10,bob:10,jaw:1,eye:2},'l'],[.75,{nS:82,nE:-122,ax:-64,lean:-26,hd:12,bob:9,jaw:1,eye:2},'o2'],[1,{nS:6,nE:-20,ax:-10,lean:-6,bob:2,eye:1},'s']]}},
+ P:{hurt:{lean:-16,hd:-18,nS:10,fS:24,bob:4,jaw:1,eye:2},
+  headless:{nohead:1,lean:6,nS:-30,nE:60,fS:20,fE:10,bob:4,noaxe:1},headless2:{nohead:1,lean:-6,nS:-50,nE:70,fS:50,fE:30,bob:30,noaxe:1},
+  head:{headOnly:1,jaw:1,eye:2}},
+ eyes:[[87,86]],eye1:1,figH:262});
+CY.axeImg=function(){if(CY._axe)return CY._axe;const C=Q.canvas(110,204);cyAxe(kit(C,55,162));const r=Q.render(C,CY_PAL,1);r.ox=r.oy=0;return CY._axe=r};
+G.PXRB={goblin:GK,cyclops:CY,sample,EZ,BLOOD};
+})(typeof window!=='undefined'?window:globalThis);
+
+// ================= 1.6.0: Raid Boss โฉมใหม่ · ไซคลอปส์กระหายเลือด · อีลิท 10% · ท่าตายโหด · นับถอยหลังกลางจอ =================
+{
+// ---- ข้อมูลบอสใหม่ + ค่าตัวคูณรางวัล
+RBOSS.goblin.rw=1;RBOSS.goblin.gb=0;
+RBOSS.cyclops={n:'ไซคลอปส์กระหายเลือด',t:'ยักษ์ตาเดียว',ic:'👁️',lv:85,hp:167000,atk:4200,pw:190000,area:'ดันเจี้ยนกลาง · หุบเขากระดูก',rw:2.5,gb:1,
+ sk:[['🪓 จามขวานสองหน้า','ผ่าฮีโร่ 1 ตนด้วยขวานยักษ์'],['🌪️ กวาดขวานรอบตัว','โจมตีหมู่ ฮีโร่ทุกตนในสนาม ทุก 12 วินาที'],['🩸 กระหายเลือด','เมื่อเลือดต่ำกว่า 30% โจมตีถี่และแรงขึ้น']],
+ items:[{k:'w',wt:'axe',n:'ขวานสองคมกระหายเลือด'},{k:'a',n:'เกราะหนังยักษ์ตาเดียว'},{k:'c',n:'ดวงตาไซคลอปส์'}]};
+// ฟอนต์มืด ๆ สำหรับนับถอยหลัง
+try{const l=document.createElement('link');l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?family=Metal+Mania&display=swap';document.head.appendChild(l);setTimeout(()=>{try{document.fonts.load('80px "Metal Mania"')}catch(e){}},500)}catch(e){}
+const DEF=()=>window.PXRB&&(PXRB[RD.cur&&RD.cur.boss]||PXRB.goblin);
+const ANC={goblin:[200,1],cyclops:[278,1.2]};// จุดกึ่งกลางเท้าในเฟรม · ขนาดเทียบ bH
+const scl=(D,o)=>{const a=ANC[D.id]||[D.FW/2,1];let k=o.bH*a[1]/D.figH;if(RD.cur&&RD.cur.elite)k*=1.06;return Math.min(k,(o.by-80)/(D.figH+30))};
+// ---- ภาพเงา/ขอบเรืองแสง (แคช)
+const SIL=new WeakMap();
+function tint(img,col){let m=SIL.get(img);if(!m){m={};SIL.set(img,m)}if(m[col])return m[col];const v=document.createElement('canvas');v.width=img.width;v.height=img.height;v.ox=img.ox||0;v.oy=img.oy||0;v.meta=img.meta;const x=v.getContext('2d');x.drawImage(img,0,0);x.globalCompositeOperation='source-in';x.fillStyle=col;x.fillRect(0,0,v.width,v.height);return m[col]=v}
+function put(c,img,o,k,D,op={}){const a=ANC[D.id]||[D.FW/2];c.save();c.translate(o.bx+(op.dx||0),o.by+(op.dy||0));c.scale(k,k);if(op.a!=null)c.globalAlpha=op.a;
+ if(op.glow){c.globalAlpha=(op.a==null?1:op.a)*op.ga;const g=tint(img,op.glow);const X=-a[0]+(img.ox||0),Y=-D.GYc+(img.oy||0);for(const[dx,dy]of[[-2,0],[2,0],[0,-2],[0,2],[-1,-1],[1,1],[-1,1],[1,-1]])c.drawImage(g,X+dx,Y+dy);c.globalAlpha=op.a==null?1:op.a}
+ c.drawImage(img,-a[0]+(img.ox||0),-D.GYc+(img.oy||0));if(op.flash){c.globalAlpha=op.flash;c.drawImage(tint(img,'#ffffff'),-a[0]+(img.ox||0),-D.GYc+(img.oy||0))}c.restore()}
+function shadow(c,o,k,D,w=.42){c.save();c.fillStyle='rgba(0,0,0,.5)';c.beginPath();c.ellipse(o.bx,o.by-2,D.figH*w*k,D.figH*.07*k,0,0,7);c.fill();c.restore()}
+// ---- ประกายอีลิท
+const EMB=[];function embers(c,o,k,D,pt){if(EMB.length<36&&Math.random()<.5)EMB.push({x:(Math.random()-.5)*D.figH*.7,y:-Math.random()*D.figH*.3,v:20+Math.random()*30,t0:pt,l:900+Math.random()*900,s:Math.random()<.3?2:1});
+ for(let i=EMB.length-1;i>=0;i--){const e=EMB[i],u=(pt-e.t0)/e.l;if(u>=1){EMB.splice(i,1);continue}const x=o.bx+e.x*k,y=o.by+(e.y-u*e.v*3)*k;c.fillStyle=u<.5?'#ffd27a':'#ff5a2a';c.globalAlpha=1-u;c.fillRect(Math.round(x),Math.round(y),Math.ceil(k*e.s*1.4),Math.ceil(k*e.s*1.4))}c.globalAlpha=1}
+// =====================================================================
+//  ท่าตาย: จำลองบน "เวที" ขนาดพิกเซลเฟรม แล้วขยายลงจอ (พิกเซลเท่ากันทุกชิ้น)
+// =====================================================================
+const BL=['#3a0006','#5e000c','#8a0612','#b4101c','#d8282c'];
+function rng(seed){let s=seed>>>0||1;return()=>{s^=s<<13;s>>>=0;s^=s>>17;s^=s<<5;s>>>=0;return s/4294967296}}
+function disc(x,cx,cy,rx,ry,col){x.fillStyle=col;const R=Math.max(1,Math.round(ry));for(let dy=-R;dy<=R;dy++){const w=Math.round(rx*Math.sqrt(Math.max(0,1-(dy/ry)*(dy/ry))));if(w>0)x.fillRect(Math.round(cx-w),Math.round(cy+dy),w*2,1)}}
+const DS={};// rid → สถานะท่าตาย
+function dState(cur,D){const k=cur.rid;if(DS[k]&&DS[k].D===D)return DS[k];const SX=200,stage=document.createElement('canvas');stage.width=D.FW+400;stage.height=D.FH+30;const st={D,SX,stage,x:stage.getContext('2d'),t:0,dr:[],sp:[],pools:[],r:rng(hstr(cur.rid)),cache:{},head:null,wep:null,gut:null};st.x.imageSmoothingEnabled=false;DS[k]=st;return st}
+// เฟรมไล่ท่าระหว่างตาย (แคช)
+function dFrame(st,keys,u,n,tag){const i=Math.max(0,Math.min(n-1,Math.round(u*(n-1)))),key=tag+i;if(!st.cache[key])st.cache[key]=st.D.render(PXRB.sample(keys,i/(n-1)));return st.cache[key]}
+function spray(st,x,y,n,vx,vy,spr,sz=1){for(let i=0;i<n;i++){const r=st.r;st.dr.push({x,y,vx:vx+(r()-.5)*spr,vy:vy+(r()-.5)*spr*.8,s:sz+(r()<.3?1:0),c:BL[2+Math.floor(r()*3)]})}}
+function step(st,dt,GY){const g=520;for(let i=st.dr.length-1;i>=0;i--){const d=st.dr[i];d.vy+=g*dt;d.x+=d.vx*dt;d.y+=d.vy*dt;if(d.y>=GY-1){st.dr.splice(i,1);if(st.sp.length<260)st.sp.push({x:d.x,y:GY-1-st.r()*3,w:1+Math.round(st.r()*2+Math.abs(d.vx)*.01),c:BL[1+Math.floor(st.r()*3)]})}}if(st.dr.length>900)st.dr.splice(0,st.dr.length-900)}
+function pool(st,x,y,max,rate,t0){st.pools.push({x,y,max,rate,t0})}
+function drawPools(st,x,t){for(const p of st.pools){const u=Math.max(0,t-p.t0);if(u<=0)continue;const r=Math.min(p.max,u*p.rate);disc(x,p.x,p.y,r,r*.28,BL[0]);disc(x,p.x-r*.08,p.y-.5,r*.82,r*.2,BL[1]);disc(x,p.x-r*.2,p.y-1,r*.35,r*.08,BL[2])}
+ for(const s of st.sp){x.fillStyle=s.c;x.fillRect(Math.round(s.x),Math.round(s.y),s.w,1)}}
+function drawDrops(st,x){for(const d of st.dr){x.fillStyle=d.c;x.fillRect(Math.round(d.x),Math.round(d.y),d.s,d.s+(Math.abs(d.vy)>160?1:0))}}
+function rotDraw(x,img,px,py,ang,ox,oy){x.save();x.translate(px,py);x.rotate(ang);x.drawImage(img,-ox+(img.ox||0),-oy+(img.oy||0));x.restore()}
+// ---------- คิงกริมล็อก: ทรุดคุกเข่า ท้องแตก ไส้ไหลกองพื้น เลือดพุ่ง แล้วล้มคว่ำ ----------
+const GKD=[[0,{lean:-14,hd:-16,nS:24,fS:20,bob:3,jaw:1,noclub:1},'o2'],[.45,{bob:40,lean:-24,hd:26,nS:46,nE:-10,fS:30,fE:10,jaw:.7,wound:1,noclub:1,cl:6},'o2'],[1,{bob:44,lean:-34,hd:36,nS:70,nE:-20,fS:40,fE:20,jaw:1,wound:1,noclub:1,cl:8},'s']];
+function gkDeath(st,t){const D=st.D,x=st.x,SX=st.SX,GY=D.GYc,W=st.stage.width,H=st.stage.height;x.clearRect(0,0,W,H);
+ // ร่าง: 0–1.2 ทรุด · 2.2–2.9 ล้มคว่ำไปข้างหน้า
+ const u=Math.min(1,t/1.2),img=t<.18?D.pose('hurt'):dFrame(st,GKD,u,12,'k'),wnd=(dFrame(st,GKD,1,12,'k').meta.wound||[200,200]);
+ const fall=Math.max(0,Math.min(1,(t-2.2)/.7)),ang=-(fall*fall)*1.38,pvx=SX+160,pvy=GY;
+ // กระบองหล่น
+ const cl=D.clubImg?D.clubImg():null;if(cl&&t>=.18){const ct=Math.min(1,(t-.18)/.5),cx=SX+70-ct*40,cy=GY-70+ct*ct*58;rotDraw(x,cl,cx,cy,ct*.85,cl.width*.5,cl.height*.5)}
+ drawPools(st,x,t);
+ rotDraw(x,img,pvx,pvy,ang,pvx-SX,pvy);
+ // จุดแผลบนจอเวที (หมุนตามร่าง)
+ const wx0=SX+wnd[0]-pvx,wy0=wnd[1]-pvy,ca=Math.cos(ang),sa=Math.sin(ang),wx=pvx+wx0*ca-wy0*sa,wy=pvy+wx0*sa+wy0*ca;
+ // ไส้ไหล: เชือกห้อยจากแผลถึงพื้นแล้วกองขด
+ if(t>.5){const L=Math.min(1,(t-.5)/1.6),ropes=[[-6,1],[0,1.15],[6,.9]];for(const[off,f]of ropes){const len=(GY-wy+30)*L*f;let px=wx+off,py=wy;const pts=[];const n=Math.max(2,Math.round(len/3));
+   for(let i=0;i<n;i++){const k2=i/n;let tx=px+Math.sin(k2*7+off+t*2)*2-(k2*10),ty=py+3;if(ty>GY-3){ty=GY-3-Math.abs(Math.sin(i*1.7+off))*3;tx=px-3+Math.cos(i*1.3+off)*2}pts.push([tx,ty]);px=tx;py=Math.min(ty,GY-3)}
+   for(const[a,b]of pts){disc(x,a,b,3.2,3.2,'#3a0810')}for(const[a,b]of pts){disc(x,a,b,2.4,2.4,'#b8404c')}for(const[a,b]of pts){x.fillStyle='#e8808a';x.fillRect(Math.round(a-1),Math.round(b-1),1,1)}}}
+ drawDrops(st,x);
+ return{wx,wy}}
+function gkSim(st,t0,t1){const D=st.D,GY=D.GYc,dt=1/60;for(let t=t0;t<t1;t+=dt){const tt=t;
+ const wnd=(dFrame(st,GKD,1,12,'k').meta.wound||[200,200]),wx=st.SX+wnd[0],wy=wnd[1];
+ if(tt<.3&&st.r()<.9)spray(st,wx,wy-6,11,-140,-180,300,2);// เลือดทะลักตอนโดนฟันท้อง
+ const pulse=tt>.3&&tt<3&&((tt*3)%1)<.12;if(pulse)spray(st,wx,wy,12,-110-st.r()*80,-170-st.r()*120,120,st.r()<.5?2:1);
+ if(tt>.3&&tt<3.4&&st.r()<.5)spray(st,wx+3,wy+2,1,-20,10,40);
+ if(tt>.6&&tt<2.4&&st.r()<.25)spray(st,st.SX+128,GY-110+Math.min(40,tt*20),1,-10,0,20);// เลือดหยดจากปาก
+ step(st,dt,GY)}}
+function gkPools(st){const D=st.D,GY=D.GYc,SX=st.SX;pool(st,SX+150,GY,36,30,.6);pool(st,SX+180,GY+1,48,20,1.4);pool(st,SX+90,GY,56,18,2.6);pool(st,SX+40,GY+1,30,12,1.2)}
+// ---------- ไซคลอปส์: หัวขาดลอยกระเด็น คอพ่นเลือดเป็นน้ำพุ ร่างไร้หัวยืนโงนเงนแล้วล้มหงาย ----------
+const CYD=[[0,{nohead:1,lean:6,nS:-30,nE:60,fS:20,fE:10,bob:4,noaxe:1},'s'],[1,{nohead:1,lean:-6,nS:-50,nE:70,fS:50,fE:30,bob:30,noaxe:1},'io']];
+function cyDeath(st,t){const D=st.D,x=st.x,SX=st.SX,GY=D.GYc,W=st.stage.width,H=st.stage.height;x.clearRect(0,0,W,H);
+ const body=t<.2?D.pose('hurt'):dFrame(st,CYD,Math.max(0,Math.min(1,(t-1.4)/.6)),10,'h'),neck=dFrame(st,CYD,0,10,'h').meta.neck||[230,150];
+ const sway=t<1.4&&t>.2?Math.sin((t-.2)*5)*.05:0,fall=Math.max(0,Math.min(1,(t-2.0)/.65)),ang=sway+fall*fall*1.42,pvx=SX+D.OX+214,pvy=GY;
+ const ax=D.axeImg?D.axeImg():null;if(ax&&t>.25){const at=Math.min(1,(t-.25)/.55);rotDraw(x,ax,SX+D.OX+60-at*30,GY-170+at*at*150,-at*1.45,ax.width/2,ax.height*.7)}
+ drawPools(st,x,t);
+ rotDraw(x,body,pvx,pvy,ang,pvx-SX,pvy);
+ const nx0=SX+neck[0]-pvx,ny0=neck[1]-pvy,ca=Math.cos(ang),sa=Math.sin(ang);st.nk=[pvx+nx0*ca-ny0*sa,pvy+nx0*sa+ny0*ca];st.na=ang;
+ // หัวขาด
+ if(t>=.2&&st.head){const h=st.head,hi=D.pose('head');rotDraw(x,hi,h.x,h.y,h.a,(hi.meta.headC||[100,94])[0],(hi.meta.headC||[100,94])[1])}
+ else if(t<.2){/* ยังติดอยู่ในเฟรม hurt */}
+ drawDrops(st,x)}
+function cySim(st,t0,t1){const D=st.D,GY=D.GYc,dt=1/60;for(let t=t0;t<t1;t+=dt){
+ if(!st.nk){const m=dFrame(st,CYD,0,10,'h').meta.neck||[232,160];st.nk=[st.SX+m[0],m[1]]}
+ if(t>=.2&&!st.head){const nk=st.nk;st.head={x:nk[0]-24,y:nk[1]-10,vx:-70-st.r()*30,vy:-230,a:0,va:-7.5,bn:0,rest:0};spray(st,nk[0],nk[1],70,-30,-300,320,2)}
+ const h=st.head;if(h&&!h.rest){h.vy+=520*dt;h.x+=h.vx*dt;h.y+=h.vy*dt;h.a+=h.va*dt;if(st.r()<.7)spray(st,h.x+6,h.y+18,1,h.vx*.3,h.vy*.3,40);
+  if(h.y>GY-26){h.y=GY-26;if(h.bn<1){h.vy*=-.32;h.vx*=.6;h.va*=.5;h.bn++;spray(st,h.x,GY-4,14,0,-80,160)}else{h.vx*=.9;h.va=h.vx/26;h.vy=0;if(Math.abs(h.vx)<6){h.rest=1;pool(st,h.x+4,GY+1,24,20,t)}}}}
+ // น้ำพุเลือดจากคอ: แรงช่วงแรก ค่อย ๆ เบาลงเป็นจังหวะชีพจร
+ const nk2=st.nk;if(nk2&&t>.2&&t<3.4){const p=Math.max(0,1-(t-.2)/3.2),beat=((t*3.2)%1)<.35?1:.4,n=Math.round(13*p*beat+(st.r()<p?2:0));const up=-(420*p+90)*beat;const ang=st.na||0;
+  spray(st,nk2[0],nk2[1],n,Math.sin(ang)*-up*.6-30,up*Math.cos(ang),120*p+40,st.r()<.5?2:1);if(st.r()<.6*p)spray(st,nk2[0],nk2[1],1,(st.r()-.5)*30,up*1.05,10,3)}
+ step(st,dt,GY)}}
+function cyPools(st){const D=st.D,GY=D.GYc,SX=st.SX;pool(st,SX+D.OX+150,GY,44,36,.6);pool(st,SX+D.OX+250,GY+1,66,26,2.1);pool(st,SX+D.OX+100,GY,34,18,1.2);pool(st,SX+D.OX+40,GY+1,30,14,1.8)}
+// ---------- ตัวเล่นท่าตาย ----------
+function deathT(cur,s){return(Date.now()-(rdFS(cur)+(s.T-1)*1000+350))/1000}
+function playDeath(c,o,D,k){const st=dState(o.cur,D),isG=D.id==='goblin',END=isG?4.8:4.6;let t=deathT(o.cur,o.s);
+ if(!st.init){st.init=1;(isG?gkPools:cyPools)(st);if(t>END+.5){st.fast=1}st.t=0;try{sfx('hit')}catch(e){}}
+ if(st.fast)t=END+1;// เปิดดูทีหลัง: ข้ามไปฉากสุดท้าย
+ t=Math.max(0,t);const T1=Math.min(t,END+1.2);if(T1>st.t){const steps=Math.min(T1-st.t,st.fast?END+1.2:.5);(isG?gkSim:cySim)(st,st.t,st.t+steps);st.t+=steps}
+ (isG?gkDeath:cyDeath)(st,Math.min(t,END+1.2));
+ const a=ANC[D.id]||[D.FW/2];c.save();c.imageSmoothingEnabled=false;c.translate(o.bx,o.by);c.scale(k,k);c.drawImage(st.stage,-(st.SX+a[0]),-D.GYc);c.restore();
+ // สั่นจอตอนหัวขาด/ล้ม
+ return t}
+// =====================================================================
+//  วาดบอส (แทนของเดิม)
+// =====================================================================
+const SHK={t:0};
+const WARM={};function warm(D){const w=WARM[D.id]||(WARM[D.id]={i:0});if(w.done||w.busy)return;w.busy=1;setTimeout(()=>{w.busy=0;const L=[];for(const[a,A]of Object.entries(D.A))for(let i=0;i<A.n;i++)L.push([a,A.loop?i/A.n:(i+.5)/A.n]);if(w.i>=L.length){w.done=1;return}const[a,ph]=L[w.i++];try{D.frame(a,ph)}catch(e){}},90)}
+window.RBX_DRAW=function(c,o){const D=DEF();if(!D||window.PX_OFF)return false;warm(D);const k=scl(D,o),cur=o.cur,el=!!(cur&&cur.elite),pt=o.pt;
+ const sm=c.imageSmoothingEnabled;c.imageSmoothingEnabled=false;try{
+ if(o.ph==='join'||o.ph==='prep'){const rv=o.ph==='prep'?cl((o.now-cur.joinUntil)/5000,0,1):0,img=D.frame('idle',pt/1900),bob=0;shadow(c,o,k,D);
+  if(rv>0)put(c,img,o,k,D,{a:rv,glow:el?'#ff6a2a':null,ga:.6});if(rv<1)put(c,tint(img,'#07030c'),o,k,D,{a:1-rv*.92});
+  if(rv<.6){const a=ANC[D.id]||[D.FW/2];c.save();c.fillStyle=el?'rgba(255,170,40,.95)':'rgba(255,40,40,.95)';c.shadowColor=el?'#fa0':'#f00';c.shadowBlur=14;for(const[ex,ey]of(img.meta&&img.meta.eyes)||[]){const X=o.bx+(ex-a[0])*k,Y=o.by+(ey-D.GYc)*k,r=D.eye1?4.6*k:2*k;c.beginPath();c.arc(X,Y,r,0,7);c.fill()}c.restore();
+   c.fillStyle='#ffd27a';c.font='800 44px Cinzel,serif';c.textAlign='center';c.globalAlpha=.6+.4*Math.sin(pt/300);c.fillText('???',o.bx,o.by-D.figH*k-10);c.globalAlpha=1}
+  if(el&&rv>0)embers(c,o,k,D,pt);return true}
+ if(o.s&&o.s.win&&(o.ph==='done'||deathT(cur,o.s)>=0)){playDeath(c,o,D,k);return true}
+ if(o.s&&o.s.win&&o.ti>=o.T-9){const st=dState(cur,D);st.w=(st.w||0)+1;const i=st.w;if(i<=12&&D.id==='goblin')dFrame(st,GKD,(i-1)/11,12,'k');else if(i<=10&&D.id==='cyclops')dFrame(st,CYD,(i-1)/9,10,'h');else if(i===14){D.pose('hurt');D.id==='cyclops'?(D.pose('head'),D.axeImg()):D.clubImg()}}
+ // มีชีวิต: ท่าทางตามเหตุการณ์ในวินาทีนั้น
+ const ev=o.ev,fr=o.fr;let anim='idle',ph=pt/1900;if(ev&&ev.b&&o.ph==='fight'){if(ev.b.k==='cast'&&fr<.85){anim='cast';ph=fr/.85}else if(ev.b.k==='smash'&&fr<.6){anim='smash';ph=fr/.6}}
+ const img=D.frame(anim,ph),low=ev&&ev.bh<o.B.hp*.3,crit=ev&&fr<.15&&ev.a.some(a=>a[2]),hit=ev&&fr<.12&&ev.a.some(a=>a[1]>0);
+ const dx=crit?Math.sin(pt/16)*3:0;shadow(c,o,k,D);
+ put(c,img,o,k,D,{dx,glow:anim==='cast'&&D.id==='goblin'?'#b25bff':el?(low?'#ff2a1a':'#ffaa2a'):low?'#ff2a1a':null,ga:el?.55+.25*Math.sin(pt/180):.5,flash:hit?.28*(1-fr/.12):0});
+ if(el)embers(c,o,k,D,pt);
+ }finally{c.imageSmoothingEnabled=sm}return true};
+// ---- ท่ากวาดขวานของไซคลอปส์: วงคมขวานสีเลือด + คลื่นกระแทก
+window.RBX_CAST=function(c,o){const D=DEF();if(!D||D.id!=='cyclops')return false;const fr=o.fr;c.save();
+ if(fr>.25&&fr<.8){const u=(fr-.25)/.55,a0=-.4+u*3.4;c.strokeStyle=`rgba(255,${80+Math.round(120*(1-u))},60,${.85*(1-u*.6)})`;c.lineWidth=10*(1-u)+3;c.beginPath();c.ellipse(o.bx-30,o.by-110,170,60,0,a0-1.6,a0);c.stroke();c.strokeStyle=`rgba(255,240,220,${.7*(1-u)})`;c.lineWidth=2;c.beginPath();c.ellipse(o.bx-30,o.by-110,170,60,0,a0-1.2,a0);c.stroke()}
+ const r=60+fr*440;c.strokeStyle=`rgba(255,60,40,${.8*(1-fr)})`;c.lineWidth=8*(1-fr)+2;c.beginPath();c.ellipse(o.bx,o.by,r,r*(o.iso?.4:.16),0,0,7);c.stroke();c.fillStyle=`rgba(160,0,0,${.16*(1-fr)})`;c.fillRect(0,0,o.W,o.H);c.restore();return true};
+// ---- นับถอยหลังรับสมัครกลางจอ: ตัวเลขแดง ขอบดำ ฟอนต์ดุ
+window.RBX_CD=function(c,W,H,ms,n){const s=Math.max(0,Math.ceil(ms/1000)),tx=mmss(ms),last=s<=10,pt=performance.now(),pulse=last?1+.08*Math.abs(Math.sin(pt/160)):1;
+ c.save();const g=c.createRadialGradient(W/2,H/2,10,W/2,H/2,260);g.addColorStop(0,'rgba(0,0,0,.55)');g.addColorStop(1,'rgba(0,0,0,0)');c.fillStyle=g;c.fillRect(0,0,W,H);
+ c.textAlign='center';c.textBaseline='middle';c.lineJoin='round';
+ c.font='800 19px Kanit,Sarabun,sans-serif';c.lineWidth=5;c.strokeStyle='#000';c.strokeText('⚠ ปิดรับสมัครใน',W/2,H/2-62);c.fillStyle='#d8c8c0';c.fillText('⚠ ปิดรับสมัครใน',W/2,H/2-62);
+ c.translate(W/2,H/2+4);c.scale(pulse,pulse);c.font='96px "Metal Mania",Cinzel,serif';c.lineWidth=12;c.strokeStyle='#000';c.strokeText(tx,0,0);c.lineWidth=5;c.strokeStyle='#2a0004';c.strokeText(tx,0,0);
+ const tg=c.createLinearGradient(0,-44,0,44);tg.addColorStop(0,'#ff4a3a');tg.addColorStop(.55,'#c40c12');tg.addColorStop(1,'#6a0006');c.fillStyle=tg;c.shadowColor='rgba(255,0,0,.55)';c.shadowBlur=18;c.fillText(tx,0,0);c.restore();
+ c.save();c.textAlign='center';c.font='700 16px Kanit,Sarabun,sans-serif';c.lineWidth=5;c.strokeStyle='#000';const sub=n?`ผู้เข้าร่วม ${n} คน · ส่งฮีโร่เข้าร่วมด้านล่าง`:'บอสไม่ทราบชนิดปรากฏตัว · ส่งฮีโร่เข้าร่วมด้านล่าง';c.strokeText(sub,W/2,H/2+70);c.fillStyle='#ff9a8a';c.fillText(sub,W/2,H/2+70);c.restore()};
+// ไอเทมบอสใหม่: ฉายาของไอเทม
+window.RBX_DS=DS;
 }
 
 // ================= ลูปเกม =================
