@@ -825,7 +825,7 @@ const AK={kill:'kill',riot:'riot',steal:'steal',quarrel:'quarrel',party:'party',
 function abg(c,m){if(m==='in'){c.fillStyle='#4a3a2e';c.fillRect(0,0,300,130);c.fillStyle='#55432f';for(let i=0;i<300;i+=24)c.fillRect(i,0,1.5,98);c.fillStyle='#6e5440';c.fillRect(0,98,300,32)}
 else if(m==='dark'){grad(c,'#0a0716','#2a1838',130,300);c.fillStyle='#1c1228';c.fillRect(0,98,300,32)}
 else{const n=isNight();grad(c,n?'#0b1028':'#79bdf5',n?'#26305a':'#d8efff',130,300);c.fillStyle=['snow','blizzard'].includes(S.wx)||m==='snow'?'#eef3f8':GRASS[season()][0];c.fillRect(0,98,300,32)}}
-const em=(c,s,x,y,z=14)=>{c.font=z+'px sans-serif';c.textAlign='center';c.filter=EMOF;c.fillText(s,x,y);c.filter='none'},bub=(c,s,x,y)=>{c.font='bold 9px sans-serif';const w=c.measureText(s).width+10;c.fillStyle='#fff';c.beginPath();c.ellipse(x,y,w/2,8,0,0,7);c.fill();c.fillStyle='#222';c.textAlign='center';c.fillText(s,x,y+3)};
+const em=(c,s,x,y,z=14)=>{c.font=z+'px sans-serif';c.textAlign='center';c.filter=EMOF;c.fillText(s,x,y);c.filter='none'},bub=(c,s,x,y)=>{if(window.PXBUB&&!window.PX_OFF)return PXBUB(c,s,x,y);c.font='bold 9px sans-serif';const w=c.measureText(s).width+10;c.fillStyle='#fff';c.beginPath();c.ellipse(x,y,w/2,8,0,0,7);c.fill();c.fillStyle='#222';c.textAlign='center';c.fillText(s,x,y+3)};
 const throne=(c,x)=>{c.fillStyle='#7a2a2a';c.fillRect(x-12,62,24,40);c.fillStyle='#c9a227';c.fillRect(x-14,58,28,6);em(c,'👑',x,56,12)};
 const G=104,NP=(h,o={})=>Object.assign({name:h&&h.n,fs:7,wp:h?wpOf(h)||h.wp:null,ar:h?arOf(h):null},o);
 const ANF={
@@ -5781,11 +5781,11 @@ const TC={};const tone=a=>a.map(h=>TC[h]||(TC[h]=(()=>{const n=parseInt(h.slice(
 // ---- Raid: ราชันก็อบลินพิกเซล + ท้องพระโรงขุมทรัพย์ ----
 const LIVE={};for(const k of['idle','cast','atk','dead']){const cv=document.createElement('canvas');cv.width=PXGOB.FW;cv.height=PXGOB.FH;cv.complete=true;cv.naturalWidth=cv.width;cv.naturalHeight=cv.height;LIVE[k]=cv;RB_IMG[k]=cv}
 const putF=(k,img)=>{const c=LIVE[k].getContext('2d');c.clearRect(0,0,LIVE[k].width,LIVE[k].height);c.drawImage(img,0,0)};
-function bossFrames(){const pt=performance.now();putF('idle',PXGOB.frame('idle',Math.floor(pt/260)%4));putF('cast',PXGOB.frame('cast',Math.floor(pt/120)%4));
+function px_bossFrames(){const pt=performance.now();putF('idle',PXGOB.frame('idle',Math.floor(pt/260)%4));putF('cast',PXGOB.frame('cast',Math.floor(pt/120)%4));
  let fi=Math.floor(pt/150)%4;try{const cur=RD.cur;if(cur){const tf=(Date.now()-rdFS(cur))/1000,fr=tf-Math.floor(tf);fi=Math.min(3,Math.floor(fr/.6*4))}}catch(e){}putF('atk',PXGOB.frame('smash',fi));putF('dead',PXGOB.frame('dead',0))}
-bossFrames();RD.sil=null;
+px_bossFrames();RD.sil=null;
 window.rdBgPX=function(c,W,H,iso,pt){const s=bt('raid');c.save();c.scale(W/360,H/260);blit(c,s.bg,0,0,360,260);s.fx(c,pt);c.restore()};
-{const _rd=rdDraw;rdDraw=function(){if(!window.PX_OFF)bossFrames();const cv=$('rdc');let sm;if(cv){const c=cv.getContext('2d');sm=c.imageSmoothingEnabled;c.imageSmoothingEnabled=false}try{return _rd()}finally{if(cv)cv.getContext('2d').imageSmoothingEnabled=sm}}}
+{const _rd=rdDraw;rdDraw=function(){if(!window.PX_OFF)px_bossFrames();const cv=$('rdc');let sm;if(cv){const c=cv.getContext('2d');sm=c.imageSmoothingEnabled;c.imageSmoothingEnabled=false}try{return _rd()}finally{if(cv)cv.getContext('2d').imageSmoothingEnabled=sm}}}
 window.PXSCN={SCN,S2};
 }
 
@@ -5859,47 +5859,47 @@ const PXM=PXGAME.PXM;
 const SSC={};const sideScene=env=>SSC[env]||(SSC[env]=(PXBTS[env]||PXBTS.lobby)());
 const blit=(c,img,x,y,w,h)=>{const sm=c.imageSmoothingEnabled;c.imageSmoothingEnabled=false;c.drawImage(img,x,y,w,h);c.imageSmoothingEnabled=sm};
 {const _bb=btBg;btBg=function(c,b,t){if(BTV.side&&!window.PX_OFF){try{const env=b&&b.th?b.th[1]:'lobby',s=sideScene(env);blit(c,s.bg,0,0,400,240);s.fx&&s.fx(c,t)}catch(e){_bb(c,b,t)}}else _bb(c,b,t);
- if(!window.PX_OFF&&b&&b.en)try{remains(c,b)}catch(e){}}}
+ if(!window.PX_OFF&&b&&b.en)try{px_remains(c,b)}catch(e){}}}
 {const _ab=arenaBg;arenaBg=function(c,t){if(BTV.side&&!window.PX_OFF){try{const s=sideScene('arena');blit(c,s.bg,0,0,400,240);s.fx(c,t);return}catch(e){}}_ab(c,t)}}
 // ---------- มอนสเตอร์พิกเซล ----------
 const MKEY=sh=>PXMON.A[sh]?sh:'ghoul';
 const scaleOf=Sc=>{const D=Sc*.66,k=Math.max(1,Math.min(4,Math.round(D*1.6*4)/4));return{D,k,s:D/k}};
-function frameFor(u,t){const b=B,cur=b&&b.cur&&b.cur.a&&b.cur.a.u===u?b.cur:null;
+function px_frameFor(u,t){const b=B,cur=b&&b.cur&&b.cur.a&&b.cur.a.u===u?b.cur:null;
  if(cur){const p=Math.min(1,cur.t/cur.dur),h=cur.hit/cur.dur;if(cur.mode==='cast')return'cast';return p<h*.65?'atk1':p<h+.12?'atk2':'atk3'}
  if(u.hit>0)return'hurt';return Math.floor(t/420+(u.x||0)*.07)%2?'idle1':'idle0'}
 const CROWN=(c,x,y,w)=>{w=Math.max(6,Math.round(w));const h=Math.round(w*.45);c.fillStyle='#2a1604';c.fillRect(x-w/2-1,y-1,w+2,h+2);c.fillStyle='#d8a040';c.fillRect(x-w/2,y,w,h);c.fillStyle='#ffe08a';c.fillRect(x-w/2,y,w,1);
  for(let i=0;i<4;i++){const px=Math.round(x-w/2+i*(w-2)/3);c.fillStyle='#2a1604';c.fillRect(px-1,y-h-1,3,h+1);c.fillStyle='#e8b850';c.fillRect(px,y-h,1,h)}c.fillStyle='#e02848';c.fillRect(Math.round(x)-1,y+1,2,Math.max(1,h-2))};
 {const _mb=monBody;monBody=function(c,u,t,Sc,o={}){if(window.PX_OFF||!u||u.sh==='hero')return _mb(c,u,t,Sc,o);
- const sh=MKEY(u.sh),{D,k,s}=scaleOf(Sc),f=frameFor(u,t),fr=PXMON.get(sh,u.col,k,f);PXMON.pump(8);if(!fr){PXMON.warm(sh,u.col,k);return _mb(c,u,t,Sc,o)}
+ const sh=MKEY(u.sh),{D,k,s}=scaleOf(Sc),f=px_frameFor(u,t),fr=PXMON.get(sh,u.col,k,f);PXMON.pump(8);if(!fr){PXMON.warm(sh,u.col,k);return _mb(c,u,t,Sc,o)}
  const M=PXMON.META[sh]||{},fly=M.fly?Math.round(Math.sin(t/300+(u.x||0))*2*D):0;c.save();c.rotate((o.rot||0)*.25);if(o.flt)c.filter='brightness(1.9)';
  const sm=c.imageSmoothingEnabled;c.imageSmoothingEnabled=false;c.drawImage(fr,Math.round(-fr.ax*s),Math.round(-fr.ay*s+fly),Math.round(fr.width*s),Math.round(fr.height*s));c.imageSmoothingEnabled=sm;c.filter='none';
  if(u.kind==='boss'&&!o.noCrown&&M.hd)CROWN(c,Math.round((M.hd[0]-34)*D),Math.round((M.hd[1]-60-7)*D+fly),7*D);
  c.restore();if(f==='idle0')for(const g of['atk1','atk2','atk3','hurt'])PXMON.get(sh,u.col,k,g)}}
 // ---------- ท่าตายมอนสเตอร์ (โหด) ----------
-function goreOpt(u,Sc){const sh=MKEY(u.sh),M=PXMON.META[sh]||{},{D,k,s}=scaleOf(Sc),fr=PXMON.get(sh,u.col,k,'hurt',true);
+function px_goreOpt(u,Sc){const sh=MKEY(u.sh),M=PXMON.META[sh]||{},{D,k,s}=scaleOf(Sc),fr=PXMON.get(sh,u.col,k,'hurt',true);
  if(!u._gty){const L2=M.d||['gib'],sd=((u.x*13|0)+(u.y*7|0)+(u.mx|0))%997;u._gty=L2[sd%L2.length];u._gsd=sd}
  const P=PXMON.BLD[M.bl]||[PXMON.mix(u.col,'#000000',.6),PXMON.mix(u.col,'#000000',.3),u.col,PXMON.mix(u.col,'#ffffff',.4)];
  return{fr,s,ty:u._gty,P,cut:((M.cut||24)+8)*k,hd:M.hd?[(M.hd[0]+8)*k,(M.hd[1]+8)*k]:null,hr:(M.hr||7)*k,q:M.q,seed:u._gsd,L:PXMG.LEN[u._gty]||1.8,big:Math.max(1,D*.9)}}
 const SCK=u=>(MSC[u.kind]||1.35)*(u.el?1.3:1)*BTV.m;
-{const _md=monDeath;monDeath=function(c,u,t,dt,Sc){if(window.PX_OFF||!u||u.sh==='hero')return _md(c,u,t,dt,Sc);try{PXMG.draw(c,dt,goreOpt(u,Sc))}catch(e){_md(c,u,t,dt,Sc)}}}
+{const _md=monDeath;monDeath=function(c,u,t,dt,Sc){if(window.PX_OFF||!u||u.sh==='hero')return _md(c,u,t,dt,Sc);try{PXMG.draw(c,dt,px_goreOpt(u,Sc))}catch(e){_md(c,u,t,dt,Sc)}}}
 // ซากที่เหลือ (หลังจบท่าตาย) วาดใต้ตัวละครจนจบด่าน แล้วจางไป
-function remains(c,b){const now=performance.now();for(const u of b.en){if(!u.dead||!u.d0||u.sh==='hero')continue;const dt=(now-u.d0)/1000,L2=MDUR(u)+.5;if(dt<=L2)continue;const fade=1-Math.max(0,dt-L2-12)/2;if(fade<=0)continue;
- const Sc=SCK(u),o=goreOpt(u,Sc);if(o.ty==='dissolve')continue;c.save();c.globalAlpha=fade;c.translate(u.x,u.y);PXMG.draw(c,Math.min(dt,o.L+1.2),o);c.restore()}}
+function px_remains(c,b){const now=performance.now();for(const u of b.en){if(!u.dead||!u.d0||u.sh==='hero')continue;const dt=(now-u.d0)/1000,L2=MDUR(u)+.5;if(dt<=L2)continue;const fade=1-Math.max(0,dt-L2-12)/2;if(fade<=0)continue;
+ const Sc=SCK(u),o=px_goreOpt(u,Sc);if(o.ty==='dissolve')continue;c.save();c.globalAlpha=fade;c.translate(u.x,u.y);PXMG.draw(c,Math.min(dt,o.L+1.2),o);c.restore()}}
 // ---------- ท่าตายฮีโร่ (พิกเซล) ใช้ทุกที่ ----------
 const DV2={behead:'decap',arm:'armoff',halve:'halved',stab:'kneel',crush:'legoff',poison:'kneel',burn:'fall',freeze:'kneel',void:'fall',madness:'decap',fall:'fall'};
 const DFLT={burn:'brightness(.5) sepia(.7) saturate(1.6)',freeze:'saturate(.3) brightness(1.25) hue-rotate(170deg)',poison:'saturate(.6) hue-rotate(60deg) brightness(.85)',void:'saturate(.2) brightness(.7) hue-rotate(230deg)'};
 const SDC=new Map(),SDQ=[];
-function sideDeath(sp,seed,variant,i){const key=JSON.stringify(sp)+'|'+seed+'|'+variant+'|'+i;if(SDC.has(key))return SDC.get(key);if(!SDQ.some(q=>q.key===key))SDQ.push({key,sp,seed,variant,i});return null}
-function sdPump(){const n=performance.now();while(SDQ.length&&performance.now()-n<10){const q=SDQ.shift();try{SDC.set(q.key,PXS.frame(q.sp,'death',q.i,1,PXGAME.palOf(q.sp),{seed:q.seed,variant:q.variant}))}catch(e){SDC.set(q.key,null)}if(SDC.size>240)SDC.delete(SDC.keys().next().value)}}
-function heroDeath(c,h,X,Y,s,t,variant,flt){const sp=PXGAME.pxSpec(h,{}),seed=(h?((+h.id||0)*7+(typeof hstr==='function'?hstr(String(h.n||'')):0))%100000+1:5),v=variant||PXF.pickDeath(seed),fi=Math.min(7,Math.max(0,Math.floor(t*9)));
- let fr=null,k,cx,gy;if(PXM.side){sdPump();fr=sideDeath(sp,seed,v,fi);for(let j=fi+1;j<Math.min(8,fi+3);j++)sideDeath(sp,seed,v,j);k=22*s/150;cx=88;gy=172.5}
+function px_sideDeath(sp,seed,variant,i){const key=JSON.stringify(sp)+'|'+seed+'|'+variant+'|'+i;if(SDC.has(key))return SDC.get(key);if(!SDQ.some(q=>q.key===key))SDQ.push({key,sp,seed,variant,i});return null}
+function px_sdPump(){const n=performance.now();while(SDQ.length&&performance.now()-n<10){const q=SDQ.shift();try{SDC.set(q.key,PXS.frame(q.sp,'death',q.i,1,PXGAME.palOf(q.sp),{seed:q.seed,variant:q.variant}))}catch(e){SDC.set(q.key,null)}if(SDC.size>240)SDC.delete(SDC.keys().next().value)}}
+function px_heroDeath(c,h,X,Y,s,t,variant,flt){const sp=PXGAME.pxSpec(h,{}),seed=(h?((+h.id||0)*7+(typeof hstr==='function'?hstr(String(h.n||'')):0))%100000+1:5),v=variant||PXF.pickDeath(seed),fi=Math.min(7,Math.max(0,Math.floor(t*9)));
+ let fr=null,k,cx,gy;if(PXM.side){px_sdPump();fr=px_sideDeath(sp,seed,v,fi);for(let j=fi+1;j<Math.min(8,fi+3);j++)px_sideDeath(sp,seed,v,j);k=22*s/150;cx=88;gy=172.5}
  if(!fr){const F=PXGAME.frontF(sp,seed,v);fr=F.death[fi];k=22*s/55;cx=34;gy=67.5}
  c.save();const sm=c.imageSmoothingEnabled;c.imageSmoothingEnabled=false;if(flt)c.filter=flt;c.translate(X,Y);c.drawImage(fr,-cx*k,-gy*k,fr.width*k,fr.height*k);c.filter='none';c.imageSmoothingEnabled=sm;c.restore()}
-{const _dd=drawDeath;drawDeath=function(c,ty,h,t,X,Y,s,col){if(window.PX_OFF)return _dd(c,ty,h,t,X,Y,s,col);const v=DV2[ty]||'fall';try{heroDeath(c,h,X,Y,s*(BTV.cm||1),t,v,DFLT[ty]);
+{const _dd=drawDeath;drawDeath=function(c,ty,h,t,X,Y,s,col){if(window.PX_OFF)return _dd(c,ty,h,t,X,Y,s,col);const v=DV2[ty]||'fall';try{px_heroDeath(c,h,X,Y,s*(BTV.cm||1),t,v,DFLT[ty]);
   if(ty==='burn'&&t<2.5){for(let i=0;i<10;i++){const q=((t*.9)+i/10)%1;c.fillStyle=i%2?'#ff8a2a':'#ffd060';c.fillRect(Math.round(X+(PXMG.R(i,3)-.5)*14*s),Math.round(Y-q*30*s*.6),1,1)}}
   if(ty==='freeze'&&t>.3){c.fillStyle='#e8f6ff';for(let i=0;i<8;i++)c.fillRect(Math.round(X+(PXMG.R(i,5)-.5)*16*s),Math.round(Y-PXMG.R(i,6)*12*s),1,2)}}catch(e){return _dd(c,ty,h,t,X,Y,s,col)}}}
 // ---------- chibi: ขยายตามมุมมอง + ท่าตายตามเวลา (o.gt) ----------
-{const _c=chibi;chibi=function(c,x,y,s,h,o={}){const cm=BTV.cm||1;if(!window.PX_OFF&&o&&o.gt!=null){try{heroDeath(c,h,x,y,s*cm,o.gt,o.gv,null);return}catch(e){}}return _c(c,x,y,s*cm,h,o)}}
+{const _c=chibi;chibi=function(c,x,y,s,h,o={}){const cm=BTV.cm||1;if(!window.PX_OFF&&o&&o.gt!=null){try{px_heroDeath(c,h,x,y,s*cm,o.gt,o.gv,null);return}catch(e){}}return _c(c,x,y,s*cm,h,o)}}
 // ---------- จอต่อสู้: โหมดเต็มตัว ----------
 {const _db=drawBattle;drawBattle=function(t){if(!BTV.side||window.PX_OFF)return _db(t);const o1=PXM.side;PXM.side=1;BTV.m=BTV.M;BTV.cm=BTV.M;try{return _db(t)}finally{PXM.side=o1;BTV.m=1;BTV.cm=1}}}
 {const _bu=btUI;btUI=function(){_bu();const b=B;if(!b||btMin||scr!=='game')return;const sp=$('bth')&&$('bth').querySelector('span');if(!sp)return;let x=sp.querySelector('[data-btv]');
@@ -5924,21 +5924,21 @@ const CC=window.CCTV={on:0,feeds:[],nx:[0,0,0,0],big:-1,alert:null,lastEv:null,s
 const SCN={};const s2=(k,a)=>{const key=k+'|'+(a||'');return SCN[key]||(SCN[key]=PX2D[k](a))};
 const hh=id=>S.h.find(h=>h.id===id&&!h.bx);
 const inBattle=h=>!!(B&&B.hs&&B.hs.some(u=>u.h===h));
-function locOf(h,t){if(h.job&&S.b[h.job])return{k:'work',a:h.job,n:BL[h.job][0]};const L=['plaza','hall','rampart'],i=((+h.id||0)+Math.floor(t/45000))%3;return{k:L[i],n:{plaza:'ลานอัญเชิญ',hall:'โถงทางเดิน',rampart:'กำแพงปราการ'}[L[i]]}}
-function pool(){return act().filter(h=>!h.bx)}
-function pick(i,t,excl){const A=pool().filter(h=>!excl.includes(h.id));if(!A.length)return null;const a=A[Math.floor((i*7+Math.floor(t/12000)*3+CC.nx[i])%A.length)];return a?a.id:null}
-function refill(t){const used=[];for(let i=0;i<4;i++){let id=CC.feeds[i];if(!id||!hh(id)||(CC.feeds[i+'t']||0)<t){id=pick(i,t,used);CC.feeds[i]=id;CC.feeds[i+'t']=t+11000+i*1700}if(id)used.push(id)}}
+function px_locOf(h,t){if(h.job&&S.b[h.job])return{k:'work',a:h.job,n:BL[h.job][0]};const L=['plaza','hall','rampart'],i=((+h.id||0)+Math.floor(t/45000))%3;return{k:L[i],n:{plaza:'ลานอัญเชิญ',hall:'โถงทางเดิน',rampart:'กำแพงปราการ'}[L[i]]}}
+function px_pool(){return act().filter(h=>!h.bx)}
+function px_pick(i,t,excl){const A=px_pool().filter(h=>!excl.includes(h.id));if(!A.length)return null;const a=A[Math.floor((i*7+Math.floor(t/12000)*3+CC.nx[i])%A.length)];return a?a.id:null}
+function px_refill(t){const used=[];for(let i=0;i<4;i++){let id=CC.feeds[i];if(!id||!hh(id)||(CC.feeds[i+'t']||0)<t){id=px_pick(i,t,used);CC.feeds[i]=id;CC.feeds[i+'t']=t+11000+i*1700}if(id)used.push(id)}}
 // เหตุการณ์ใหม่ = จับภาพฮีโร่ที่เกี่ยวข้องทันที
-function watchEv(t){const e=typeof ev!=='undefined'?ev:null;if(e&&e!==CC.lastEv){CC.lastEv=e;const H2=(e.vis||e.hs||[]).filter(Boolean).map(h=>h.id).filter(id=>hh(id));if(H2.length){H2.slice(0,2).forEach((id,j)=>{CC.feeds[j]=id;CC.feeds[j+'t']=t+15000});CC.alert={t,ti:(e.ti||'').replace(/^\S+\s/,''),ids:H2}}}}
+function px_watchEv(t){const e=typeof ev!=='undefined'?ev:null;if(e&&e!==CC.lastEv){CC.lastEv=e;const H2=(e.vis||e.hs||[]).filter(Boolean).map(h=>h.id).filter(id=>hh(id));if(H2.length){H2.slice(0,2).forEach((id,j)=>{CC.feeds[j]=id;CC.feeds[j+'t']=t+15000});CC.alert={t,ti:(e.ti||'').replace(/^\S+\s/,''),ids:H2}}}}
 // ลายเส้นสแกน
 let SCL=null;const scan=c=>{if(!SCL){const p=document.createElement('canvas');p.width=1;p.height=3;const x=p.getContext('2d');x.fillStyle='rgba(0,0,0,.28)';x.fillRect(0,0,1,1);SCL=p}return c.createPattern(SCL,'repeat')};
-function hud(c,x,y,w,h,txt,col,font){c.textAlign='left';c.textBaseline='alphabetic';c.font=font||`700 ${Math.round(11*(CC.fz||1))}px Kanit,"Chakra Petch",monospace`;c.fillStyle='rgba(0,0,0,.55)';const fz=CC.fz||1,tw=c.measureText(txt).width;c.fillRect(x-2,y-11*fz,tw+6,15*fz);c.fillStyle=col;c.fillText(txt,x+1,y)}
-function feed(c,i,X,Y,W,H,t,dt){CC.fz=W/400;c.save();c.beginPath();c.rect(X,Y,W,H);c.clip();const id=CC.feeds[i],h=id&&hh(id);const sx=W/400,sy=H/300;
+function px_hud(c,x,y,w,h,txt,col,font){c.textAlign='left';c.textBaseline='alphabetic';c.font=font||`700 ${Math.round(11*(CC.fz||1))}px Kanit,"Chakra Petch",monospace`;c.fillStyle='rgba(0,0,0,.55)';const fz=CC.fz||1,tw=c.measureText(txt).width;c.fillRect(x-2,y-11*fz,tw+6,15*fz);c.fillStyle=col;c.fillText(txt,x+1,y)}
+function px_feed(c,i,X,Y,W,H,t,dt){CC.fz=W/400;c.save();c.beginPath();c.rect(X,Y,W,H);c.clip();const id=CC.feeds[i],h=id&&hh(id);const sx=W/400,sy=H/300;
  if(!h||inBattle(h)){c.fillStyle='#0c0c10';c.fillRect(X,Y,W,H);for(let n=0;n<900;n++){const v=Math.random()*90|0;c.fillStyle=`rgb(${v},${v},${v})`;c.fillRect(X+Math.random()*W|0,Y+Math.random()*H|0,2,2)}
-  c.textAlign='center';hud(c,X+W/2-70,Y+H/2,0,0,h?`สัญญาณขาด · ${h.n} ออกรบอยู่`:'NO SIGNAL','#e8e8e8');c.textAlign='left'}
- else{const L=locOf(h,t),sc=L.k==='work'?s2('work',L.a):s2(L.k);c.translate(X,Y);c.scale(sx,sy);const sm=c.imageSmoothingEnabled;c.imageSmoothingEnabled=false;c.drawImage(sc.bg,0,0);c.imageSmoothingEnabled=sm;try{sc.fx&&sc.fx(c,t)}catch(e){}
+  c.textAlign='center';px_hud(c,X+W/2-70,Y+H/2,0,0,h?`สัญญาณขาด · ${h.n} ออกรบอยู่`:'NO SIGNAL','#e8e8e8');c.textAlign='left'}
+ else{const L=px_locOf(h,t),sc=L.k==='work'?s2('work',L.a):s2(L.k);c.translate(X,Y);c.scale(sx,sy);const sm=c.imageSmoothingEnabled;c.imageSmoothingEnabled=false;c.drawImage(sc.bg,0,0);c.imageSmoothingEnabled=sm;try{sc.fx&&sc.fx(c,t)}catch(e){}
   // คนในฉากเดียวกัน
-  const mates=pool().filter(x=>x!==h&&locOf(x,t).k===L.k&&(L.k!=='work'||x.job===h.job)).slice(0,2),all=[h,...mates];PXM.side=1;
+  const mates=px_pool().filter(x=>x!==h&&px_locOf(x,t).k===L.k&&(L.k!=='work'||x.job===h.job)).slice(0,2),all=[h,...mates];PXM.side=1;
   all.forEach((x,j)=>{const ph=t/4200+(+x.id||0)*1.7,xx=200+Math.sin(ph)*120*(j?0.8:1)+(j?(j===1?-60:60):0),dir=Math.cos(ph)>0?1:-1,mv=Math.abs(Math.cos(ph))>.25,yy=262+j*8;
    chibi(c,xx,yy,4.6+(j?-.4:0),x,{dir,step:mv?t/110+(+x.id||0):null,sw:x.job&&!mv?Math.sin(t/200+(+x.id||0))*.6:0,wp:wpOf(x)||x.wp,ar:arOf(x),glow:x.r>=5});
    if(j===0){const bx=xx-30,by=yy-122,bw=60,bh=128,p=Math.floor(t/400)%2;c.fillStyle=CC.alert&&CC.alert.ids.includes(x.id)&&t-CC.alert.t<9000?'#ff3a4a':'#7dff9a';
@@ -5950,12 +5950,12 @@ function feed(c,i,X,Y,W,H,t,dt){CC.fz=W/400;c.save();c.beginPath();c.rect(X,Y,W,
   c.fillStyle=scan(c);c.fillRect(X,Y,W,H);const by2=Y+((t/22+i*90)%(H+60))-30;c.fillStyle='rgba(255,255,255,.06)';c.fillRect(X,by2,W,18);
   for(let n=0;n<70;n++){c.fillStyle=Math.random()<.5?'rgba(255,255,255,.35)':'rgba(0,0,0,.4)';c.fillRect(X+Math.random()*W|0,Y+Math.random()*H|0,2,1)}
   if(Math.random()<.012){const gy=Y+Math.random()*H|0;c.drawImage(c.canvas,X,gy,W,6,X+8,gy,W,6)}
-  hud(c,X+8,Y+18,0,0,`CAM 0${i+1} · ${L.n}`,'#e6ffe8');hud(c,X+8,Y+H-10,0,0,`${dshort()} · ${clk()}`,'#e6ffe8',`600 ${Math.round(10*CC.fz)}px Kanit,monospace`);hud(c,X+W-8-c.measureText(h.n).width-30,Y+H-10,0,0,`▶ ${h.n}`,'#e6ffe8',`600 ${Math.round(11*CC.fz)}px Kanit,monospace`)}
+  px_hud(c,X+8,Y+18,0,0,`CAM 0${i+1} · ${L.n}`,'#e6ffe8');px_hud(c,X+8,Y+H-10,0,0,`${dshort()} · ${clk()}`,'#e6ffe8',`600 ${Math.round(10*CC.fz)}px Kanit,monospace`);px_hud(c,X+W-8-c.measureText(h.n).width-30,Y+H-10,0,0,`▶ ${h.n}`,'#e6ffe8',`600 ${Math.round(11*CC.fz)}px Kanit,monospace`)}
  if(Math.floor(t/600)%2){c.fillStyle='#ff2a2a';c.fillRect(X+W-58,Y+9,8,8);c.font='800 12px Kanit,monospace';c.fillText('REC',X+W-46,Y+18)}
- const al=CC.alert&&id&&CC.alert.ids.includes(id)&&t-CC.alert.t<9000;if(al){if(Math.floor(t/250)%2){c.strokeStyle='#ff3040';c.lineWidth=4;c.strokeRect(X+2,Y+2,W-4,H-4)}hud(c,X+8,Y+38,0,0,`⚠ ตรวจพบเหตุการณ์: ${CC.alert.ti}`.slice(0,40),'#ffb0b8')}
+ const al=CC.alert&&id&&CC.alert.ids.includes(id)&&t-CC.alert.t<9000;if(al){if(Math.floor(t/250)%2){c.strokeStyle='#ff3040';c.lineWidth=4;c.strokeRect(X+2,Y+2,W-4,H-4)}px_hud(c,X+8,Y+38,0,0,`⚠ ตรวจพบเหตุการณ์: ${CC.alert.ti}`.slice(0,40),'#ffb0b8')}
  c.restore();c.strokeStyle='#050507';c.lineWidth=3;c.strokeRect(X,Y,W,H)}
-CC.draw=function(t,dt){const cv=$('cv');if(!cv)return;const c=cv.getContext('2d'),W=cv.width,H=cv.height;c.setTransform(1,0,0,1,0,0);c.fillStyle='#050507';c.fillRect(0,0,W,H);refill(t);watchEv(t);
- if(CC.big>=0)feed(c,CC.big,0,0,W,H,t,dt);else for(let i=0;i<4;i++)feed(c,i,(i%2)*W/2,Math.floor(i/2)*H/2,W/2,H/2,t,dt)};
+CC.draw=function(t,dt){const cv=$('cv');if(!cv)return;const c=cv.getContext('2d'),W=cv.width,H=cv.height;c.setTransform(1,0,0,1,0,0);c.fillStyle='#050507';c.fillRect(0,0,W,H);px_refill(t);px_watchEv(t);
+ if(CC.big>=0)px_feed(c,CC.big,0,0,W,H,t,dt);else for(let i=0;i<4;i++)px_feed(c,i,(i%2)*W/2,Math.floor(i/2)*H/2,W/2,H/2,t,dt)};
 CC.start=function(){CC.prev=view==='2d'?'iso':view;CC.on=1;CC.big=-1;view='2d';tab='city';refresh()};
 CC.stop=function(go){CC.on=0;CC.big=-1;if(go)follow(go,'2d');else{view='iso';refresh()}};
 CC.cycle=function(){for(let i=0;i<4;i++){CC.nx[i]=(CC.nx[i]||0)+1;CC.feeds[i+'t']=0}};
@@ -5965,6 +5965,85 @@ CC.snap=function(){try{const a=document.createElement('a');a.href=$('cv').toData
  return _cu()+(view!=='2d'||!CC.on?`<button class="btn" style="margin-left:6px" onclick="CCTV.start()">◉ กล้องวงจรปิด</button>`:'')}}
 // แตะจอ: 4 จอ → ขยายจอนั้น · จอใหญ่ → กลับ 4 จอ
 {const cv=$('cv');if(cv)cv.addEventListener('click',e=>{if(!CC.on||tab!=='city')return;e.stopImmediatePropagation();const r=cv.getBoundingClientRect(),qx=(e.clientX-r.left)/r.width>.5?1:0,qy=(e.clientY-r.top)/r.height>.5?1:0;CC.big=CC.big>=0?-1:qy*2+qx;refresh()},true)}
+}
+
+// ================= v4.7: เหตุการณ์โฉมใหม่ (เนื้อเรื่องเข้มข้น · กล่องเหตุการณ์ใหม่ · สรุปผลละเอียด · อนิเมชั่นแบบภาพยนตร์) =================
+{
+// ---------- CSS ----------
+{const N='polygon(0 6px,6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%)',st=document.createElement('style');st.textContent=`
+#md .card.evc{max-height:calc(100vh - 24px);overflow:auto;padding:12px 12px 10px;max-width:560px}
+.evh{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:8px;font:600 11.5px var(--fh)}
+.evtag{background:#3a0c14;border:1px solid var(--ac);color:#ffd0d8;padding:2px 8px;clip-path:${N}}.evq{color:var(--ac2)}.evt{margin-left:auto;color:var(--mu)}
+#eva{width:100%;height:auto;display:block;image-rendering:pixelated;border:1px solid #3a3036;background:#000}
+.evti{font:800 19px var(--fh);margin:10px 0 4px;color:var(--bone);letter-spacing:.3px}
+.evhs{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.evhc{display:flex;gap:7px;align-items:center;background:#0f0d11;border:1px solid #2e262c;padding:4px 8px 4px 4px;flex:1 1 150px;min-width:0;clip-path:${N}}
+.evhc canvas{width:42px;height:42px;flex:0 0 42px;image-rendering:pixelated;background:#1a141c}
+.evhc b{font:700 13.5px var(--fh);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.evhc small{display:block;color:var(--mu);font-size:11.5px;line-height:1.3}
+.evloy{height:4px;background:#2a1a20;margin-top:3px}.evloy i{display:block;height:100%}
+.evtx{font-size:15.5px;line-height:1.65;margin:8px 0 6px}
+.evatmo{color:#b2a8c4;font-size:13px;margin:4px 0;border-left:2px solid #5a3a68;padding-left:8px;line-height:1.5}
+.evqt{margin:8px 0;padding:8px 10px;background:#140f16;border-left:3px solid var(--ac2);font-size:14px;line-height:1.5}.evqt small{color:var(--mu);display:block;margin-top:2px}
+.evch .btn{display:flex;gap:10px;align-items:flex-start;width:100%;margin:6px 0;text-align:left;padding:10px 10px;font-weight:600}
+.evch .btn.armed{border-color:var(--bad)!important;background:linear-gradient(180deg,#3a0a12,#1c0609)}
+.evk{flex:0 0 24px;height:24px;display:grid;place-items:center;background:#2a0c14;border:1px solid var(--ac);font:800 13px var(--fh);color:#ffd27a}
+.evcost{display:block;font-size:12px;color:var(--ac2);margin-top:3px;font-weight:500}.evrisk{display:block;font-size:12px;color:#ff7a8a;margin-top:3px;font-weight:500}.evno{display:block;font-size:12px;color:var(--mu);margin-top:3px}
+.evft{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:6px;font-size:12px;color:var(--mu)}
+.evres{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}.evres span{padding:3px 8px;font:600 12.5px var(--fh);background:#121016;border:1px solid #2e262c;clip-path:${N}}
+.evres .up{color:#7ae0a0;border-color:#2a5a3a}.evres .dn{color:#ff8a96;border-color:#5a2030}.evres .dead{color:#fff;background:#5a0c18;border-color:#c4283a}.evres .nw{color:#ffd27a;border-color:#6a5020}
+.evrh{font:800 13px var(--fh);letter-spacing:1.5px;color:var(--ac2);margin-bottom:2px}.evrh.bad{color:#ff6a7a}
+.evpg{height:3px;background:#2a1a20;margin-top:8px}.evpg i{display:block;height:100%;background:var(--ac)}
+`;document.head.appendChild(st)}
+// ---------- บรรยากาศ / คำพูด ----------
+const ATM={clear:['ท้องฟ้าโปร่ง แสงส่องลงลานหินของล็อบบี้','อากาศสงบ ไม่มีลมแม้แต่น้อย'],cloudy:['เมฆครึ้มลอยต่ำปกคลุมปราการ','เงาเมฆเคลื่อนผ่านลานช้า ๆ'],drizzle:['ฝนปรอยลงไม่หยุด ทุกอย่างชื้นแฉะ','หยดน้ำเกาะตามซี่กรงเหล็ก'],rain:['เสียงฝนกระหน่ำหลังคาดังจนแทบไม่ได้ยินกัน','น้ำฝนไหลนองตามร่องหิน'],
+ storm:['ฟ้าผ่าแลบวาบเป็นระยะ ทุกคนสะดุ้งทุกครั้ง','ลมพายุพัดประตูกระแทกดังสนั่น'],fog:['หมอกหนาจนมองไม่เห็นหน้ากันในระยะไม่กี่ก้าว','เงาตะคุ่มเคลื่อนไหวอยู่ในหมอก'],wind:['ลมแรงหวีดหวิวผ่านช่องกำแพง','ธงบนปราการสะบัดจนแทบขาด'],heat:['ไอร้อนระอุลอยขึ้นจากพื้นหิน','เหงื่อไหลโชกจนเสื้อเปียก'],
+ sand:['ฝุ่นทรายพัดตลบจนแสบตา','ทรายแทรกเข้าทุกซอกมุม'],snow:['เกล็ดหิมะโปรยลงบนลานหินอย่างเงียบงัน','ลมหายใจกลายเป็นไอขาว'],blizzard:['พายุหิมะโหมกระหน่ำจนมองไม่เห็นทาง','ความหนาวกัดลึกถึงกระดูก'],rainbow:['สายรุ้งพาดผ่านเหนือหอคอย','ทุกคนดูอารมณ์ดีกว่าปกติ'],
+ aurora:['แสงเหนือพลิ้วไหวเป็นม่านสีเขียวม่วง','แสงประหลาดสะท้อนบนผลึกอัญเชิญ'],meteor:['ดาวตกพุ่งผ่านฟ้าเป็นสาย','เศษหินร้อนตกลงนอกกำแพงเป็นระยะ'],eclipse:['ดวงอาทิตย์ถูกบดบัง ความมืดแผ่ไปทั่ว','สัตว์ทุกตัวเงียบกริบอย่างผิดธรรมชาติ'],
+ blood:['จันทร์สีเลือดส่องแสงแดงฉาน','ความบ้าคลั่งลอยอยู่ในอากาศ ใคร ๆ ก็หงุดหงิดง่าย']};
+const TOD=()=>{const h=Math.floor(S.time%1440/60);return h<4?'กลางดึก':h<6?'รุ่งสาง':h<10?'ยามเช้า':h<13?'เที่ยงวัน':h<17?'ยามบ่าย':h<19?'พลบค่ำ':h<22?'ยามค่ำ':'ยามดึก'};
+const RX=['ข้าไม่ได้ทำอะไรผิดนะ','ทำไมต้องเป็นข้าทุกที…','มาสเตอร์จะเข้าข้างใครกันแน่','เรื่องนี้ต้องจบวันนี้','ข้าไม่ยอมหรอก','ช่วยตัดสินให้ยุติธรรมด้วย','ฮึ… น่าสนใจดี','ข้าแค่อยากให้ทุกอย่างกลับเป็นเหมือนเดิม'];
+const rp=a=>a[Math.floor(Math.random()*a.length)];
+function evx_enrich(e){if(!e||e._x)return;e._x=1;try{e.atmo=`${TOD()} · ${rp(ATM[S.wx]||ATM.clear)}`;const H2=(e.hs&&e.hs.length?e.hs:e.vis||[]).filter(Boolean),h=H2[0];
+ if(h){const L=(TL&&TL[h.tr])||[];const line=L.length&&Math.random()<.55?rp(L):(WL&&WL[S.wx]&&Math.random()<.3?WL[S.wx]:rp(RX));e.qt=[line,h.n]}}catch(er){}}
+{const _n=newEv;newEv=function(e){const r=_n(e);evx_enrich(ev);return r}}
+// ---------- สรุปผล: บันทึกค่าก่อน/หลังตัดสินใจ ----------
+{const _p=pick;pick=function(i){const e=ev;if(!e)return _p(i);const c=e.ch[i];
+ const before={r:{},loy:new Map(),ids:new Set(S.h.map(h=>h.id))};for(const k in RI)before.r[k]=Math.round(S[k]||0);for(const h of S.h)before.loy.set(h.id,h.loy);
+ _p(i);if(evRes&&evRes.id===e.id){try{const d={r:{},loy:[],dead:[],nw:[]};for(const k in RI){const v=Math.round((S[k]||0)-before.r[k]);if(v)d.r[k]=v}
+  for(const h of S.h){if(!before.ids.has(h.id)){d.nw.push(h.n);continue}const b=before.loy.get(h.id);if(b!=null&&Math.round(h.loy-b))d.loy.push([h.n,Math.round(h.loy-b)])}
+  for(const id of before.ids)if(!S.h.some(h=>h.id===id)){const g=(S.grave||[]).find(h=>h.id===id);d.dead.push(g?g.n:'ฮีโร่')}evRes.d=d;evRes.ch=c[0];{let ck=null;for(const[k,re]of CLS)if(re.test(c[0])){ck=k;break}const RF={cruel:['เสียงกระซิบหวาดกลัวแพร่ไปทั่วล็อบบี้ ไม่มีใครกล้าสบตามาสเตอร์','ฮีโร่หลายคนก้มหน้าเงียบ บางคนเริ่มคิดหาทางหนี'],strict:['ระเบียบถูกบังคับใช้อย่างเข้มงวด บางคนพอใจ บางคนเก็บความขุ่นเคืองไว้ในใจ','ล็อบบี้เงียบลง ทุกคนรู้แล้วว่าใครเป็นนาย'],kind:['บรรยากาศในล็อบบี้อบอุ่นขึ้น มีเสียงหัวเราะดังมาจากโรงเตี๊ยม','ฮีโร่หลายคนพูดถึงความใจดีของมาสเตอร์'],greed:['ทุกคนรู้ว่ามาสเตอร์ให้ค่ากับทรัพย์สินเป็นอันดับแรก','เสียงเหรียญดังกว่าเสียงบ่น… อย่างน้อยก็ตอนนี้'],apathy:['มาสเตอร์ปล่อยให้เรื่องผ่านไป ฮีโร่เริ่มสงสัยว่าท่านใส่ใจพวกเขาหรือไม่','ความเงียบของมาสเตอร์ทำให้บางคนกล้าขึ้น']};if(ck&&RF[ck])evRes.after=rp(RF[ck])}evRes.hs=(e.vis||[]).slice(0,3);mdKey='';modal()}catch(er){}}}}
+// ---------- กล่องเหตุการณ์ ----------
+const LETTER='ABCDEFG';
+const chipH=h=>{const loy=Math.max(0,Math.min(100,Math.round(h.loy||0))),col=loy>60?'#5ccf98':loy>30?'#e0b050':'#e04a5a';return`<div class="evhc"><canvas width="64" height="64" data-hid="${h.id}"></canvas><div style="min-width:0;flex:1"><b style="color:${h.r>=4?RC[h.r]:'var(--tx)'}">${esc(h.n)}</b><small>${R[h.r]} · ${TN[h.tr]||''}${h.lv?` · Lv.${h.lv}`:''}</small><div class="evloy" title="ความภักดี ${loy}"><i style="width:${loy}%;background:${col}"></i></div></div></div>`};
+function evx_head(e){const x=WX[S.wx]||['',''];return`<div class="evh"><span class="evtag">เหตุการณ์ในล็อบบี้</span>${EVQ.length?`<span class="evq">รออีก ${EVQ.length} เรื่อง</span>`:''}<span class="evt">${x[0]} ${x[1]} · ${dshort()} · ${clk()}</span></div>`}
+function evx_body(e){const H2=(e.vis||[]).filter(h=>h&&S.h.includes(h)).slice(0,3);return`<canvas id="eva" width="600" height="260"></canvas><div class="evti">${e.ti}</div>${H2.length?`<div class="evhs">${H2.map(chipH).join('')}</div>`:''}<p class="evtx">${e.tx}</p>${e.atmo?`<p class="evatmo">${e.atmo}</p>`:''}${e.qt?`<div class="evqt">“${esc(e.qt[0])}”<small>— ${esc(e.qt[1])}</small></div>`:''}`}
+function evx_choice(c,i){const ok=chOk(c),rk=risky(c),arm=ev.arm===i,cost=c[2]?Object.keys(c[2]).map(k=>`-${c[2][k]}${RI[k]}`).join(' '):'',full=c[3]&&!c[3]();
+ return`<button class="btn g${arm?' armed':''}" ${ok?'':'disabled'} onclick="pick(${i})"${rk?` style="border-color:${arm?'var(--bad)':'#7a2434'}"`:''}><span class="evk">${LETTER[i]||i+1}</span><span style="flex:1">${c[0]}${cost?`<span class="evcost">ใช้ ${cost}${ok||full?'':' · ทรัพยากรไม่พอ'}</span>`:''}${full?'<span class="evno">คลังเต็ม</span>':''}${rk?`<span class="evrisk">${arm?'⚠️ อาจมีฮีโร่เสียชีวิต — แตะอีกครั้งเพื่อยืนยัน':'⚠️ เสี่ยงมีผู้เสียชีวิต'}</span>`:''}</span></button>`}
+function evx_resHTML(r){const d=r.d||{},ch=[];for(const k in d.r||{}){const v=d.r[k];ch.push(`<span class="${v>0?'up':'dn'}">${v>0?'+':''}${fmtN?fmtN(v):v}${RI[k]}</span>`)}
+ for(const[n,v]of d.loy||[])ch.push(`<span class="${v>0?'up':'dn'}">${esc(n)} ความภักดี ${v>0?'+':''}${v}</span>`);for(const n of d.nw||[])ch.push(`<span class="nw">${esc(n)} เข้าร่วมล็อบบี้</span>`);for(const n of d.dead||[])ch.push(`<span class="dead">☠️ ${esc(n)} เสียชีวิต</span>`);
+ const bad=(d.dead&&d.dead.length)||Object.values(d.r||{}).reduce((a,v)=>a+v,0)<0&&!(d.loy||[]).some(x=>x[1]>0);
+ return`<div class="card evc">${evx_head({})}<div class="evrh${bad?' bad':''}">${bad?'ผลลัพธ์อันขมขื่น':'ผลลัพธ์'}</div><div class="evti" style="margin-top:0">${r.ti}</div>${r.hs&&r.hs.length?`<div class="evhs">${r.hs.filter(h=>h).map(h=>S.h.includes(h)?chipH(h):`<div class="evhc"><canvas width="64" height="64" data-dead="1"></canvas><div><b>${esc(h.n)}</b><small>ไม่อยู่แล้ว</small></div></div>`).join('')}</div>`:''}
+  ${r.ch?`<p class="lg" style="margin:4px 0">ท่านเลือก: <b style="color:var(--tx)">${r.ch}</b></p>`:''}<p class="evtx">${r.m}</p>${r.after?`<p class="evatmo">${r.after}</p>`:''}${ch.length?`<div class="evres">${ch.join('')}</div>`:''}<button class="btn" style="width:100%" onclick="evRes=null;refresh()">ตกลง</button></div>`}
+{const _m=modal;modal=function(){if(window.PX_OFF)return _m();const d=$('md');let key='none';if(evRes)key='r'+evRes.id+(evRes.d?'d':'');else if(ev&&!evHid)key='e'+ev.id+ev.ph+(ev.ph==='ch'?ev.ch.map(chOk).join('')+'a'+(ev.arm==null?'':ev.arm):'');if(key===mdKey)return;mdKey=key;
+ if(evRes){d.hidden=false;d.innerHTML=evx_resHTML(evRes)}
+ else if(ev&&!evHid&&ev.ph==='anim'){evx_enrich(ev);d.hidden=false;d.innerHTML=`<div class="card evc">${evx_head(ev)}<canvas id="eva" width="600" height="260"></canvas><div class="evti">${ev.ti}</div><div class="evpg"><i id="evpg" style="width:0"></i></div><div class="evft"><span>กำลังเกิดเหตุการณ์…</span><button class="btn g s" onclick="ev.ph='ch';modal()">ข้าม ▸</button></div></div>`}
+ else if(ev&&!evHid){evx_enrich(ev);d.hidden=false;d.innerHTML=`<div class="card evc">${evx_head(ev)}${evx_body(ev)}<div class="evch">${ev.ch.map(evx_choice).join('')}</div><div class="evft"><span>${MPD[mper()][0]} ${MPD[mper()][1]}</span><button class="btn g s" onclick="evHid=true;refresh()">ตัดสินใจทีหลัง</button></div><p class="lg" style="font-size:11.5px;margin:6px 0 0">หากเลื่อนไว้นานเกิน 6 ชม. ในเกม ฮีโร่จะตัดสินใจกันเอง</p></div>`}
+ else d.hidden=true;evx_portraits(performance.now())}}
+// ภาพหน้าตาฮีโร่ในกล่อง (ขยับหายใจ)
+function evx_portraits(t){const md=$('md');if(!md||md.hidden)return;md.querySelectorAll('canvas[data-hid]').forEach(cv=>{const h=S.h.find(x=>x.id===+cv.dataset.hid);if(!h)return;const c=cv.getContext('2d');c.setTransform(1,0,0,1,0,0);c.clearRect(0,0,64,64);c.fillStyle='#1a141c';c.fillRect(0,0,64,64);
+ try{chibi(c,32,118,4.6,h,{wp:null})}catch(e){}});md.querySelectorAll('canvas[data-dead]').forEach(cv=>{const c=cv.getContext('2d');c.fillStyle='#2a0a10';c.fillRect(0,0,64,64);c.fillStyle='#c4283a';c.font='28px sans-serif';c.textAlign='center';c.fillText('☠️',32,44)})}
+// ---------- อนิเมชั่น: แถบภาพยนตร์ + ป้ายชื่อเหตุการณ์ + ฟองคำพูดพิกเซล ----------
+window.PXBUB=function(c,s,x,y){c.save();c.font='700 8px Kanit,sans-serif';const w=Math.ceil(c.measureText(s).width)+10,h=13,X=Math.round(x-w/2),Y=Math.round(y-9);
+ c.fillStyle='#1a1018';c.fillRect(X-1,Y,w+2,h);c.fillRect(X,Y-1,w,h+2);c.fillStyle='#f4ece0';c.fillRect(X,Y,w,h);c.fillStyle='#d8ccbc';c.fillRect(X,Y+h-2,w,2);
+ c.fillStyle='#1a1018';c.fillRect(Math.round(x)-2,Y+h+1,5,1);c.fillRect(Math.round(x)-1,Y+h+2,3,1);c.fillRect(Math.round(x),Y+h+3,1,1);c.fillStyle='#f4ece0';c.fillRect(Math.round(x)-1,Y+h,3,1);c.fillRect(Math.round(x),Y+h+1,1,1);
+ c.fillStyle='#24141c';c.textAlign='center';c.textBaseline='alphabetic';c.fillText(s,Math.round(x),Y+9);c.restore()};
+{const _e=evAnim;evAnim=function(){_e();if(window.PX_OFF||!ev||evHid)return;const e=$('eva');if(!e)return;const c=e.getContext('2d'),t=(performance.now()-ev.t0)/1000;c.save();c.setTransform(2,0,0,2,0,0);
+ if(ev.ph==='anim'){const k=Math.min(1,t/.35),bh=Math.round(13*k);c.fillStyle='#000';c.fillRect(0,0,300,bh);c.fillRect(0,130-bh,300,bh);
+  if(t<1.6){const a=Math.max(0,Math.min(1,t/.25,(1.6-t)/.35));c.globalAlpha=a;c.fillStyle='rgba(6,3,8,.82)';c.fillRect(0,52,300,24);c.fillStyle='#c4283a';c.fillRect(0,52,300,1);c.fillRect(0,75,300,1);
+   c.font='800 11px Kanit,sans-serif';c.textAlign='center';c.fillStyle='#000';c.fillText(ev.ti,151,69);c.fillStyle='#ffe0b0';c.fillText(ev.ti,150,68);c.globalAlpha=1}
+  const pg=$('evpg');if(pg)pg.style.width=Math.min(100,t/2.7*100)+'%'}
+ else{c.fillStyle='#000';c.fillRect(0,0,300,6);c.fillRect(0,124,300,6)}
+ c.restore();evx_portraits(performance.now())}}
 }
 
 // ================= ลูปเกม =================
