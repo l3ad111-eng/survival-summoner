@@ -1,4 +1,4 @@
-/* Survival Summoner: Pick Up! — ตัวเชื่อม Firebase (ไม่ต้องแก้ไฟล์นี้) */
+/* Survival Summoner: Pick Up! — ตัวเชื่อม Firebase (ไม่ต้องแก้ไฟล์นี้) · v2: ล็อกอิน Google + สมัครไอดี/รหัสผ่าน + เซฟผูกบัญชี */
 (function(){
   var C=window.FB_CFG;if(window.claude||!C||!C.apiKey)return;
   var V='10.12.2',BASE='https://www.gstatic.com/firebasejs/'+V+'/';
@@ -36,8 +36,19 @@
     return{onPeers:function(f){peersCb.push(f);return function(){}},on:function(t,f){if(t==='chat')chatCb.push(f);return function(){}},
       presence:async function(p){pres=p||{};await pref.set({p:pres,t:TS})},emit:async function(t,d){if(t==='chat')await rt.ref('live/'+me).set({d:d,t:TS})},connected:function(){return conn}}}
   // ---------- เข้าสู่ระบบ ----------
+  var IDD='@id.survival-summoner.app';
+  function idEmail(id){return String(id||'').trim().toLowerCase()+IDD}
+  function idOk(id){return /^[a-z0-9_]{4,16}$/.test(String(id||'').trim().toLowerCase())}
+  function markPrev(){try{if(auth.currentUser&&auth.currentUser.isAnonymous)localStorage.setItem('pmu_prev_anon',auth.currentUser.uid)}catch(e){}}
   async function fbLogin(){var p=new firebase.auth.GoogleAuthProvider();try{if(auth.currentUser&&auth.currentUser.isAnonymous)await auth.currentUser.linkWithPopup(p);else await auth.signInWithPopup(p);location.reload()}
-    catch(e){if(e&&(e.code==='auth/credential-already-in-use'||e.code==='auth/email-already-in-use')&&e.credential){try{await auth.signInWithCredential(e.credential);location.reload()}catch(x){say('เข้าสู่ระบบไม่สำเร็จ')}}else if(!e||e.code!=='auth/popup-closed-by-user'&&e.code!=='auth/cancelled-popup-request')say('เข้าสู่ระบบไม่สำเร็จ: '+((e&&e.code)||'unknown'))}}
+    catch(e){if(e&&(e.code==='auth/credential-already-in-use'||e.code==='auth/email-already-in-use')&&e.credential){try{markPrev();await auth.signInWithCredential(e.credential);location.reload()}catch(x){say('เข้าสู่ระบบไม่สำเร็จ')}}else if(!e||e.code!=='auth/popup-closed-by-user'&&e.code!=='auth/cancelled-popup-request')say('เข้าสู่ระบบไม่สำเร็จ: '+((e&&e.code)||'unknown'))}}
+  // ---------- สมัคร / เข้าสู่ระบบด้วยไอดี + รหัสผ่าน (แยกจาก Google · ใช้ Firebase Email/Password ภายใน) ----------
+  async function fbRegister(id,pw){if(!idOk(id))throw{code:'id/bad'};if(String(pw||'').length<6)throw{code:'auth/weak-password'};var em=idEmail(id);
+    if(auth.currentUser&&auth.currentUser.isAnonymous){await auth.currentUser.linkWithCredential(firebase.auth.EmailAuthProvider.credential(em,pw))}else{await auth.createUserWithEmailAndPassword(em,pw)}
+    try{await fs.doc('accounts/'+uid()).set({idn:String(id).trim().toLowerCase(),reg:new Date().toISOString()},{merge:true})}catch(e){}location.reload()}
+  async function fbLoginPw(id,pw){if(!idOk(id))throw{code:'id/bad'};markPrev();await auth.signInWithEmailAndPassword(idEmail(id),pw);location.reload()}
+  function fbEmail(){var u=auth&&auth.currentUser;if(!u||!u.email)return'';return u.email.slice(-IDD.length)===IDD?'ไอดี '+u.email.slice(0,-IDD.length):u.email}
+  function fbProv(){var u=auth&&auth.currentUser;if(!u)return'';if(u.isAnonymous)return'guest';return u.email&&u.email.slice(-IDD.length)===IDD?'id':'google'}
   async function fbLogout(){try{await auth.signOut()}catch(e){}location.reload()}
-  window.claude={fb:true,use:async function(n){var x=await ready;return x&&x[n]||null},fbAnon:function(){return !auth||!auth.currentUser||auth.currentUser.isAnonymous},fbEmail:function(){return auth&&auth.currentUser&&auth.currentUser.email||''},fbUid:function(){return uid()||''},fbLogin:fbLogin,fbLogout:fbLogout};
+  window.claude={fb:true,use:async function(n){var x=await ready;return x&&x[n]||null},fbAnon:function(){return !auth||!auth.currentUser||auth.currentUser.isAnonymous},fbEmail:fbEmail,fbProv:fbProv,fbRegister:fbRegister,fbLoginPw:fbLoginPw,fbIdOk:idOk,fbUid:function(){return uid()||''},fbLogin:fbLogin,fbLogout:fbLogout};
 })();
