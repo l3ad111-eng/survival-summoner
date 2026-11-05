@@ -13,3 +13,9 @@ window.FB_CFG = {
   appId: "1:220805605322:web:caf36a8463a2e5a3425133"
 };
 window.GAME_OWNER_UID = "Qxui1LePkQXWfsGaHMfpfVUOs8B3";
+
+/* ===== การแจ้งเตือน (1.54.0) =====
+   Firebase Console → Project settings → Cloud Messaging → Web Push certificates → Generate key pair
+   คัดลอก "Key pair" มาวางในเครื่องหมายคำพูดด้านล่าง (ถ้าว่างไว้ ปุ่มแจ้งเตือนในเกมจะยังใช้ไม่ได้)
+*/
+window.PUSH_VAPID = "BG-hsgR4rTgNCmw26uZCSzpscJGDkQdKskWsChcLsAm7SSS3ZrUFXggbhbsiQzuG3UFWOgPiseuTT-1fP8ZDpG8";
