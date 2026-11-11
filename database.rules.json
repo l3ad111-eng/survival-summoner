@@ -1,0 +1,17 @@
+{
+  "rules": {
+    "presence": { ".read": true, "$uid": { ".write": "auth != null && (auth.uid === $uid || auth.uid === 'Qxui1LePkQXWfsGaHMfpfVUOs8B3')" } },
+    "ids":      { ".read": true, "$uid": { ".write": "auth != null && ((auth.uid === $uid && (!newData.exists() || auth.token.firebase.sign_in_provider !== 'anonymous')) || auth.uid === 'Qxui1LePkQXWfsGaHMfpfVUOs8B3')" } },
+    "live":     { ".read": true, "$uid": { ".write": "auth != null && auth.uid === $uid && auth.token.firebase.sign_in_provider !== 'anonymous'" } },
+    "hub": {
+      "$room": {
+        "p": { ".read": true, "$uid": { ".write": "auth != null && auth.uid === $uid && (!newData.exists() || auth.token.firebase.sign_in_provider !== 'anonymous')" } },
+        "c": { ".read": true, ".indexOn": ["t"], ".write": "auth != null && auth.uid === 'Qxui1LePkQXWfsGaHMfpfVUOs8B3'",
+          "$m": { ".write": "auth != null && ((!data.exists() && newData.child('u').val() === auth.uid && auth.token.firebase.sign_in_provider !== 'anonymous') || (data.exists() && !newData.exists() && data.child('u').val() === auth.uid))",
+                  ".validate": "!newData.exists() || (newData.child('m').isString() && newData.child('m').val().length <= 120)" } }
+      }
+    },
+    "hubx":    { "$to": { ".read": "auth != null && auth.uid === $to", "$from": { ".read": "auth != null && auth.uid === $from", ".write": "auth != null && (auth.uid === $from || auth.uid === $to)" } } },
+    "hubloot": { "$to": { ".read": "auth != null && auth.uid === $to", "$k": { ".write": "auth != null && (auth.uid === $to || !data.exists())" } } }
+  }
+}

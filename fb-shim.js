@@ -1,22 +1,29 @@
-/* Survival Summoner: Pick Up! — ตัวเชื่อม Firebase (ไม่ต้องแก้ไฟล์นี้) · v2: ล็อกอิน Google + สมัครไอดี/รหัสผ่าน + เซฟผูกบัญชี */
+/* Survival Summoner: Pick Up! — ตัวเชื่อม Firebase (ไม่ต้องแก้ไฟล์นี้) · v3 (1.66.0): Guest เล่นในเครื่องอย่างเดียว ไม่สร้างไอดีนิรนามและไม่เขียนข้อมูลขึ้นระบบ */
 (function(){
   var C=window.FB_CFG;if(window.claude||!C||!C.apiKey)return;
   var V='10.12.2',BASE='https://www.gstatic.com/firebasejs/'+V+'/';
   function load(src){return new Promise(function(res,rej){var s=document.createElement('script');s.src=src;s.onload=res;s.onerror=rej;document.head.appendChild(s)})}
-  var auth=null,fs=null,rt=null,conn=false,off=0,LIVE=90000;
+  var auth=null,fs=null,rt=null,conn=false,off=0,LIVE=90000,DONE=false;
+  // Guest เดิม (ไอดีนิรนาม): จำกุญแจเซฟในเครื่องไว้ ลบข้อมูลของตัวเองบนระบบ แล้วลบไอดีนิรนามทิ้ง
+  async function dropAnon(u){var id=u.uid;try{if(!localStorage.getItem('pmu_gk'))localStorage.setItem('pmu_gk',id)}catch(e){}
+    var ps=['tower','arena','lobby','stats','accounts','push','gmem','flags','arena_hits'].map(function(c){return fs.doc(c+'/'+id).delete().catch(function(){})});
+    ps.push(rt.ref('ids/'+id).remove().catch(function(){}));ps.push(rt.ref('presence/'+id).remove().catch(function(){}));
+    try{await Promise.race([Promise.all(ps),new Promise(function(r){setTimeout(r,4000)})])}catch(e){}
+    try{await u.delete()}catch(e){try{await auth.signOut()}catch(x){}}}
   function snow(){return Date.now()+off}
   function uid(){return auth&&auth.currentUser?auth.currentUser.uid:null}
   function say(m){try{if(typeof toast==='function')return toast(m)}catch(e){}alert(m)}
   var ready=(async function(){try{
     if(!window.firebase){await load(BASE+'firebase-app-compat.js');await Promise.all(['auth','firestore','database'].map(function(n){return load(BASE+'firebase-'+n+'-compat.js')}))}
     firebase.initializeApp(C);auth=firebase.auth();fs=firebase.firestore();try{fs.settings({ignoreUndefinedProperties:true,merge:true})}catch(e){}rt=firebase.database();
-    await new Promise(function(res){var un=auth.onAuthStateChanged(function(u){if(u){un();res()}else auth.signInAnonymously().catch(function(e){console.warn('anon sign-in failed',e);un();res()})})});
-    if(!uid())return null;
+    var u0=await new Promise(function(res){var un=auth.onAuthStateChanged(function(u){un();res(u)})});
+    if(u0&&u0.isAnonymous){await dropAnon(u0)}
+    if(!uid()||auth.currentUser.isAnonymous){DONE=true;return null}/* Guest: ไม่เชื่อมฐานข้อมูล เซฟอยู่ในเครื่อง */
     rt.ref('.info/connected').on('value',function(s){conn=!!s.val()});
     rt.ref('.info/serverTimeOffset').on('value',function(s){off=+s.val()||0});
-    try{if(!auth.currentUser.isAnonymous)rt.ref('ids/'+uid()).set('f').catch(function(){})}catch(e){}
-    return{db:mkDb(),user:mkUser(),room:mkRoom(),downloads:null};
-  }catch(e){console.warn('Firebase init failed',e);return null}})();
+    try{rt.ref('ids/'+uid()).set('f').catch(function(){})}catch(e){}
+    DONE=true;return{db:mkDb(),user:mkUser(),room:mkRoom(),downloads:null};
+  }catch(e){console.warn('Firebase init failed',e);DONE=true;return null}})();
   // ---------- ฐานข้อมูล (Firestore) ----------
   function wrapDoc(p){var r=fs.doc(p),o={id:r.id,path:p,get:function(){return r.get()},update:function(d){return r.update(d)},delete:function(){return r.delete()},onSnapshot:function(a,b){return r.onSnapshot(a,b)},set:function(d,x){return x?r.set(d,x):r.set(d)}};
     if(/^accounts\/[^\/]+$/.test(p)){o.set=function(d,x){var an=!auth.currentUser||auth.currentUser.isAnonymous;rt.ref('ids/'+p.split('/')[1]).set(an?true:'f').catch(function(){});return x?r.set(d,x):r.set(d)}}
@@ -47,16 +54,20 @@
   function idEmail(id){return String(id||'').trim().toLowerCase()+IDD}
   function idOk(id){return /^[a-z0-9_]{4,16}$/.test(String(id||'').trim().toLowerCase())}
   async function dropMe(){try{if(uid())await rt.ref('presence/'+uid()).remove()}catch(e){}}
-  function markPrev(){try{if(auth.currentUser&&auth.currentUser.isAnonymous)localStorage.setItem('pmu_prev_anon',auth.currentUser.uid)}catch(e){}}
-  async function fbLogin(){var p=new firebase.auth.GoogleAuthProvider();try{if(auth.currentUser&&auth.currentUser.isAnonymous)await auth.currentUser.linkWithPopup(p);else await auth.signInWithPopup(p);location.reload()}
+  function gkey(){try{return localStorage.getItem('pmu_gk')||'offline'}catch(e){return'offline'}}
+  function markPrev(){try{if(!auth.currentUser||auth.currentUser.isAnonymous)localStorage.setItem('pmu_prev_anon',gkey())}catch(e){}}
+  async function fbLogin(){var p=new firebase.auth.GoogleAuthProvider();try{markPrev();await auth.signInWithPopup(p);location.reload()}
     catch(e){if(e&&(e.code==='auth/credential-already-in-use'||e.code==='auth/email-already-in-use')&&e.credential){try{markPrev();await dropMe();await auth.signInWithCredential(e.credential);location.reload()}catch(x){say('เข้าสู่ระบบไม่สำเร็จ')}}else if(!e||e.code!=='auth/popup-closed-by-user'&&e.code!=='auth/cancelled-popup-request')say('เข้าสู่ระบบไม่สำเร็จ: '+((e&&e.code)||'unknown'))}}
   // ---------- สมัคร / เข้าสู่ระบบด้วยไอดี + รหัสผ่าน (แยกจาก Google · ใช้ Firebase Email/Password ภายใน) ----------
   async function fbRegister(id,pw){if(!idOk(id))throw{code:'id/bad'};if(String(pw||'').length<6)throw{code:'auth/weak-password'};var em=idEmail(id);
-    if(auth.currentUser&&auth.currentUser.isAnonymous){await auth.currentUser.linkWithCredential(firebase.auth.EmailAuthProvider.credential(em,pw))}else{await dropMe();await auth.createUserWithEmailAndPassword(em,pw)}
+    markPrev();await dropMe();await auth.createUserWithEmailAndPassword(em,pw);
     try{await fs.doc('accounts/'+uid()).set({idn:String(id).trim().toLowerCase(),reg:new Date().toISOString()},{merge:true})}catch(e){}location.reload()}
   async function fbLoginPw(id,pw){if(!idOk(id))throw{code:'id/bad'};markPrev();await dropMe();await auth.signInWithEmailAndPassword(idEmail(id),pw);location.reload()}
   function fbEmail(){var u=auth&&auth.currentUser;if(!u||!u.email)return'';return u.email.slice(-IDD.length)===IDD?'ไอดี '+u.email.slice(0,-IDD.length):u.email}
   function fbProv(){var u=auth&&auth.currentUser;if(!u)return'';if(u.isAnonymous)return'guest';return u.email&&u.email.slice(-IDD.length)===IDD?'id':'google'}
   async function fbLogout(){await dropMe();try{await auth.signOut()}catch(e){}location.reload()}
-  window.claude={fb:true,use:async function(n){var x=await ready;return x&&x[n]||null},fbAnon:function(){return !auth||!auth.currentUser||auth.currentUser.isAnonymous},fbEmail:fbEmail,fbProv:fbProv,fbRegister:fbRegister,fbLoginPw:fbLoginPw,fbIdOk:idOk,fbUid:function(){return uid()||''},fbLogin:fbLogin,fbLogout:fbLogout};
+  window.claude={fb:true,use:async function(n){var x=await ready;return x&&x[n]||null},fbAnon:function(){return !auth||!auth.currentUser||auth.currentUser.isAnonymous},fbEmail:fbEmail,fbProv:fbProv,fbRegister:fbRegister,fbLoginPw:fbLoginPw,fbIdOk:idOk,fbUid:function(){return uid()||''},fbLogin:fbLogin,fbLogout:fbLogout,
+    fbDone:function(){return DONE},fbGuestKey:gkey,
+    /* เครื่องมือผู้พัฒนา (ล้างข้อมูล Guest): เข้าถึงฐานข้อมูลตรง ๆ ได้เฉพาะ UID ผู้พัฒนา */
+    fbRaw:function(){return window.GAME_OWNER_UID&&uid()===window.GAME_OWNER_UID?{fs:fs,rt:rt}:null}};
 })();
