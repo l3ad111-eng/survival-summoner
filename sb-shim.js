@@ -1,4 +1,4 @@
-/* Survival Summoner: Pick Up! — ตัวเชื่อม Supabase (แทน fb-shim.js) · 1.71.0
+/* Survival Summoner: Pick Up! — ตัวเชื่อม Supabase (แทน fb-shim.js) · 1.71.0 · 1.74.0 แก้ช่องสดหลุด/โควตาสถานะออนไลน์
    ให้เกมเรียกคำสั่งแบบ Firebase (firestore/auth/realtime) ได้เหมือนเดิม แต่ทำงานบน Supabase
    - ข้อมูล: ตาราง docs (เก็บแบบ Firestore) ผ่าน rpc dget / q / qcount / tx · ฟังสดด้วย Realtime
    - ล็อกอิน: ไอดี+รหัส (อีเมลภายใน @id.survival-summoner.app) · Google · Guest (เล่นในเครื่อง)
@@ -47,9 +47,26 @@
   function clean(d){return JSON.parse(JSON.stringify(d===undefined?{}:d))}/* ตัด undefined ทิ้งเหมือน ignoreUndefinedProperties */
   // ---------- ฟังสด (Realtime) · หนึ่งช่องต่อคอลเลกชัน ----------
   var CH={};
-  function chOn(col,f){var c=CH[col];if(!c){c=CH[col]={subs:[],ch:null};
-      c.ch=sb.channel('docs:'+col).on('postgres_changes',{event:'*',schema:'public',table:'docs',filter:'col=eq.'+col},function(pl){c.subs.slice().forEach(function(s){try{s(pl)}catch(e){}})}).subscribe()}
-    c.subs.push(f);return function(){var i=c.subs.indexOf(f);if(i>=0)c.subs.splice(i,1);if(!c.subs.length){try{sb.removeChannel(c.ch)}catch(e){}delete CH[col]}}}
+  /* 1.74.0: ถ้าช่องหลุด (เน็ตสะดุด/สลับแอป/เซิร์ฟปิดช่อง) จะต่อใหม่เอง แล้วให้ทุกตัวที่ฟังอยู่โหลดข้อมูลล่าสุดทันที ({_re:1}) */
+  var BAD={CHANNEL_ERROR:1,TIMED_OUT:1,CLOSED:1};
+  function chKick(c){c.subs.slice().forEach(function(s){try{s({_re:1})}catch(e){}})}
+  function chBuild(col,c){var x=sb.channel('docs:'+col+':'+(++c.gen)).on('postgres_changes',{event:'*',schema:'public',table:'docs',filter:'col=eq.'+col},function(pl){c.subs.slice().forEach(function(s){try{s(pl)}catch(e){}})});c.ch=x;
+    x.subscribe(function(st){if(c.ch!==x||c.dead)return;if(st==='SUBSCRIBED'){c.ok=true;if(c.down){c.down=false;chKick(c)}clearTimeout(c.rt)}
+      else if(BAD[st]){c.ok=false;c.down=true;clearTimeout(c.rt);c.rt=setTimeout(function(){if(c.dead||c.ok||c.ch!==x)return;try{sb.removeChannel(x)}catch(e){}chBuild(col,c)},st==='CLOSED'?2500:12000)}})}
+  function chOn(col,f){var c=CH[col];if(!c){c=CH[col]={subs:[],ch:null,gen:0,ok:false,down:false};chBuild(col,c)}
+    c.subs.push(f);return function(){var i=c.subs.indexOf(f);if(i>=0)c.subs.splice(i,1);if(!c.subs.length){c.dead=true;clearTimeout(c.rt);try{sb.removeChannel(c.ch)}catch(e){}delete CH[col]}}}
+  /* โหลดใหม่ทุกตัวที่ฟังอยู่: ตอนกลับเข้าแอป ตอนเน็ตกลับมา และทุก 90 วิ (กันพลาดข้อความ) */
+  var RFT=0;function refreshAll(){if(Date.now()-RFT<3000)return;RFT=Date.now();for(var k in CH){var c=CH[k];if(!c.ok&&!c.dead){try{sb.removeChannel(c.ch)}catch(e){}chBuild(k,c)}chKick(c)}for(var r in RM){var R=RM[r];if(R&&!R.joined&&!R.dead)hubRe(R,r,1)}if(ROOMX&&ROOMX.fix)ROOMX.fix()}
+  document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')setTimeout(refreshAll,400)});
+  window.addEventListener('online',function(){setTimeout(refreshAll,800)});
+  setInterval(function(){if(document.visibilityState==='visible'){RFT=0;refreshAll()}},90000);
+  /* โควตาสถานะออนไลน์ของ Supabase: เครื่องละไม่เกิน 5 ครั้งต่อ 30 วิ (เกินแล้วเซิร์ฟปิดช่องทิ้ง) → คุมไว้ 4 ครั้ง รวมทุกช่อง · ส่งค่าล่าสุดเท่านั้น */
+  var PQ={h:[],q:[],t:null};
+  function presCall(key,fn){var i;for(i=0;i<PQ.q.length;i++)if(PQ.q[i].k===key){PQ.q[i].f=fn;break}if(i===PQ.q.length)PQ.q.push({k:key,f:fn});presPump()}
+  function presPump(){clearTimeout(PQ.t);var now=Date.now();PQ.h=PQ.h.filter(function(t){return now-t<31000});
+    while(PQ.q.length&&PQ.h.length<4){var x=PQ.q.shift();PQ.h.push(Date.now());try{Promise.resolve(x.f()).catch(function(){})}catch(e){}}
+    if(PQ.q.length)PQ.t=setTimeout(presPump,Math.max(250,31000-(now-PQ.h[0])+60))}
+  var ROOMX=null;
   function parentOf(p){var s=p.split('/');s.pop();return s.join('/')}
   // ---------- เอกสาร ----------
   function docRef(p){p=String(p).replace(/^\/+|\/+$/g,'');var id=p.split('/').pop();
@@ -60,7 +77,7 @@
       delete:function(){return write([{t:'delete',p:p}])},
       collection:function(c){return colRef(p+'/'+c)},
       onSnapshot:function(cb,err){var alive=true,run=function(){r.get().then(function(s){if(alive)cb(s)}).catch(function(e){if(alive&&err)err(e)})};
-        run();var un=chOn(parentOf(p),function(pl){var row=pl.new&&pl.new.path?pl.new:pl.old;if(row&&row.path===p){if(pl.eventType==='DELETE')cb(DSnap(p,{exists:false}));else if(pl.new&&pl.new.data)cb(DSnap(p,{exists:true,data:pl.new.data,ver:pl.new.ver}));else run()}});
+        run();var un=chOn(parentOf(p),function(pl){if(pl&&pl._re)return run();var row=pl.new&&pl.new.path?pl.new:pl.old;if(row&&row.path===p){if(pl.eventType==='DELETE')cb(DSnap(p,{exists:false}));else if(pl.new&&pl.new.data)cb(DSnap(p,{exists:true,data:pl.new.data,ver:pl.new.ver}));else run()}});
         return function(){alive=false;un()}}};
     return r}
   async function write(ops){await rpc('tx',{reads:[],ops:ops})}
@@ -105,13 +122,27 @@
   function rsnap(key,v){v=v==null?null:clone(v);return{key:key,val:function(){return v},exists:function(){return v!=null},child:function(k){var x=v&&v[k];return rsnap(k,x)}}}
   function colObj(qs){var o=null;qs.docs.forEach(function(d){(o=o||{})[d.id]=d.data()});return o}
   var RM={};
-  function room(r){var R=RM[r];if(R)return R;R=RM[r]={subs:[],mine:null,state:{},synced:false,joined:false,w:[]};
-    R.ch=sb.channel('hub-'+r,{config:{presence:{key:me}}});
-    R.ch.on('presence',{event:'sync'},function(){var st=R.ch.presenceState(),o={};for(var k in st){var a=st[k]||[],best=null;a.forEach(function(m){if(m&&m.d&&(!best||(+m.d.hb||0)>=(+best.hb||0)))best=m.d});if(best)o[k]=best}
-      R.state=o;R.synced=true;var w=R.w;R.w=[];w.forEach(function(f){f()});R.subs.slice().forEach(function(f){try{f(rsnap('p',o))}catch(e){}})})
-      .subscribe(function(st){R.joined=st==='SUBSCRIBED';if(R.joined&&R.mine)R.ch.track({d:R.mine}).catch(function(){})});
-    return R}
-  function roomFree(r){var R=RM[r];if(R&&!R.subs.length&&!R.mine&&!R.w.length){try{sb.removeChannel(R.ch)}catch(e){}delete RM[r]}}
+  function room(r){var R=RM[r];if(R)return R;R=RM[r]={subs:[],mine:null,state:{},pk:{},bc:{},synced:false,joined:false,w:[],lt:0,gen:0};hubBuild(R,r);return R}
+  function hubBuild(R,r){var ch=sb.channel('hub-'+r+':'+(++R.gen),{config:{presence:{key:me},broadcast:{self:false}}});R.ch=ch;R.joined=false;
+    ch.on('presence',{event:'sync'},function(){if(R.ch!==ch)return;var st=ch.presenceState(),o={};for(var k in st){var a=st[k]||[],best=null;a.forEach(function(m){if(m&&m.d&&(!best||(+m.d.hb||0)>=(+best.hb||0)))best=m.d});if(best)o[k]=best}
+      R.pk=o;R.synced=true;hubEmit(R);var w=R.w;R.w=[];w.forEach(function(f){f()})})
+      .on('presence',{event:'join'},function(e){if(R.ch===ch&&e&&e.key!==me&&R.mine)setTimeout(function(){hubSay(R,1)},200+Math.random()*600)})
+      .on('presence',{event:'leave'},function(e){if(R.ch===ch&&e&&e.key&&e.key!==me){delete R.bc[e.key];hubSoon(R)}})
+      .on('broadcast',{event:'st'},function(m){if(R.ch!==ch)return;var v=m&&m.payload;if(!v||!v.u||v.u===me)return;if(v.d==null)delete R.bc[v.u];else R.bc[v.u]={d:v.d,t:Date.now()};hubSoon(R)})
+      .subscribe(function(st){if(R.ch!==ch||R.dead)return;if(st==='SUBSCRIBED'){R.joined=true;clearTimeout(R.rt);if(R.mine){R.lt=0;hubTrack(R,1);hubSay(R,1)}}
+        else if(BAD[st]){R.joined=false;clearTimeout(R.rt);R.rt=setTimeout(function(){if(!R.dead&&!R.joined&&R.ch===ch)hubRe(R,r)},st==='CLOSED'?2500:12000)}})}
+  function hubRe(R,r,now){if(R.dead)return;var old=R.ch;R.ch=null;try{sb.removeChannel(old)}catch(e){}hubBuild(R,r)}
+  /* รวมสถานะ: รายชื่อจาก presence + ตำแหน่งล่าสุดจาก broadcast (เลือกอันที่ hb ใหม่กว่า) */
+  function hubEmit(R){var o={},now=Date.now(),k;for(k in R.pk)o[k]=R.pk[k];
+    for(k in R.bc){var b=R.bc[k];if(!o[k]&&now-b.t>60000){delete R.bc[k];continue}if(!o[k]||(+b.d.hb||0)>=(+o[k].hb||0))o[k]=b.d}
+    if(R.mine)o[me]=R.mine;R.state=o;R.subs.slice().forEach(function(f){try{f(rsnap('p',o))}catch(e){}})}
+  function hubSoon(R){if(R.et)return;R.et=setTimeout(function(){R.et=0;hubEmit(R)},120)}
+  function hubSay(R,force){if(!R.joined||!R.ch)return;var now=Date.now();if(!force&&now-(R.st||0)<180){if(!R.sq)R.sq=setTimeout(function(){R.sq=0;hubSay(R,1)},200);return}R.st=now;
+    try{R.ch.send({type:'broadcast',event:'st',payload:{u:me,d:R.mine}}).catch(function(){})}catch(e){}}
+  function hubTrack(R,force){if(!R.joined||!R.ch)return;var now=Date.now(),gap=25000;
+    if(force||now-R.lt>=gap){R.lt=now;clearTimeout(R.tq);R.tq=0;var ch=R.ch,d=R.mine;presCall('hub:'+R.gen,function(){return d?ch.track({d:R.mine||d}):ch.untrack()})}
+    else if(!R.tq)R.tq=setTimeout(function(){R.tq=0;hubTrack(R,1)},gap-(now-R.lt)+50)}
+  function roomFree(r){var R=RM[r];if(R&&!R.subs.length&&!R.mine&&!R.w.length){R.dead=true;clearTimeout(R.rt);clearTimeout(R.tq);try{sb.removeChannel(R.ch)}catch(e){}delete RM[r]}}
   function roomRel(r){setTimeout(function(){roomFree(r)},8000)}
   function roomState(r){var R=room(r);return new Promise(function(res){var fin=function(){clearTimeout(t);res(R.state);roomRel(r)};if(R.synced)return fin();var t=setTimeout(function(){var i=R.w.indexOf(fin);if(i>=0)R.w.splice(i,1);res(R.state);roomRel(r)},3000);R.w.push(fin)})}
   var LST=[];
@@ -123,7 +154,7 @@
       limitToLast:function(n){return rref(path,{o:qq.o,l:n})},
       onDisconnect:function(){return{remove:function(){return Promise.resolve()},set:function(){return Promise.resolve()},cancel:function(){return Promise.resolve()}}},
       set:function(v){
-        if(M.k==='presLeaf'){if(M.key!==me)return nope();var R=room(M.room);R.mine=v==null?null:clean(v);if(!R.mine){var p0=R.joined?R.ch.untrack():Promise.resolve();return p0.then(function(){roomRel(M.room)})}return R.joined?R.ch.track({d:R.mine}).then(function(){}):Promise.resolve()}
+        if(M.k==='presLeaf'){if(M.key!==me)return nope();var R=room(M.room);R.mine=v==null?null:clean(v);if(!R.mine){if(R.joined){try{R.ch.send({type:'broadcast',event:'st',payload:{u:me,d:null}}).catch(function(){})}catch(e){}var ch0=R.ch;presCall('hub:'+R.gen,function(){return ch0.untrack()})}roomRel(M.room);return Promise.resolve()}hubSay(R);hubTrack(R);hubSoon(R);return Promise.resolve()}
         if(M.k==='leaf')return v==null?write([{t:'delete',p:M.p}]):write([{t:'set',p:M.p,d:clean(v),m:false}]);
         if(M.k==='col'&&v==null)return colRef(M.col).get().then(function(qs){var ops=qs.docs.map(function(d){return{t:'delete',p:M.col+'/'+d.id}});return ops.length?write(ops):null});
         return nope()},
@@ -144,8 +175,9 @@
         else if(M.k==='col'&&ev==='value')un=colRef(M.col).onSnapshot(function(qs){f(rsnap(key,colObj(qs)))});
         else if(M.k==='col'&&ev==='child_added'){var alive=true,seen={},emit=function(id,v){if(!alive||seen[id])return;seen[id]=1;f(rsnap(id,v))};
           var q=colRef(M.col);if(qq.o)q=q.orderBy(qq.o,'desc');q=q.limit(qq.l||100);
-          var u2=chOn(M.col,function(pl){if(pl.eventType==='INSERT'&&pl.new&&pl.new.data)emit(pl.new.id,pl.new.data)});
-          q.get().then(function(qs){qs.docs.slice().reverse().forEach(function(d){emit(d.id,d.data())})}).catch(function(){});
+          var pull=function(){q.get().then(function(qs){qs.docs.slice().reverse().forEach(function(d){emit(d.id,d.data())})}).catch(function(){})};
+          var u2=chOn(M.col,function(pl){if(pl&&pl._re)return pull();if(pl.eventType==='INSERT'&&pl.new&&pl.new.data)emit(pl.new.id,pl.new.data)});
+          pull();
           un=function(){alive=false;u2()}}
         LST.push({p:path,e:ev,f:f,un:un});return f},
       off:function(ev,f){for(var i=LST.length-1;i>=0;i--){var x=LST[i];if(x.p===path&&(!ev||x.e===ev)&&(!f||x.f===f)){try{x.un()}catch(e){}LST.splice(i,1)}}}};
@@ -168,15 +200,17 @@
   function mkDb(){return{doc:function(p){return wrapDoc(p)},collection:function(p){if(p==='accounts')return accountsColl();if(p==='arena')return arenaColl();if(p==='arena_hits')return hitsColl();return colRef(p)}}}
   function mkUser(){return{id:async function(){return uid()},isOwner:async function(){return !!window.GAME_OWNER_UID&&uid()===window.GAME_OWNER_UID},canEdit:async function(){return !!window.GAME_OWNER_UID&&uid()===window.GAME_OWNER_UID},can:async function(){return true}}}
   // ---------- ผู้เล่นออนไลน์ & แชทสด (Realtime presence/broadcast) ----------
-  function mkRoom(){var pres={},peersCb=[],chatCb=[],boot=Date.now(),ch=sb.channel('room',{config:{presence:{key:me},broadcast:{self:false}}});
+  function mkRoom(){var pres={},sent='',peersCb=[],chatCb=[],ch=null,gen=0,rt=null;
     var norm=function(p){var o=Object.assign({},p||{});delete o.g;return o};
-    var emit=function(){var st=ch.presenceState(),peers=Object.keys(st).map(function(k){var x=(st[k]&&st[k][0])||{};return{peer:k,isMe:k===me,kind:'viewer',presence:x.p||{}}});
+    var emit=function(){var st=ch?ch.presenceState():{},peers=Object.keys(st).map(function(k){var x=(st[k]&&st[k][0])||{};return{peer:k,isMe:k===me,kind:'viewer',presence:x.p||{}}});
       if(!peers.some(function(x){return x.isMe}))peers.push({peer:me,isMe:true,kind:'viewer',presence:pres});peersCb.forEach(function(f){try{f({peers:peers})}catch(e){}})};
-    ch.on('presence',{event:'sync'},emit).on('broadcast',{event:'chat'},function(m){var v=m&&m.payload;if(!v||v.u===me)return;chatCb.forEach(function(f){try{f({isMe:false,sameTab:false,data:v.d})}catch(e){}})})
-      .subscribe(function(s){conn=s==='SUBSCRIBED';if(conn)ch.track({p:pres,t:snow()}).catch(function(){})});
-    setInterval(function(){if(conn)ch.track({p:pres,t:snow()}).catch(function(){})},30000);
+    var track=function(force){var j=JSON.stringify(pres);if(!conn||!ch||(!force&&j===sent))return;sent=j;var c0=ch;presCall('room',function(){return c0.track({p:pres,t:snow()})})};
+    var build=function(){var x=sb.channel('room',{config:{presence:{key:me},broadcast:{self:false}}});ch=x;gen++;
+      x.on('presence',{event:'sync'},function(){if(ch===x)emit()}).on('broadcast',{event:'chat'},function(m){if(ch!==x)return;var v=m&&m.payload;if(!v||v.u===me)return;chatCb.forEach(function(f){try{f({isMe:false,sameTab:false,data:v.d})}catch(e){}})})
+        .subscribe(function(s){if(ch!==x)return;if(s==='SUBSCRIBED'){conn=true;clearTimeout(rt);track(1);emit()}else if(BAD[s]){conn=false;emit();clearTimeout(rt);rt=setTimeout(function(){if(!conn&&ch===x){try{sb.removeChannel(x)}catch(e){}build()}},s==='CLOSED'?2500:12000)}})};
+    build();ROOMX={fix:function(){if(!conn){try{sb.removeChannel(ch)}catch(e){}build()}}};
     return{onPeers:function(f){peersCb.push(f);return function(){}},on:function(t,f){if(t==='chat')chatCb.push(f);return function(){}},
-      presence:async function(p){pres=norm(p);if(conn)await ch.track({p:pres,t:snow()})},emit:async function(t,d){if(t==='chat'&&conn)await ch.send({type:'broadcast',event:'chat',payload:{u:me,d:d}})},connected:function(){return conn}}}
+      presence:async function(p){pres=norm(p);track(0)},emit:async function(t,d){if(t==='chat'&&conn&&ch)await ch.send({type:'broadcast',event:'chat',payload:{u:me,d:d}})},connected:function(){return conn}}}
   // ---------- เข้าสู่ระบบ ----------
   function idEmail(id){return String(id||'').trim().toLowerCase()+IDD}
   function idOk(id){return /^[a-z0-9_]{4,16}$/.test(String(id||'').trim().toLowerCase())}
