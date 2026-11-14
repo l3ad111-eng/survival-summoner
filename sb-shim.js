@@ -1,4 +1,4 @@
-/* Survival Summoner: Pick Up! — ตัวเชื่อม Supabase (แทน fb-shim.js) · 1.71.0 · 1.74.0 แก้ช่องสดหลุด/โควตาสถานะออนไลน์ · 1.81.1 แก้จำนวนออนไลน์ไม่ตรงกัน/แชทไม่เด้ง/นับผู้ชม (Guest) · 1.81.2 Guest ต่อ Realtime ได้จริง (ไม่ส่งคีย์สาธารณะเป็นโทเค็น)
+/* Survival Summoner: Pick Up! — ตัวเชื่อม Supabase (แทน fb-shim.js) · 1.71.0 · 1.74.0 แก้ช่องสดหลุด/โควตาสถานะออนไลน์ · 1.81.1 แก้จำนวนออนไลน์ไม่ตรงกัน/แชทไม่เด้ง/นับผู้ชม (Guest) · 1.81.2 Guest ต่อ Realtime ได้จริง (ไม่ส่งคีย์สาธารณะเป็นโทเค็น) · 1.81.3 จำนวนออนไลน์/จำนวนไอดีถามจากฐานข้อมูล (online_ping) ตรงกันทุกเครื่อง
    ให้เกมเรียกคำสั่งแบบ Firebase (firestore/auth/realtime) ได้เหมือนเดิม แต่ทำงานบน Supabase
    - ข้อมูล: ตาราง docs (เก็บแบบ Firestore) ผ่าน rpc dget / q / qcount / tx · ฟังสดด้วย Realtime
    - ล็อกอิน: ไอดี+รหัส (อีเมลภายใน @id.survival-summoner.app) · Google · Guest (เล่นในเครื่อง)
@@ -222,16 +222,33 @@
   function mkRoom(guest){var pres={},sent='',peersCb=[],chatCb=[],ch=null,gen=0,rt=null,fixing=0,K=me;
     if(guest){var gk=String(gkey()).replace(/[^\w-]/g,'').slice(0,40);if(!gk||gk==='offline'){try{gk=sessionStorage.getItem('ss_gp')||''}catch(e){}if(!gk){gk='t'+Math.random().toString(36).slice(2,10);try{sessionStorage.setItem('ss_gp',gk)}catch(e){}}}K='g-'+gk}
     var norm=function(p){var o=Object.assign({},p||{});delete o.g;if(guest)o.g=1;return o};
-    var emit=function(){var st=ch?ch.presenceState():{},peers=Object.keys(st).map(function(k){var x=(st[k]&&st[k][0])||{};return{peer:k,isMe:k===K,kind:'viewer',presence:x.p||{}}});
-      if(!peers.some(function(x){return x.isMe}))peers.push({peer:K,isMe:true,kind:'viewer',presence:pres});peersCb.forEach(function(f){try{f({peers:peers})}catch(e){}})};
+    /* 1.81.3: จำนวนออนไลน์ถามจากฐานข้อมูล (rpc online_ping) → ทุกเครื่องได้ตัวเลขชุดเดียวกันจากเซิร์ฟเวอร์ ไม่ขึ้นกับ websocket ของแต่ละเครื่อง
+       ส่งสัญญาณทุก 30 วิ (ผู้พัฒนา 15 วิ) ขณะเปิดหน้าเกมอยู่ · ไม่ส่งเกิน 75 วิ = ออฟไลน์ · presence เดิมเหลือเป็นตัวสำรอง
+       พ่วงเวลาแชทล่าสุดมาด้วย: ถ้ามีข้อความใหม่ที่ช่องสดพลาด จะโหลดแชทใหม่ทันที */
+    var ONL=null,pbusy=0,ptm=null,lastChat=0,PJ='';
+    var fresh=function(){return !!(ONL&&Date.now()-ONL.at<100000)};
+    var ping=function(leave){if(pbusy&&!leave)return;if(!leave)pbusy=1;PJ=JSON.stringify(pres);
+      var done=function(){if(!leave)pbusy=0};
+      try{Promise.resolve(sb.rpc('online_ping',{gk:guest?K.slice(2):null,st:pres.st||null,nm:pres.n||null,leave:!!leave})).then(function(r){done();if(leave||!r||r.error||!r.data)return;var d=r.data;
+        ONL={pl:+d.pl||0,wa:+d.wa||0,acc:d.acc==null?null:+d.acc,list:Array.isArray(d.list)?d.list:null,at:Date.now()};
+        var c=+d.chat||0;if(lastChat&&c>lastChat){var cc=CH['chat'];if(cc)chKick(cc)}if(c)lastChat=c;emit()},done)}catch(e){done()}};
+    var pingSoon=function(){clearTimeout(ptm);ptm=setTimeout(function(){ping()},1500)};
+    var emit=function(){var peers,ok=fresh();
+      if(ok&&ONL.list)peers=ONL.list.map(function(x){var p={st:x.st||'',n:x.n||''};if(x.g)p.g=1;return{peer:x.k,isMe:x.k===K,kind:'viewer',presence:p}});
+      else{var st=ch?ch.presenceState():{};peers=Object.keys(st).map(function(k){var x=(st[k]&&st[k][0])||{};return{peer:k,isMe:k===K,kind:'viewer',presence:x.p||{}}})}
+      if(!peers.some(function(x){return x.isMe}))peers.push({peer:K,isMe:true,kind:'viewer',presence:pres});
+      var cnt=ok?{pl:ONL.pl,wa:ONL.wa,acc:ONL.acc}:null;peersCb.forEach(function(f){try{f({peers:peers,counts:cnt})}catch(e){}})};
     var track=function(force){var j=JSON.stringify(pres);if(!conn||!ch||(!force&&j===sent))return;sent=j;var c0=ch;presCall('room',function(){return c0.track({p:pres,t:snow()})})};
     var redo=function(old){if(fixing)return;fixing=1;conn=false;chOff('room',old).then(function(){fixing=0;if(ch===old||!ch)build()})};
     var build=function(){var x=chNew('room',{config:{presence:{key:K},broadcast:{self:false}}});if(!x){var o=ch;ch=null;return redo(o)}ch=x;gen++;
       x.on('presence',{event:'sync'},function(){if(ch===x)emit()}).on('broadcast',{event:'chat'},function(m){if(ch!==x)return;var v=m&&m.payload;if(!v||v.u===K)return;chatCb.forEach(function(f){try{f({isMe:false,sameTab:false,data:v.d})}catch(e){}})})
         .subscribe(function(s){if(ch!==x)return;if(s==='SUBSCRIBED'){conn=true;clearTimeout(rt);track(1);emit()}else if(BAD[s]){conn=false;emit();clearTimeout(rt);rt=setTimeout(function(){if(!conn&&ch===x)redo(x)},s==='CLOSED'?2500:12000)}})};
-    build();ROOMX={fix:function(){if(!conn&&!fixing)redo(ch)}};
+    try{build()}catch(e){}ROOMX={fix:function(){if(!conn&&!fixing)redo(ch)}};
+    ping();setInterval(function(){if(document.visibilityState==='visible')ping();else if(ONL&&!fresh())emit()},(!guest&&window.GAME_OWNER_UID&&me===window.GAME_OWNER_UID)?15000:30000);
+    document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')ping()});
+    window.addEventListener('online',function(){setTimeout(ping,1200)});window.addEventListener('pagehide',function(){ping(1)});
     return{onPeers:function(f){peersCb.push(f);return function(){}},on:function(t,f){if(t==='chat')chatCb.push(f);return function(){}},
-      presence:async function(p){pres=norm(p);track(0)},emit:async function(t,d){if(t==='chat'&&conn&&ch)await ch.send({type:'broadcast',event:'chat',payload:{u:K,d:d}})},connected:function(){return conn}}}
+      presence:async function(p){pres=norm(p);track(0);if(JSON.stringify(pres)!==PJ)pingSoon()},emit:async function(t,d){if(t==='chat'&&conn&&ch)await ch.send({type:'broadcast',event:'chat',payload:{u:K,d:d}})},connected:function(){return conn||fresh()}}}
   // ---------- เข้าสู่ระบบ ----------
   function idEmail(id){return String(id||'').trim().toLowerCase()+IDD}
   function idOk(id){return /^[a-z0-9_]{4,16}$/.test(String(id||'').trim().toLowerCase())}
