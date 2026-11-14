@@ -1,4 +1,4 @@
-/* Survival Summoner: Pick Up! — ตัวเชื่อม Supabase (แทน fb-shim.js) · 1.71.0 · 1.74.0 แก้ช่องสดหลุด/โควตาสถานะออนไลน์ · 1.81.1 แก้จำนวนออนไลน์ไม่ตรงกัน/แชทไม่เด้ง/นับผู้ชม (Guest)
+/* Survival Summoner: Pick Up! — ตัวเชื่อม Supabase (แทน fb-shim.js) · 1.71.0 · 1.74.0 แก้ช่องสดหลุด/โควตาสถานะออนไลน์ · 1.81.1 แก้จำนวนออนไลน์ไม่ตรงกัน/แชทไม่เด้ง/นับผู้ชม (Guest) · 1.81.2 Guest ต่อ Realtime ได้จริง (ไม่ส่งคีย์สาธารณะเป็นโทเค็น)
    ให้เกมเรียกคำสั่งแบบ Firebase (firestore/auth/realtime) ได้เหมือนเดิม แต่ทำงานบน Supabase
    - ข้อมูล: ตาราง docs (เก็บแบบ Firestore) ผ่าน rpc dget / q / qcount / tx · ฟังสดด้วย Realtime
    - ล็อกอิน: ไอดี+รหัส (อีเมลภายใน @id.survival-summoner.app) · Google · Guest (เล่นในเครื่อง)
@@ -52,10 +52,11 @@
   /* 1.81.1: ช่องที่ทุกเครื่องต้องอยู่ห้องเดียวกัน (ผู้เล่นออนไลน์ · ลอบบี้) ต้องใช้ชื่อคงที่เสมอ
      แต่ sb.channel(ชื่อซ้ำ) จะคืน "ช่องเก่าที่กำลังปิด" มาแทน → ต่อใหม่ไม่ติด จำนวนคนค้าง/แชทไม่เข้า
      จึงต้องรอถอดช่องเก่าชื่อนั้นออกจากตัวเชื่อมให้หมดก่อน แล้วค่อยสร้างช่องใหม่ */
-  function chOff(topic,old){var T='realtime:'+topic,L=[];try{L=(sb.getChannels()||[]).filter(function(c){return c===old||c.topic===T})}catch(e){}if(old&&L.indexOf(old)<0)L.push(old);
-    return Promise.all(L.map(function(c){return Promise.race([Promise.resolve().then(function(){return sb.removeChannel(c)}).catch(function(){}),new Promise(function(r){setTimeout(r,3000)})])})).then(function(){
-      try{var A=sb.realtime&&sb.realtime.channels;if(A)L.forEach(function(c){if(Array.isArray(A)){var i=A.indexOf(c);if(i>=0)A.splice(i,1)}else if(A.delete)A.delete(c)})}catch(e){}})}
-  function chNew(topic,opts){var x=sb.channel(topic,opts);return x&&!x.joinedOnce&&(!x.state||x.state==='closed')?x:null}/* null = ได้ช่องเก่าคืนมา ต้องถอดก่อน */
+  var GRT=null;function RC(){return GRT||sb}/* ตัวเชื่อม Realtime ที่ใช้อยู่ (Guest ใช้ตัวแยกของตัวเอง ดู guestRt) */
+  function chOff(topic,old){var T='realtime:'+topic,L=[];try{L=(RC().getChannels()||[]).filter(function(c){return c===old||c.topic===T})}catch(e){}if(old&&L.indexOf(old)<0)L.push(old);
+    return Promise.all(L.map(function(c){return Promise.race([Promise.resolve().then(function(){return RC().removeChannel(c)}).catch(function(){}),new Promise(function(r){setTimeout(r,3000)})])})).then(function(){
+      try{var A=(GRT||sb.realtime||{}).channels;if(A)L.forEach(function(c){if(Array.isArray(A)){var i=A.indexOf(c);if(i>=0)A.splice(i,1)}else if(A.delete)A.delete(c)})}catch(e){}})}
+  function chNew(topic,opts){var x=RC().channel(topic,opts);return x&&!x.joinedOnce&&(!x.state||x.state==='closed')?x:null}/* null = ได้ช่องเก่าคืนมา ต้องถอดก่อน */
   function chKick(c){c.subs.slice().forEach(function(s){try{s({_re:1})}catch(e){}})}
   function chBuild(col,c){var x=sb.channel('docs:'+col+':'+(++c.gen)).on('postgres_changes',{event:'*',schema:'public',table:'docs',filter:'col=eq.'+col},function(pl){c.subs.slice().forEach(function(s){try{s(pl)}catch(e){}})});c.ch=x;
     x.subscribe(function(st){if(c.ch!==x||c.dead)return;if(st==='SUBSCRIBED'){c.ok=true;if(c.down){c.down=false;chKick(c)}clearTimeout(c.rt)}
@@ -208,6 +209,15 @@
   function mkDb(){return{doc:function(p){return wrapDoc(p)},collection:function(p){if(p==='accounts')return accountsColl();if(p==='arena')return arenaColl();if(p==='arena_hits')return hitsColl();return colRef(p)}}}
   function mkUser(){return{id:async function(){return uid()},isOwner:async function(){return !!window.GAME_OWNER_UID&&uid()===window.GAME_OWNER_UID},canEdit:async function(){return !!window.GAME_OWNER_UID&&uid()===window.GAME_OWNER_UID},can:async function(){return true}}}
   // ---------- ผู้เล่นออนไลน์ & แชทสด (Realtime presence/broadcast) ----------
+  /* 1.81.2: Guest ไม่มีโทเค็นล็อกอิน → supabase-js ส่งคีย์สาธารณะ (sb_publishable_…) เป็น access_token ให้ Realtime
+     ซึ่งไม่ใช่ JWT → เซิร์ฟปฏิเสธ (MalformedJWT) ช่องหลุดวน ผู้ชมจึงไม่ถูกนับ
+     แก้: Guest ใช้ตัวเชื่อม Realtime แยก (ไม่ผูกกับระบบล็อกอิน) และเข้าช่องโดยไม่ส่งโทเค็นเลย → เซิร์ฟใช้สิทธิ์ anon จากคีย์ตอนต่อ */
+  function noTok(R){if(!R)return;var nop=function(){return Promise.resolve()};
+    try{R.setAuth=nop}catch(e){}try{if(typeof R._performAuth==='function')R._performAuth=nop}catch(e){}try{if('accessToken' in R)R.accessToken=null}catch(e){}
+    try{Object.defineProperty(R,'accessTokenValue',{configurable:true,get:function(){return null},set:function(){}})}catch(e){try{R.accessTokenValue=null}catch(e2){}}}
+  function guestRt(){var RCl=window.supabase&&window.supabase.RealtimeClient,R=null;
+    if(typeof RCl==='function'){try{R=new RCl(String(C.url).replace(/\/+$/,'').replace(/^http/i,'ws')+'/realtime/v1',{params:{apikey:C.key,eventsPerSecond:20}})}catch(e){R=null}}
+    noTok(R||sb.realtime);GRT=R}/* ไม่มีคลาสแยก → ใช้ตัวเดิมแต่ปิดการส่งโทเค็น */
   /* 1.81.1: Guest เข้าห้องนี้ด้วย (คีย์ g-…, ติดธง g) เพื่อนับ "ผู้ชม" · ช่องชื่อ room คงที่ ต่อใหม่ผ่าน chOff/chNew */
   function mkRoom(guest){var pres={},sent='',peersCb=[],chatCb=[],ch=null,gen=0,rt=null,fixing=0,K=me;
     if(guest){var gk=String(gkey()).replace(/[^\w-]/g,'').slice(0,40);if(!gk||gk==='offline'){try{gk=sessionStorage.getItem('ss_gp')||''}catch(e){}if(!gk){gk='t'+Math.random().toString(36).slice(2,10);try{sessionStorage.setItem('ss_gp',gk)}catch(e){}}}K='g-'+gk}
@@ -278,7 +288,7 @@
     window.SB=sb;
     var g=await sb.auth.getSession();sess=g.data&&g.data.session||null;
     sb.auth.onAuthStateChange(function(ev,s){sess=s||null;try{if(s&&s.access_token)sb.realtime.setAuth(s.access_token)}catch(e){}});
-    if(!sess){DONE=true;var gr=null;try{gr=mkRoom(1)}catch(e){}return gr?{db:null,user:null,room:gr,downloads:null}:null}/* Guest: ไม่เชื่อมฐานข้อมูล เซฟอยู่ในเครื่อง · 1.81.1 เข้าห้องออนไลน์ในฐานะผู้ชม (นับ "ผู้ชม" + เห็นแชทเด้ง) */
+    if(!sess){DONE=true;var gr=null;try{guestRt();gr=mkRoom(1)}catch(e){}return gr?{db:null,user:null,room:gr,downloads:null}:null}/* Guest: ไม่เชื่อมฐานข้อมูล เซฟอยู่ในเครื่อง · 1.81.1 เข้าห้องออนไลน์ในฐานะผู้ชม (นับ "ผู้ชม" + เห็นแชทเด้ง) */
     try{sb.realtime.setAuth(sess.access_token)}catch(e){}
     /* ล็อกอิน Google ครั้งแรก: จับคู่กับบัญชี Firebase เดิมด้วยอีเมล (ถ้ามี) */
     try{if(fbProv()==='google'&&!localStorage.getItem('sb_mv_'+sess.user.id)){var mv=await sb.functions.invoke('migrate-account',{body:{kind:'google'}});if(mv&&mv.data)localStorage.setItem('sb_mv_'+sess.user.id,'1');
