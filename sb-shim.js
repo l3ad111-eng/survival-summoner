@@ -42,9 +42,11 @@
   var CB={f:0,until:0};
   function cbBad(r){var st=r&&r.status|0,m=String((r&&r.error&&r.error.message)||'');return st>=500||st===0||/Failed to fetch|NetworkError|network|timeout|Load failed/i.test(m)}
   function cbFail(){CB.f++;if(CB.f>=3)CB.until=Date.now()+Math.min(60000,2000*Math.pow(2,CB.f-3))}
-  async function rpc(fn,args){if(Date.now()<CB.until){var e0=new Error('server unavailable');e0.code='unavailable';throw e0}
-    var r;try{r=await sb.rpc(fn,args)}catch(x){cbFail();throw ferr(x)}
-    if(r.error){if(cbBad(r))cbFail();else CB.f=0;throw ferr(r.error)}CB.f=0;CB.until=0;return r.data}
+  async function rpc(fn,args,noCb){if(!noCb&&Date.now()<CB.until){var e0=new Error('server unavailable');e0.code='unavailable';throw e0}
+    var r;try{r=await sb.rpc(fn,args)}catch(x){if(!noCb)cbFail();throw ferr(x)}
+    if(r.error){if(!noCb){if(cbBad(r))cbFail();else CB.f=0}throw ferr(r.error)}CB.f=0;CB.until=0;return r.data}
+  /* 1.81.4: ตอนเข้าเกม ถ้าเซิร์ฟช้า/สะดุดชั่วคราว ลองถามตัวตนซ้ำ 4 ครั้ง (ไม่ติดตัวพักคำขอ) ก่อนยอมเป็นออฟไลน์ */
+  async function rpcInit(fn){var e0;for(var i=0;i<4;i++){try{return await rpc(fn,{},true)}catch(e){e0=e;if(i<3)await new Promise(function(r){setTimeout(r,1000*(i+1))})}}throw e0}
   // ---------- snapshot ----------
   function DSnap(path,j){var id=path.split('/').pop();return{id:id,ref:docRef(path),exists:!!(j&&j.exists),_v:j&&j.exists?j.ver:null,data:function(){return j&&j.exists?clone(j.data):undefined},get:function(k){var d=j&&j.data;return d?d[k]:undefined}}}
   function QSnap(col,rows){var docs=(rows||[]).map(function(r){return DSnap(col+'/'+r.id,{exists:true,data:r.data,ver:r.ver})});
@@ -281,8 +283,8 @@
       if(mv&&mv.data&&mv.data.e==='none'&&!localStorage.getItem('sb_me_'+sess.user.id)){var me0=await sb.functions.invoke('fb-import',{body:{act:'me'}}),dd=me0.data;
         if(!dd&&me0.error&&me0.error.context&&me0.error.context.json){try{dd=await me0.error.context.json()}catch(e){}}
         if(dd&&(dd.ok||/owner|mapped/.test(dd.e||'')))localStorage.setItem('sb_me_'+sess.user.id,'1')}}}catch(e){}
-    me=await rpc('app_uid',{});
-    try{var t0=Date.now(),sv=await rpc('server_ms',{});off=+sv-Math.round((Date.now()+t0)/2)}catch(e){}
+    me=await rpcInit('app_uid');
+    try{var t0=Date.now(),sv=await rpc('server_ms',{},true);off=+sv-Math.round((Date.now()+t0)/2)}catch(e){}
     DONE=true;return{db:mkDb(),user:mkUser(),room:mkRoom(),downloads:null};
   }catch(e){console.warn('Supabase init failed',e);DONE=true;return null}})();
   window.claude={fb:true,sb:true,use:async function(n){var x=await ready;return x&&x[n]||null},fbAnon:function(){return !sess},fbEmail:fbEmail,fbProv:fbProv,fbRegister:fbRegister,fbLoginPw:fbLoginPw,fbIdOk:idOk,fbUid:function(){return uid()||''},fbLogin:fbLogin,fbLogout:fbLogout,
