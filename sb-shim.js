@@ -67,8 +67,7 @@
   var RFT=0;function refreshAll(){if(Date.now()-RFT<3000)return;RFT=Date.now();for(var k in CH){var c=CH[k];if(!c.ok&&!c.dead){try{sb.removeChannel(c.ch)}catch(e){}chBuild(k,c)}chKick(c)}for(var r in RM){var R=RM[r];if(R&&!R.joined&&!R.dead)hubRe(R,r,1)}if(ROOMX&&ROOMX.fix)ROOMX.fix()}
   document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')setTimeout(refreshAll,400)});
   window.addEventListener('online',function(){setTimeout(refreshAll,800)});
-  /* 1.81.5: เดิมโหลดทุกอย่างซ้ำทุก 90 วิ (รวมเซฟทั้งก้อน) ทำเซิร์ฟเวอร์รับไม่ไหว → เหลือทุก 10 นาที · ช่องสดหลุดเมื่อไหร่ยังโหลดใหม่ทันทีเหมือนเดิม */
-  setInterval(function(){if(document.visibilityState==='visible'){RFT=0;refreshAll()}},600000);
+  setInterval(function(){if(document.visibilityState==='visible'){RFT=0;refreshAll()}},90000);
   /* โควตาสถานะออนไลน์ของ Supabase: เครื่องละไม่เกิน 5 ครั้งต่อ 30 วิ (เกินแล้วเซิร์ฟปิดช่องทิ้ง) → คุมไว้ 4 ครั้ง รวมทุกช่อง · ส่งค่าล่าสุดเท่านั้น */
   var PQ={h:[],q:[],t:null};
   function presCall(key,fn){var i;for(i=0;i<PQ.q.length;i++)if(PQ.q[i].k===key){PQ.q[i].f=fn;break}if(i===PQ.q.length)PQ.q.push({k:key,f:fn});presPump()}
