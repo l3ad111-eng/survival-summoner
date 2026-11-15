@@ -42,7 +42,8 @@
   var CB={f:0,until:0};
   function cbBad(r){var st=r&&r.status|0,m=String((r&&r.error&&r.error.message)||'');return st>=500||st===0||/Failed to fetch|NetworkError|network|timeout|Load failed/i.test(m)}
   function cbFail(){CB.f++;if(CB.f>=3)CB.until=Date.now()+Math.min(60000,2000*Math.pow(2,CB.f-3))}
-  async function rpc(fn,args,noCb){if(!noCb&&Date.now()<CB.until){var e0=new Error('server unavailable');e0.code='unavailable';throw e0}
+  async function rpc(fn,args,noCb){if(fn==='tx'&&typeof swd!=='undefined'&&swd){var e1=new Error('permission-denied: auth-changed');e1.code='permission-denied';throw e1}/* 1.81.8: ไอดีเปลี่ยนจากแท็บอื่น → ห้ามเขียน */
+    if(!noCb&&Date.now()<CB.until){var e0=new Error('server unavailable');e0.code='unavailable';throw e0}
     var r;try{r=await sb.rpc(fn,args)}catch(x){if(!noCb)cbFail();throw ferr(x)}
     if(r.error){if(!noCb){if(cbBad(r))cbFail();else CB.f=0}throw ferr(r.error)}CB.f=0;CB.until=0;return r.data}
   /* 1.81.4: ตอนเข้าเกม ถ้าเซิร์ฟช้า/สะดุดชั่วคราว ลองถามตัวตนซ้ำ 4 ครั้ง (ไม่ติดตัวพักคำขอ) ก่อนยอมเป็นออฟไลน์ */
@@ -265,7 +266,12 @@
   function idEmail(id){return String(id||'').trim().toLowerCase()+IDD}
   function idOk(id){return /^[a-z0-9_]{4,16}$/.test(String(id||'').trim().toLowerCase())}
   function gkey(){try{return localStorage.getItem('pmu_gk')||'offline'}catch(e){return'offline'}}
-  function markPrev(){try{if(!sess)localStorage.setItem('pmu_prev_anon',gkey())}catch(e){}}
+  var bootU=null,selfAuth=0,swd=0;
+  function authSw(){if(swd)return;swd=1;window.__AUTHSW=1;
+    try{var d=document.createElement('div');d.id='authsw';d.setAttribute('style','position:fixed;inset:0;z-index:2147483647;background:rgba(0,0,0,.82);display:flex;align-items:center;justify-content:center;padding:24px;font-family:inherit');
+      d.innerHTML='<div style="background:#1b1f2a;color:#fff;border-radius:14px;padding:20px;max-width:340px;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,.5)"><div style="font-size:18px;font-weight:700;margin-bottom:8px">🔑 ไอดีของแท็บนี้เปลี่ยนไป</div><div style="font-size:14px;line-height:1.5;opacity:.9;margin-bottom:14px">มีการเปลี่ยนไอดีหรือออกจากระบบจากแท็บ/หน้าต่างอื่น แท็บนี้หยุดบันทึกแล้วเพื่อไม่ให้เซฟไปผิดไอดี · ความคืบหน้าล่าสุดยังเก็บไว้ในเครื่อง</div><button style="width:100%;padding:12px;border:0;border-radius:10px;background:#f5b942;color:#000;font-weight:700;font-size:15px" onclick="location.reload()">โหลดเกมใหม่</button></div>';
+      (document.body||document.documentElement).appendChild(d)}catch(e){}}
+  function markPrev(){selfAuth=1;try{if(!sess)localStorage.setItem('pmu_prev_anon',gkey())}catch(e){}}
   function emailOf(){return sess&&sess.user&&sess.user.email||''}
   async function fbLogin(){try{markPrev();var r=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+location.pathname}});if(r.error)throw r.error}
     catch(e){say('เข้าสู่ระบบไม่สำเร็จ: '+((e&&(e.code||e.message))||'unknown'))}}
@@ -284,7 +290,7 @@
     location.reload()}
   function fbEmail(){var e=emailOf();if(!e)return'';return e.slice(-IDD.length)===IDD?'ไอดี '+e.slice(0,-IDD.length):e}
   function fbProv(){if(!sess)return'';var e=emailOf();return e&&e.slice(-IDD.length)===IDD?'id':'google'}
-  async function fbLogout(){try{await sb.auth.signOut()}catch(e){}location.reload()}
+  async function fbLogout(){selfAuth=1;try{await sb.auth.signOut()}catch(e){}location.reload()}
   // ---------- นำเข้าข้อมูลจาก Firebase (เจ้าของเกมกดครั้งเดียว) ----------
   // นำเข้าเฉพาะไอดีที่เล่นจริง (เซฟคลาวด์ผ่านหอคอยชั้น 1 ขึ้นไป หรือมีชื่อบนบอร์ดหอคอย) · ไอดีที่สมัครแล้วไม่เล่นไม่ดึงมา
   var UIDC=['accounts','arena','arena_hits','stats','lobby','flags','gmem','redeem'];/* คอลเลกชันที่ชื่อเอกสาร = ไอดี */
@@ -315,8 +321,10 @@
     if(!window.supabase||!window.supabase.createClient)await load(SDK);
     sb=window.supabase.createClient(C.url,C.key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,flowType:'pkce'},realtime:{params:{eventsPerSecond:20}}});
     window.SB=sb;
-    var g=await sb.auth.getSession();sess=g.data&&g.data.session||null;
-    sb.auth.onAuthStateChange(function(ev,s){sess=s||null;try{if(s&&s.access_token)sb.realtime.setAuth(s.access_token)}catch(e){}});
+    var g=await sb.auth.getSession();sess=g.data&&g.data.session||null;bootU=sess&&sess.user&&sess.user.id||null;
+    sb.auth.onAuthStateChange(function(ev,s){sess=s||null;try{if(s&&s.access_token)sb.realtime.setAuth(s.access_token)}catch(e){}
+      /* 1.81.8: ไอดีของแท็บนี้ถูกเปลี่ยน/ออกจากระบบจากแท็บอื่น (หรือเซสชันหมดอายุถาวร) → หยุดบันทึก + ให้โหลดใหม่ กันเซฟผิดไอดี */
+      try{var nu=s&&s.user&&s.user.id||null;if(bootU&&nu!==bootU&&!selfAuth)authSw()}catch(e){}});
     if(!sess){DONE=true;return null}/* Guest: ไม่เชื่อมฐานข้อมูล เซฟอยู่ในเครื่อง */
     try{sb.realtime.setAuth(sess.access_token)}catch(e){}
     /* ล็อกอิน Google ครั้งแรก: จับคู่กับบัญชี Firebase เดิมด้วยอีเมล (ถ้ามี) */
