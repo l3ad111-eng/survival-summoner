@@ -91,6 +91,43 @@
   async function write(ops){await rpc('tx',{reads:[],ops:ops})}
   // ---------- คอลเลกชัน / ค้นหา ----------
   function newId(){var a='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',s='';var r=new Uint8Array(20);crypto.getRandomValues(r);for(var i=0;i<20;i++)s+=a[r[i]%62];return s}
+  /* 1.81.7: ตัวคำนวณผลค้นหาจากแถวที่เปลี่ยน (ตรรกะเดียวกับ q/qwhere บนเซิร์ฟเวอร์) · คืน false = ไม่แน่ใจ ให้ค้นใหม่ */
+  var INC=(function(){var U={};
+    function gp(d,f){var a=String(f).split('.'),x=d;for(var i=0;i<a.length;i++){if(Array.isArray(x))return U;if(x===null||typeof x!=='object'||!Object.prototype.hasOwnProperty.call(x,a[i]))return undefined;x=x[a[i]]}return x}
+    function ty(v){return v===null?'null':Array.isArray(v)?'array':typeof v}
+    function eq(a,b){var ta=ty(a),tb=ty(b);if(ta!==tb)return false;if(ta==='array'){if(a.length!==b.length)return false;for(var i=0;i<a.length;i++)if(!eq(a[i],b[i]))return false;return true}
+      if(ta==='object'){var ka=Object.keys(a),kb=Object.keys(b);if(ka.length!==kb.length)return false;for(var j=0;j<ka.length;j++){if(!Object.prototype.hasOwnProperty.call(b,ka[j])||!eq(a[ka[j]],b[ka[j]]))return false}return true}return a===b}
+    function cmpOk(v){var t=ty(v);return t==='number'||t==='boolean'}
+    function one(d,f){var e=gp(d,f[0]),op=f[1],v=f[2]===undefined?null:f[2];if(e===U)return null;
+      if(op==='=='){if(e===undefined)return false;return eq(e,v)}
+      if(op==='!='){if(e===undefined)return false;return !eq(e,v)}
+      if(op==='>'||op==='>='||op==='<'||op==='<='){if(e===undefined||ty(e)!==ty(v))return false;if(!cmpOk(v))return null;var a=+e,b=+v;return op==='>'?a>b:op==='>='?a>=b:op==='<'?a<b:a<=b}
+      if(op==='in'){if(!Array.isArray(v))return null;if(e===undefined)return false;for(var i=0;i<v.length;i++)if(eq(e,v[i]))return true;return false}
+      if(op==='array-contains'){var tv=ty(v);if(tv==='object'||tv==='array')return null;if(!Array.isArray(e))return false;for(var k=0;k<e.length;k++)if(eq(e[k],v))return true;return false}
+      return null}
+    function apply(col,st,cur,pl,fresh){
+      if(/^data\/users\/[^\/]+$/.test(col))return false;/* เซฟ: เซิร์ฟรวมข้อมูลจาก save_blob ที่ไม่มาใน realtime */
+      if(pl.eventType!=='INSERT'&&pl.eventType!=='UPDATE')return false;
+      if(pl.errors&&pl.errors.length)return false;
+      var r=pl.new;if(!r||r.col!==col||typeof r.id!=='string'||!r.id||ty(r.data)!=='object')return false;
+      var i=-1;for(var a=0;a<cur.length;a++)if(cur[a].id===r.id){i=a;break}
+      var old=i>=0?cur[i]:null;
+      if(!old&&fresh)return false;/* เพิ่งโหลด: แถวที่ไม่อยู่ในผลอาจเป็นเหตุการณ์ก่อนโหลด (เช่นถูกลบไปแล้ว) → ค้นใหม่ */
+      if(old&&pl.eventType==='UPDATE'&&old.ver!=null&&r.ver!=null&&+r.ver<=+old.ver)return false;
+      var m=true;for(var b=0;b<st.f.length;b++){var x=one(r.data,st.f[b]);if(x===null)return false;if(!x){m=false;break}}
+      var k;if(m&&st.o){k=gp(r.data,st.o);if(k===U)return false;if(k===undefined)m=false;else if(ty(k)!=='number')return false}
+      var full=cur.length>=st.l,row={id:r.id,data:r.data,ver:r.ver};
+      if(!m){if(!old)return true;if(full)return false;cur.splice(i,1);return true}
+      if(!st.o){if(old){cur[i]=row;return true}return false}/* ไม่มีการเรียง → เซิร์ฟเรียงด้วย id (collation) แทรกใหม่ไม่ได้ */
+      var rest=old?cur.slice(0,i).concat(cur.slice(i+1)):cur.slice(),desc=String(st.d).toLowerCase()==='desc',pos=rest.length;
+      for(var c=0;c<rest.length;c++){var kc=gp(rest[c].data,st.o);if(ty(kc)!=='number'||kc===k)return false}
+      for(var e=0;e<rest.length;e++){var ke=gp(rest[e].data,st.o);if(desc?k>ke:k<ke){pos=e;break}}
+      if(pos===rest.length&&full){if(old)return false;return true}
+      rest.splice(pos,0,row);while(rest.length>st.l)rest.pop();
+      cur.length=0;for(var g=0;g<rest.length;g++)cur.push(rest[g]);return true}
+    /* ใช้เฉพาะคอลเลกชันส่วนกลางที่ทุกคนฟังพร้อมกัน (ภาระคูณจำนวนผู้เล่น) และการลบมีสัญญาณแยกอยู่แล้ว (meta/chatclr, meta/version.mv)
+       · ภายใน 3 วิหลังโหลดจากเซิร์ฟ แถวที่ไม่อยู่ในผลเดิมจะค้นใหม่แบบเดิม กันเหตุการณ์ที่เกิดก่อนโหลดแต่มาถึงทีหลัง (แถวที่มีอยู่แล้วเช็กด้วย ver) */
+    return{apply:apply,ok:{chat:1,mail:1},_one:one,_gp:gp}})();
   function colRef(col,st){col=String(col).replace(/^\/+|\/+$/g,'');st=st||{f:[],o:null,d:'asc',l:1000};
     var q={id:col.split('/').pop(),path:col,
       where:function(f,op,v){return colRef(col,{f:st.f.concat([[f,op,v]]),o:st.o,d:st.d,l:st.l})},
@@ -100,9 +137,14 @@
       add:async function(d){var r=docRef(col+'/'+newId());await r.set(d);return r},
       get:async function(){return QSnap(col,await rpc('q',{c:col,filters:st.f,ord:st.o,dir:st.d,lim:st.l}))},
       count:function(){return{get:async function(){var n=await rpc('qcount',{c:col,filters:st.f});return{data:function(){return{count:+n||0}}}}}},
-      onSnapshot:function(cb,err){var alive=true,t=null,busy=false,again=false,run=function(){if(busy){again=true;return}busy=true;q.get().then(function(s){if(alive)cb(s)}).catch(function(e){if(alive&&err)err(e)}).finally(function(){busy=false;if(again){again=false;run()}})};
-        run();var un=chOn(col,function(){clearTimeout(t);t=setTimeout(run,400)});/* มีอะไรเปลี่ยนในคอลเลกชัน → ค้นใหม่ (ไม่คิดเงินต่อการอ่าน) */
-        return function(){alive=false;clearTimeout(t);un()}}};
+      onSnapshot:function(cb,err){var alive=true,t=null,tE=null,tR=0,busy=false,again=false,cur=null,run=function(){if(busy){again=true;return}busy=true;
+          rpc('q',{c:col,filters:st.f,ord:st.o,dir:st.d,lim:st.l}).then(function(rows){cur=(rows||[]).slice();tR=Date.now();clearTimeout(tE);tE=null;if(alive)cb(QSnap(col,rows))}).catch(function(e){cur=null;if(alive&&err)err(e)}).finally(function(){busy=false;if(again){again=false;run()}})};
+        run();var un=chOn(col,function(pl){
+          /* 1.81.7: ถ้าคำนวณผลจากแถวที่ realtime ส่งมาได้ตรงกับเซิร์ฟเวอร์ 100% → อัปเดตในเครื่องเลย ไม่ต้องค้นทั้งคอลเลกชันใหม่
+             กรณีอื่นทั้งหมด (ลบ, รีเฟรช 90 วิ, กำลังโหลด, เรียงด้วยข้อความ, ค่าเท่ากัน, หน้าเต็ม ฯลฯ) → ค้นใหม่แบบเดิมทุกอย่าง */
+          if(!pl||pl._re||busy||t||!cur||!INC.ok[col]||!INC.apply(col,st,cur,pl,Date.now()-tR<3000)){clearTimeout(t);t=setTimeout(function(){t=null;run()},400);return}
+          clearTimeout(tE);tE=setTimeout(function(){tE=null;if(alive&&cur&&!t&&!busy)cb(QSnap(col,cur.slice()))},400)});
+        return function(){alive=false;clearTimeout(t);clearTimeout(tE);un()}}};
     return q}
   // ---------- ทรานแซกชัน / batch ----------
   async function runTransaction(fn){var last=null;
